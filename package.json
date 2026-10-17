@@ -1,6 +1,7 @@
 {
   "name": "webdata-tools-mcp",
   "version": "0.1.0",
+  "mcpName": "io.github.tacps126/webdata-tools-mcp",
   "description": "MCP server for AI agents: job postings, hiring signals, Google News, Trustpilot and app reviews, Reddit mentions, website contacts, German real estate and Shopify products. Runs ready-made Apify Actors with your own Apify token.",
   "type": "module",
   "bin": {
@@ -39,5 +40,9 @@
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.32.1",
     "zod": "^4.6.7"
+  },
+  "homepage": "https://github.com/tacps126/webdata-tools-mcp#readme",
+  "bugs": {
+    "url": "https://github.com/tacps126/webdata-tools-mcp/issues"
   }
 }
