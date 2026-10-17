@@ -2,7 +2,7 @@
 
 [![npm](https://img.shields.io/npm/v/webdata-tools-mcp)](https://www.npmjs.com/package/webdata-tools-mcp)
 [![license: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![smithery badge](https://smithery.ai/badge/tacps126/webdata-tools-mcp)](https://smithery.ai/servers/tacps126/webdata-tools-mcp)
+[Smithery](https://smithery.ai/servers/tacps126/webdata-tools-mcp)
 [![webdata-tools-mcp MCP server](https://glama.ai/mcp/servers/tacps126/webdata-tools-mcp/badges/score.svg)](https://glama.ai/mcp/servers/tacps126/webdata-tools-mcp)
 
 An [MCP](https://modelcontextprotocol.io) server that gives AI agents ten web-data tools: job
