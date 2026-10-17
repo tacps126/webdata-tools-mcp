@@ -16,7 +16,7 @@ const manifest = buildManifest();
 
 const stage = mkdtempSync(join(tmpdir(), 'mcpb-'));
 try {
-  for (const f of ['src', 'package.json', 'package-lock.json', 'LICENSE', 'README.md']) {
+  for (const f of ['src', 'package.json', 'package-lock.json', 'LICENSE', 'README.md', 'icon.png']) {
     cpSync(join(root, f), join(stage, f), { recursive: true });
   }
   writeFileSync(join(stage, 'manifest.json'), `${JSON.stringify(manifest, null, 2)}\n`);

@@ -113,3 +113,30 @@ test('server registers every tool and surfaces missing-token errors', async () =
   assert.match(res.content[0].text, /APIFY_TOKEN/);
   await client.close();
 });
+
+test('a successful call returns text plus validated structured content', async () => {
+  const { Client } = await import('@modelcontextprotocol/sdk/client/index.js');
+  const { InMemoryTransport } = await import('@modelcontextprotocol/sdk/inMemory.js');
+  const items = [{ title: 'A', text: 'x'.repeat(2000) }, { title: 'B' }];
+  const fetchImpl = async () => new Response(JSON.stringify(items), { status: 201 });
+  const server = buildServer({ env: { APIFY_TOKEN: 't' }, fetchImpl });
+  const client = new Client({ name: 'test', version: '0' });
+  const [a, b] = InMemoryTransport.createLinkedPair();
+  await Promise.all([server.connect(a), client.connect(b)]);
+
+  const { tools } = await client.listTools();
+  for (const t of tools) {
+    assert.equal(t.outputSchema.type, 'object', `${t.name} outputSchema`);
+    assert.equal(t.annotations.readOnlyHint, true, `${t.name} annotations`);
+    assert.equal(t.annotations.destructiveHint, false);
+  }
+
+  const res = await client.callTool({ name: 'search_google_news', arguments: { query: 'ai' } });
+  assert.notEqual(res.isError, true);
+  assert.equal(res.structuredContent.tool, 'search_google_news');
+  assert.equal(res.structuredContent.count, 2);
+  assert.equal(res.structuredContent.truncated, false);
+  assert.equal(res.structuredContent.items[0].text.length, 601, 'long text is shortened');
+  assert.match(res.content[0].text, /2 result/);
+  await client.close();
+});

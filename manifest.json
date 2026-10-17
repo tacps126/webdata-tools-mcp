@@ -2,7 +2,8 @@
   "manifest_version": "0.3",
   "name": "webdata-tools-mcp",
   "display_name": "Web Data Tools",
-  "version": "0.1.0",
+  "icon": "icon.png",
+  "version": "0.2.0",
   "description": "Ten web-data tools for agents: jobs, hiring signals, news, reviews, Reddit, contacts, real estate, Shopify.",
   "long_description": "Runs ready-made Apify Actors (published by tacps126) on your own Apify account and returns clean JSON. Covers job postings from career pages, LinkedIn and Indeed, hiring signals, Google News, Trustpilot and app-store reviews, Reddit mentions, website contact details, German property listings and Shopify products. You pay Apify per result (about $1-3 per 1,000); every call has a spend cap.",
   "author": {
@@ -36,7 +37,8 @@
       ],
       "env": {
         "APIFY_TOKEN": "${user_config.apify_token}",
-        "WEBDATA_MAX_CHARGE_USD": "${user_config.max_charge_usd}"
+        "WEBDATA_MAX_CHARGE_USD": "${user_config.max_charge_usd}",
+        "WEBDATA_TIMEOUT_SECS": "${user_config.timeout_secs}"
       }
     }
   },
@@ -97,6 +99,15 @@
       "default": 0.5,
       "min": 0.05,
       "max": 20,
+      "required": false
+    },
+    "timeout_secs": {
+      "type": "number",
+      "title": "Maximum wait per tool call (seconds)",
+      "description": "How long one call may run before it is stopped (30 to 300).",
+      "default": 150,
+      "min": 30,
+      "max": 300,
       "required": false
     }
   },

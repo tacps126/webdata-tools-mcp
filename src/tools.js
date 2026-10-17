@@ -131,7 +131,7 @@ export const TOOLS = [
       location: z.string().optional().describe('City, state, postcode or "Remote". Empty = whole country.'),
       country: z.enum(['us', 'uk', 'ca', 'au', 'ie', 'de', 'fr', 'nl', 'sg']).default('us').describe('Indeed country site.'),
       date_posted_days: z.enum(['1', '3', '7', '14']).optional().describe('Only jobs posted in the last N days.'),
-      job_type: z.enum(['fulltime', 'parttime', 'contract', 'temporary', 'internship']).optional(),
+      job_type: z.enum(['fulltime', 'parttime', 'contract', 'temporary', 'internship']).optional().describe('Only this employment type.'),
       max_items: maxItems(30),
     },
     map: (a) =>
@@ -155,9 +155,9 @@ export const TOOLS = [
     shape: {
       companies: strings('Company domains or Trustpilot URLs, e.g. "apify.com".'),
       star_ratings: z.array(z.enum(['1', '2', '3', '4', '5'])).optional().describe('Only these ratings, e.g. ["1","2"] for complaints.'),
-      sort: z.enum(['recency', 'relevance']).default('recency'),
+      sort: z.enum(['recency', 'relevance']).default('recency').describe('Newest reviews first (recency) or most relevant first.'),
       search: z.string().optional().describe('Only reviews containing this text.'),
-      date_period: z.enum(['last30days', 'last3months', 'last6months']).optional(),
+      date_period: z.enum(['last30days', 'last3months', 'last6months']).optional().describe('Only reviews from this period.'),
       max_reviews: maxItems(50),
     },
     map: (a) =>
@@ -204,9 +204,9 @@ export const TOOLS = [
     shape: {
       keywords: z.array(z.string()).optional().describe('Search all of Reddit; "exact phrase" works.'),
       subreddits: z.array(z.string()).optional().describe('Subreddit names, e.g. ["webscraping"].'),
-      sort: z.enum(['new', 'hot', 'top', 'relevance']).default('new'),
-      time: z.enum(['hour', 'day', 'week', 'month', 'year', 'all']).default('week'),
-      include_comments: z.boolean().default(false),
+      sort: z.enum(['new', 'hot', 'top', 'relevance']).default('new').describe('Result order.'),
+      time: z.enum(['hour', 'day', 'week', 'month', 'year', 'all']).default('week').describe('Time window for keyword searches.'),
+      include_comments: z.boolean().default(false).describe('Also return comments of the matched posts (more results, higher cost).'),
       max_items: maxItems(50),
     },
     check: (a) =>
@@ -233,7 +233,7 @@ export const TOOLS = [
       'Finds business emails, phone numbers, addresses and social profiles (LinkedIn, X, Facebook, Instagram, YouTube) on any list of websites; it visits the contact and about pages itself. Use only for lawful business outreach (GDPR / CAN-SPAM).',
     shape: {
       websites: strings('Website addresses or domains, e.g. "apify.com".'),
-      max_pages_per_site: z.number().int().min(1).max(20).default(5),
+      max_pages_per_site: z.number().int().min(1).max(20).default(5).describe('Pages read per website; contact, imprint and about pages are picked first.'),
       require_email: z.boolean().default(false).describe('Drop sites where no email was found.'),
       max_items: maxItems(50, 1000),
     },
@@ -255,12 +255,12 @@ export const TOOLS = [
       'Apartments and houses for rent or sale in Germany: price, rent, area, rooms, address with coordinates, energy class, features, agent, photos and dates. Germany only.',
     shape: {
       locations: strings('Cities, districts or regions in plain words, e.g. ["Berlin","München Schwabing"].'),
-      offer_type: z.enum(['rent', 'buy']).default('rent'),
-      property_type: z.enum(['apartment', 'house']).default('apartment'),
-      min_price: z.number().optional(),
-      max_price: z.number().optional(),
+      offer_type: z.enum(['rent', 'buy']).default('rent').describe('Rent or buy listings.'),
+      property_type: z.enum(['apartment', 'house']).default('apartment').describe('Apartments or houses.'),
+      min_price: z.number().optional().describe('Minimum price in EUR (monthly rent or purchase price).'),
+      max_price: z.number().optional().describe('Maximum price in EUR (monthly rent or purchase price).'),
       min_area: z.number().optional().describe('Minimum area in m2.'),
-      min_rooms: z.number().optional(),
+      min_rooms: z.number().optional().describe('Minimum number of rooms.'),
       max_items: maxItems(50),
     },
     map: (a) =>
@@ -286,8 +286,8 @@ export const TOOLS = [
     shape: {
       stores: strings('Store domains, collection links or product links, e.g. "allbirds.com".'),
       keywords: z.array(z.string()).optional().describe('Only products matching any of these words.'),
-      only_on_sale: z.boolean().default(false),
-      only_available: z.boolean().default(false),
+      only_on_sale: z.boolean().default(false).describe('Only products with a sale price.'),
+      only_available: z.boolean().default(false).describe('Only products that are in stock.'),
       max_items: maxItems(100, 1000),
     },
     map: (a) =>

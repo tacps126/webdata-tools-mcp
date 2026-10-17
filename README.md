@@ -1,5 +1,10 @@
 # webdata-tools-mcp
 
+[![npm](https://img.shields.io/npm/v/webdata-tools-mcp)](https://www.npmjs.com/package/webdata-tools-mcp)
+[![license: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![smithery badge](https://smithery.ai/badge/tacps126/webdata-tools-mcp)](https://smithery.ai/servers/tacps126/webdata-tools-mcp)
+[![webdata-tools-mcp MCP server](https://glama.ai/mcp/servers/tacps126/webdata-tools-mcp/badges/score.svg)](https://glama.ai/mcp/servers/tacps126/webdata-tools-mcp)
+
 An [MCP](https://modelcontextprotocol.io) server that gives AI agents ten web-data tools: job
 postings, hiring signals, Google News, Trustpilot and app-store reviews, Reddit mentions, website
 contacts, German property listings and Shopify products.
@@ -24,6 +29,10 @@ anywhere except Apify.
 | `get_shopify_products` | Prices, discounts, stock, variants from Shopify stores | $1 / 1,000 products | [shopify-products](https://apify.com/tacps126/shopify-products) |
 
 Every tool also takes an optional `extra_input` object for any other field the Actor documents.
+Every result comes back as text and as structured content (`tool`, `count`, `shown`, `truncated`,
+`items`), and every tool is marked read-only, so clients can run it without asking.
+
+More about the tools: <https://tacps126.github.io/mcp.html>
 
 ## Setup
 
@@ -59,6 +68,14 @@ Requires Node.js 18 or newer.
 - "Show the 1 and 2 star Trustpilot reviews of example.com from the last 30 days and group the complaints."
 - "Find news from the last 7 days about open-source LLM licensing, with the real publisher links."
 - "Get contact emails for these 20 agency websites." (use only for lawful business outreach)
+
+## Settings
+
+| Environment variable | Default | Meaning |
+|---|---|---|
+| `APIFY_TOKEN` | required | Your Apify API token |
+| `WEBDATA_MAX_CHARGE_USD` | `0.5` | Spend cap per tool call; Apify stops the run when it is reached |
+| `WEBDATA_TIMEOUT_SECS` | `150` | How long one call may run (30 to 300) |
 
 ## Cost safety
 

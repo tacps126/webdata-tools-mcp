@@ -2,6 +2,7 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { z } from 'zod';
+import { annotationsOf, outputShape } from '../src/server.js';
 import { extraInput, TOOLS } from '../src/tools.js';
 
 const root = new URL('..', import.meta.url).pathname;
@@ -14,11 +15,19 @@ export function inputSchemaOf(tool) {
   return schema;
 }
 
+/** JSON Schema of the structured result every tool returns. */
+export function outputSchemaJson() {
+  const schema = z.toJSONSchema(z.object(outputShape));
+  delete schema.$schema;
+  return schema;
+}
+
 export function buildManifest({ withInputSchemas = false } = {}) {
   const m = {
   manifest_version: '0.3',
   name: pkg.name,
   display_name: 'Web Data Tools',
+  icon: 'icon.png',
   version: pkg.version,
   description: 'Ten web-data tools for agents: jobs, hiring signals, news, reviews, Reddit, contacts, real estate, Shopify.',
   long_description:
@@ -41,6 +50,7 @@ export function buildManifest({ withInputSchemas = false } = {}) {
       env: {
         APIFY_TOKEN: '${user_config.apify_token}',
         WEBDATA_MAX_CHARGE_USD: '${user_config.max_charge_usd}',
+        WEBDATA_TIMEOUT_SECS: '${user_config.timeout_secs}',
       },
     },
   },
@@ -62,12 +72,30 @@ export function buildManifest({ withInputSchemas = false } = {}) {
       max: 20,
       required: false,
     },
+    timeout_secs: {
+      type: 'number',
+      title: 'Maximum wait per tool call (seconds)',
+      description: 'How long one call may run before it is stopped (30 to 300).',
+      default: 150,
+      min: 30,
+      max: 300,
+      required: false,
+    },
   },
   compatibility: { platforms: ['darwin', 'win32', 'linux'], runtimes: { node: '>=18.0.0' } },
 };
   // Smithery's registry requires an inputSchema on every tool of the server card, which the
   // MCPB manifest schema itself rejects; so only the Smithery copy of the bundle carries it.
-  if (withInputSchemas) m.tools = TOOLS.map((t) => ({ name: t.name, description: t.description, inputSchema: inputSchemaOf(t) }));
+  if (withInputSchemas) {
+    m.tools = TOOLS.map((t) => ({
+      name: t.name,
+      title: t.title,
+      description: t.description,
+      inputSchema: inputSchemaOf(t),
+      outputSchema: outputSchemaJson(),
+      annotations: annotationsOf(t),
+    }));
+  }
   return m;
 }
 
