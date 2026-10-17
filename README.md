@@ -1,0 +1,105 @@
+# webdata-tools-mcp
+
+An [MCP](https://modelcontextprotocol.io) server that gives AI agents ten web-data tools: job
+postings, hiring signals, Google News, Trustpilot and app-store reviews, Reddit mentions, website
+contacts, German property listings and Shopify products.
+
+Each tool runs a ready-made [Apify](https://apify.com/tacps126) Actor and returns clean JSON. You
+pay Apify per result (about $1–3 per 1,000 results); there is no subscription and nothing is sent
+anywhere except Apify.
+
+## Tools
+
+| Tool | What it returns | Cost (approx.) | Actor |
+|------|-----------------|----------------|-------|
+| `search_google_news` | News articles with the publisher's real URL, date, related coverage | $2 / 1,000 articles | [google-news](https://apify.com/tacps126/google-news) |
+| `find_hiring_companies` | Which companies are hiring for given roles (buying-intent signal) | 1¢ per company with a signal | [hiring-signals](https://apify.com/tacps126/hiring-signals) |
+| `get_company_jobs` | All open jobs from career pages (Greenhouse, Lever, Ashby, Workday, …) | $1 / 1,000 jobs | [jobs-harvester](https://apify.com/tacps126/jobs-harvester) |
+| `search_indeed_jobs` | Indeed listings in 9 countries | $3 / 1,000 jobs | [indeed-jobs](https://apify.com/tacps126/indeed-jobs) |
+| `get_trustpilot_reviews` | Reviews, TrustScore and company profile | $0.50 / 1,000 reviews | [trustpilot-reviews](https://apify.com/tacps126/trustpilot-reviews) |
+| `get_app_reviews` | App Store and Google Play reviews | $0.20 / 1,000 reviews | [app-reviews](https://apify.com/tacps126/app-reviews) |
+| `search_reddit` | Reddit posts and comments by keyword or subreddit | $1 / 1,000 items | [reddit-monitor](https://apify.com/tacps126/reddit-monitor) |
+| `find_website_contacts` | Emails, phones, socials from websites | $2 / 1,000 sites with contacts | [contact-details](https://apify.com/tacps126/contact-details) |
+| `search_german_property_listings` | Rent/buy listings in Germany (ImmoScout24) | $1 / 1,000 listings | [immobilienscout24-scraper](https://apify.com/tacps126/immobilienscout24-scraper) |
+| `get_shopify_products` | Prices, discounts, stock, variants from Shopify stores | $1 / 1,000 products | [shopify-products](https://apify.com/tacps126/shopify-products) |
+
+Every tool also takes an optional `extra_input` object for any other field the Actor documents.
+
+## Setup
+
+1. Create a free [Apify account](https://apify.com) and copy your API token from
+   **Console → Settings → API & Integrations**.
+2. Add the server to your client. The token goes in `APIFY_TOKEN`.
+
+**Claude Desktop / Cursor / Windsurf** (`mcpServers` config):
+
+```json
+{
+  "mcpServers": {
+    "webdata": {
+      "command": "npx",
+      "args": ["-y", "webdata-tools-mcp"],
+      "env": { "APIFY_TOKEN": "<your Apify token>" }
+    }
+  }
+}
+```
+
+**Claude Code:**
+
+```bash
+claude mcp add webdata -e APIFY_TOKEN=<your Apify token> -- npx -y webdata-tools-mcp
+```
+
+Requires Node.js 18 or newer.
+
+## Try it
+
+- "Which of these companies are hiring data engineers right now? https://boards.greenhouse.io/stripe, https://jobs.lever.co/spotify"
+- "Show the 1 and 2 star Trustpilot reviews of example.com from the last 30 days and group the complaints."
+- "Find news from the last 7 days about open-source LLM licensing, with the real publisher links."
+- "Get contact emails for these 20 agency websites." (use only for lawful business outreach)
+
+## Cost safety
+
+- Every call is capped at **$0.50** of Apify spend (`WEBDATA_MAX_CHARGE_USD` changes it). Apify stops
+  the run when the cap is reached.
+- `max_items` defaults to small numbers (20–100) and has a hard maximum per tool.
+- Long text fields are shortened to 600 characters, and one result is limited to about 60,000
+  characters, so a call cannot flood the agent's context.
+
+## No install: Apify's hosted MCP server
+
+You can also use Apify's own server with these Actors selected, with nothing to install:
+
+```json
+{
+  "mcpServers": {
+    "apify": { "url": "https://mcp.apify.com?tools=tacps126/google-news,tacps126/hiring-signals,tacps126/trustpilot-reviews" }
+  }
+}
+```
+
+It signs you in with OAuth. The tools take the Actors' raw input fields instead of the simplified
+arguments above.
+
+## Development
+
+```bash
+npm install
+npm test                                  # offline: mapping, errors, size limits, MCP handshake
+node scripts/sync-actor-inputs.mjs        # refresh test/fixtures from the published Actors
+APIFY_TOKEN=... node scripts/smoke.mjs    # live check, a few cents
+```
+
+`test/fixtures/actor-inputs.json` lists the input fields of each published Actor; the tests fail if
+a tool sends a field the Actor does not accept.
+
+## Responsible use
+
+The Actors read publicly available pages. You are responsible for following each site's terms and
+the law that applies to you (GDPR, CAN-SPAM) when you use the data, especially contact details.
+
+## License
+
+MIT

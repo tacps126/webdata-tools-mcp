@@ -1,0 +1,43 @@
+{
+  "name": "webdata-tools-mcp",
+  "version": "0.1.0",
+  "description": "MCP server for AI agents: job postings, hiring signals, Google News, Trustpilot and app reviews, Reddit mentions, website contacts, German real estate and Shopify products. Runs ready-made Apify Actors with your own Apify token.",
+  "type": "module",
+  "bin": {
+    "webdata-tools-mcp": "src/index.js"
+  },
+  "main": "src/index.js",
+  "files": [
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "start": "node src/index.js",
+    "test": "node --test test/*.test.js"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "apify",
+    "web-scraping",
+    "jobs",
+    "hiring-signals",
+    "google-news",
+    "trustpilot",
+    "reviews",
+    "lead-generation"
+  ],
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tacps126/webdata-tools-mcp.git"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.32.1",
+    "zod": "^4.6.7"
+  }
+}
