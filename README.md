@@ -1,6 +1,7 @@
 # webdata-tools-mcp
 
 [![npm](https://img.shields.io/npm/v/webdata-tools-mcp)](https://www.npmjs.com/package/webdata-tools-mcp)
+[![CI](https://github.com/tacps126/webdata-tools-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/tacps126/webdata-tools-mcp/actions/workflows/ci.yml)
 [![license: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [Smithery](https://smithery.ai/servers/tacps126/webdata-tools-mcp)
 [![webdata-tools-mcp MCP server](https://glama.ai/mcp/servers/tacps126/webdata-tools-mcp/badges/score.svg)](https://glama.ai/mcp/servers/tacps126/webdata-tools-mcp)
