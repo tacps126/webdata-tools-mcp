@@ -43,43 +43,43 @@
   "tools": [
     {
       "name": "search_google_news",
-      "description": "Search Google News"
+      "description": "Search Google News (any language and country) and return articles with the publisher's real article URL, publisher, date and related coverage. Supports Google operators (\"exact phrase\", -exclude, OR, intitle:) and site filters."
     },
     {
       "name": "find_hiring_companies",
-      "description": "Find companies hiring for given roles"
+      "description": "Buying-intent signal: which companies are hiring for the roles you care about, how many roles, how fresh, and seniority/locations. Give target accounts (their jobs-page URLs on Greenhouse, Lever, Ashby, Workday, SmartRecruiters, Recruitee, Personio, Teamtailor) and/or job-search phrases to discover companies."
     },
     {
       "name": "get_company_jobs",
-      "description": "Get all open jobs from company career pages"
+      "description": "All open jobs from company career pages in one normalized format (title, company, location, remote/hybrid, seniority, salary, apply URL, posted date). Paste career-page URLs from Greenhouse, Lever, Ashby, Workable, SmartRecruiters, Recruitee, Workday, Personio or Teamtailor; the board type is detected automatically."
     },
     {
       "name": "search_indeed_jobs",
-      "description": "Search Indeed jobs"
+      "description": "Search Indeed job listings by keyword and location in 9 countries (us, uk, ca, au, ie, de, fr, nl, sg): title, company, location, salary, job type, benefits, skills and apply link."
     },
     {
       "name": "get_trustpilot_reviews",
-      "description": "Get Trustpilot reviews and company rating"
+      "description": "Trustpilot reviews for one or more companies (rating, title, text, reviewer, country, date, company reply) plus the company's TrustScore and review counts. Filter by stars, language, verified and date period."
     },
     {
       "name": "get_app_reviews",
-      "description": "Get App Store and Google Play reviews"
+      "description": "Reviews from the Apple App Store and Google Play in one dataset: rating, text, author, date, app version, developer reply, sentiment. Mix both stores and several countries."
     },
     {
       "name": "search_reddit",
-      "description": "Search Reddit posts and comments"
+      "description": "Reddit posts (and optionally comments) by keyword, subreddit or user: title, text, author, subreddit, score, links and dates. Good for brand and topic monitoring."
     },
     {
       "name": "find_website_contacts",
-      "description": "Find emails, phones and social profiles on websites"
+      "description": "Finds business emails, phone numbers, addresses and social profiles (LinkedIn, X, Facebook, Instagram, YouTube) on any list of websites; it visits the contact and about pages itself. Use only for lawful business outreach (GDPR / CAN-SPAM)."
     },
     {
       "name": "search_german_property_listings",
-      "description": "Search German property listings (ImmoScout24)"
+      "description": "Apartments and houses for rent or sale in Germany: price, rent, area, rooms, address with coordinates, energy class, features, agent, photos and dates. Germany only."
     },
     {
       "name": "get_shopify_products",
-      "description": "Get products from Shopify stores"
+      "description": "Products from any Shopify store: prices, sale prices, discounts, stock, variants, SKUs, images and descriptions. Whole stores, collections or single products. Useful for price and stock monitoring."
     }
   ],
   "user_config": {
