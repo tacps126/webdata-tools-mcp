@@ -6,9 +6,9 @@
 [Smithery](https://smithery.ai/servers/tacps126/webdata-tools-mcp)
 [![webdata-tools-mcp MCP server](https://glama.ai/mcp/servers/tacps126/webdata-tools-mcp/badges/score.svg)](https://glama.ai/mcp/servers/tacps126/webdata-tools-mcp)
 
-An [MCP](https://modelcontextprotocol.io) server that gives AI agents ten web-data tools: job
+An [MCP](https://modelcontextprotocol.io) server that gives AI agents eleven web-data tools: job
 postings, hiring signals, Google News, Trustpilot and app-store reviews, Reddit mentions, website
-contacts, German and Austrian property listings and Shopify products.
+contacts, German and Austrian property listings, Shopify products and trade-show exhibitor lists.
 
 Each tool runs a ready-made [Apify](https://apify.com/tacps126) Actor and returns clean JSON. You
 pay Apify per result (about $1–3 per 1,000 results); there is no subscription and nothing is sent
@@ -28,6 +28,7 @@ anywhere except Apify.
 | `find_website_contacts` | Emails, phones, socials from websites | $2 / 1,000 sites with contacts | [contact-details](https://apify.com/tacps126/contact-details) |
 | `search_german_property_listings` | Rent/buy listings in Germany and Austria (ImmoScout24) | $1 / 1,000 listings | [immobilienscout24-scraper](https://apify.com/tacps126/immobilienscout24-scraper) |
 | `get_shopify_products` | Prices, discounts, stock, variants from Shopify stores | $1 / 1,000 products | [shopify-products](https://apify.com/tacps126/shopify-products) |
+| `get_trade_show_exhibitors` | Trade-show exhibitors: booth, email, phone, website, address (76 shows or any supported exhibitor-list link) | $2 / 1,000 exhibitors | [exhibition-scraper](https://apify.com/tacps126/exhibition-scraper) |
 
 Every tool also takes an optional `extra_input` object for any other field the Actor documents.
 Every result comes back as text and as structured content (`tool`, `count`, `shown`, `truncated`,

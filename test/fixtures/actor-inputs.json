@@ -227,5 +227,20 @@
     "dedupe",
     "tenantId",
     "debug"
+  ],
+  "tacps126/exhibition-scraper": [
+    "exhibitionList",
+    "exhibitions",
+    "startUrls",
+    "checkUrlsOnly",
+    "maxResults",
+    "includeDetails",
+    "includeRawData",
+    "incrementalScrape",
+    "monitorName",
+    "proxyConfiguration",
+    "debug",
+    "workerOutput",
+    "budgetItems"
   ]
 }

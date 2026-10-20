@@ -302,6 +302,29 @@ export const TOOLS = [
       }),
     limit: (a) => a.max_items,
   },
+  {
+    name: 'get_trade_show_exhibitors',
+    actor: 'tacps126/exhibition-scraper',
+    title: 'Get trade show exhibitor lists (booths and contacts)',
+    price: 'about $0.002 per exhibitor',
+    description:
+      "Exhibitor lists of trade shows as B2B leads: company, booth and hall, email, phone, website, address, socials and categories. 76 built-in shows (e.g. medica, sema-show, nab-show, fabtech, ish, automechanika, wtm-london, world-health-expo) or any exhibitor-list link on Messe Frankfurt, Messe Düsseldorf, RX, Map Your Show, a2z / A2Z Connect, Swapcard or Corussoft; the link's own show and year are used. Contact coverage depends on what the organiser publishes.",
+    shape: {
+      shows: z.array(z.string().min(1)).optional().describe('Built-in show ids, e.g. ["medica","sema-show"]. The Actor README lists all ids.'),
+      urls: z.array(z.string().url()).optional().describe("Links to any show's exhibitor list or exhibitor search page (or its homepage)."),
+      include_contacts: z.boolean().default(true).describe('Open each exhibitor profile for email, phone, website, address and socials. Off = names and booths only (faster).'),
+      max_items: maxItems(50, 2000),
+    },
+    map: (a) =>
+      clean({
+        exhibitionList: a.shows,
+        startUrls: (a.urls ?? []).map((url) => ({ url })),
+        includeDetails: a.include_contacts,
+        maxResults: a.max_items,
+      }),
+    // max_items applies per show.
+    limit: (a) => a.max_items * Math.max(1, (a.shows?.length ?? 0) + (a.urls?.length ?? 0)),
+  },
 ];
 
 export const ACTORS = [...new Set(TOOLS.map((t) => t.actor))];
