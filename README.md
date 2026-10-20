@@ -1,9 +1,11 @@
 # webdata-tools-mcp
 
 [![npm](https://img.shields.io/npm/v/webdata-tools-mcp)](https://www.npmjs.com/package/webdata-tools-mcp)
+[![GitHub release](https://img.shields.io/github/v/release/tacps126/webdata-tools-mcp)](https://github.com/tacps126/webdata-tools-mcp/releases/latest)
 [![CI](https://github.com/tacps126/webdata-tools-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/tacps126/webdata-tools-mcp/actions/workflows/ci.yml)
 [![license: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[Smithery](https://smithery.ai/servers/tacps126/webdata-tools-mcp)
+[![MCP Registry](https://img.shields.io/badge/MCP_Registry-io.github.tacps126%2Fwebdata--tools--mcp-2b6cb0)](https://github.com/modelcontextprotocol/registry)
+[![Smithery](https://img.shields.io/badge/Smithery-tacps126%2Fwebdata--tools--mcp-ff5601)](https://smithery.ai/servers/tacps126/webdata-tools-mcp)
 [![webdata-tools-mcp MCP server](https://glama.ai/mcp/servers/tacps126/webdata-tools-mcp/badges/score.svg)](https://glama.ai/mcp/servers/tacps126/webdata-tools-mcp)
 
 An [MCP](https://modelcontextprotocol.io) server that gives AI agents eleven web-data tools: job
@@ -124,6 +126,13 @@ a tool sends a field the Actor does not accept.
 
 The Actors read publicly available pages. You are responsible for following each site's terms and
 the law that applies to you (GDPR, CAN-SPAM) when you use the data, especially contact details.
+
+## Listed on
+
+<a href="https://glama.ai/mcp/servers/tacps126/webdata-tools-mcp"><img width="380" height="200" src="https://glama.ai/mcp/servers/tacps126/webdata-tools-mcp/badges/card.svg" alt="webdata-tools-mcp on Glama" /></a>
+<a href="https://mcprush.com/to/webdata-tools-mcp?ref=badge"><img width="380" height="200" src="https://mcprush.com/badge/webdata-tools-mcp/card.svg" alt="Webdata Tools MCP server on MCPRush" /></a>
+
+Also on [npm](https://www.npmjs.com/package/webdata-tools-mcp), the official [MCP Registry](https://github.com/modelcontextprotocol/registry) (`io.github.tacps126/webdata-tools-mcp`), and [Smithery](https://smithery.ai/servers/tacps126/webdata-tools-mcp).
 
 ## License
 
