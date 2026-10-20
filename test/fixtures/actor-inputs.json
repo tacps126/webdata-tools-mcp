@@ -242,5 +242,17 @@
     "debug",
     "workerOutput",
     "budgetItems"
+  ],
+  "tacps126/events-scraper": [
+    "searches",
+    "location",
+    "startUrls",
+    "sources",
+    "maxItems",
+    "includeDetails",
+    "upcomingOnly",
+    "onlyNew",
+    "monitorName",
+    "proxyConfiguration"
   ]
 }

@@ -325,6 +325,35 @@ export const TOOLS = [
     // max_items applies per show.
     limit: (a) => a.max_items * Math.max(1, (a.shows?.length ?? 0) + (a.urls?.length ?? 0)),
   },
+  {
+    name: 'find_events',
+    actor: 'tacps126/events-scraper',
+    title: 'Find upcoming events (Luma, Eventbrite, Meetup)',
+    price: 'about $0.001 per event',
+    description:
+      'Upcoming events by topic and city, or from Luma / Eventbrite / Meetup links (or any page with schema.org events): name, dates, venue with address and coordinates, organiser, hosts, ticket prices, free/sold-out and attendee count, in one format. Use for event prospecting, sponsorships and community research.',
+    shape: {
+      searches: z.array(z.string().min(1)).optional().describe('Topics or keywords, e.g. ["AI","startup"].'),
+      location: z.string().optional().describe('City in plain words (e.g. "London", "Bengaluru") or "online". Luma searches within a city.'),
+      urls: z.array(z.string().url()).optional().describe('Luma city/category/calendar/event links, Eventbrite searches or events, Meetup search or group links, or any events page.'),
+      sources: z.array(z.enum(['luma', 'eventbrite'])).optional().describe('Sites searched for `searches` (default both). Meetup works through links.'),
+      include_details: z.boolean().default(true).describe('Open each event for organiser, tickets and full description. Off = faster.'),
+      max_items: maxItems(30, 500),
+    },
+    map: (a) =>
+      clean({
+        searches: a.searches,
+        location: a.location,
+        startUrls: (a.urls ?? []).map((url) => ({ url })),
+        sources: a.sources,
+        includeDetails: a.include_details,
+        maxItems: a.max_items,
+      }),
+    // max_items applies per link and per search on each site.
+    limit: (a) =>
+      a.max_items *
+      Math.max(1, (a.searches?.length ?? 0) * (a.sources?.length ?? 2) + (a.urls?.length ?? 0)),
+  },
 ];
 
 export const ACTORS = [...new Set(TOOLS.map((t) => t.actor))];
