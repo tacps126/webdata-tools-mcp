@@ -249,12 +249,13 @@ export const TOOLS = [
   {
     name: 'search_german_property_listings',
     actor: 'tacps126/immobilienscout24-scraper',
-    title: 'Search German property listings (ImmoScout24)',
+    title: 'Search German and Austrian property listings (ImmoScout24)',
     price: 'about $0.001 per listing',
     description:
-      'Apartments and houses for rent or sale in Germany: price, rent, area, rooms, address with coordinates, energy class, features, agent, photos and dates. Germany only.',
+      'Apartments and houses for rent or sale in Germany or Austria: price, rent, area, rooms, address with coordinates, energy class, features, agent, photos and dates. Not Switzerland.',
     shape: {
-      locations: strings('Cities, districts or regions in plain words, e.g. ["Berlin","München Schwabing"].'),
+      country: z.enum(['de', 'at']).default('de').describe('de = Germany (immobilienscout24.de), at = Austria (immobilienscout24.at).'),
+      locations: strings('Cities, districts or regions in plain words, e.g. ["Berlin","München Schwabing"]; in Austria a city or federal state, e.g. ["Wien","Tirol"].'),
       offer_type: z.enum(['rent', 'buy']).default('rent').describe('Rent or buy listings.'),
       property_type: z.enum(['apartment', 'house']).default('apartment').describe('Apartments or houses.'),
       min_price: z.number().optional().describe('Minimum price in EUR (monthly rent or purchase price).'),
@@ -265,6 +266,7 @@ export const TOOLS = [
     },
     map: (a) =>
       clean({
+        country: a.country,
         locations: a.locations,
         offerType: a.offer_type,
         propertyType: a.property_type,
@@ -299,6 +301,29 @@ export const TOOLS = [
         maxItems: a.max_items,
       }),
     limit: (a) => a.max_items,
+  },
+  {
+    name: 'get_trade_show_exhibitors',
+    actor: 'tacps126/exhibition-scraper',
+    title: 'Get trade show exhibitor lists (booths and contacts)',
+    price: 'about $0.002 per exhibitor',
+    description:
+      "Exhibitor lists of trade shows as B2B leads: company, booth and hall, email, phone, website, address, socials and categories. 76 built-in shows (e.g. medica, sema-show, nab-show, fabtech, ish, automechanika, wtm-london, world-health-expo) or any exhibitor-list link on Messe Frankfurt, Messe Düsseldorf, RX, Map Your Show, a2z / A2Z Connect, Swapcard or Corussoft; the link's own show and year are used. Contact coverage depends on what the organiser publishes.",
+    shape: {
+      shows: z.array(z.string().min(1)).optional().describe('Built-in show ids, e.g. ["medica","sema-show"]. The Actor README lists all ids.'),
+      urls: z.array(z.string().url()).optional().describe("Links to any show's exhibitor list or exhibitor search page (or its homepage)."),
+      include_contacts: z.boolean().default(true).describe('Open each exhibitor profile for email, phone, website, address and socials. Off = names and booths only (faster).'),
+      max_items: maxItems(50, 2000),
+    },
+    map: (a) =>
+      clean({
+        exhibitionList: a.shows,
+        startUrls: (a.urls ?? []).map((url) => ({ url })),
+        includeDetails: a.include_contacts,
+        maxResults: a.max_items,
+      }),
+    // max_items applies per show.
+    limit: (a) => a.max_items * Math.max(1, (a.shows?.length ?? 0) + (a.urls?.length ?? 0)),
   },
 ];
 

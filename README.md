@@ -1,14 +1,16 @@
 # webdata-tools-mcp
 
 [![npm](https://img.shields.io/npm/v/webdata-tools-mcp)](https://www.npmjs.com/package/webdata-tools-mcp)
+[![GitHub release](https://img.shields.io/github/v/release/tacps126/webdata-tools-mcp)](https://github.com/tacps126/webdata-tools-mcp/releases/latest)
 [![CI](https://github.com/tacps126/webdata-tools-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/tacps126/webdata-tools-mcp/actions/workflows/ci.yml)
 [![license: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[Smithery](https://smithery.ai/servers/tacps126/webdata-tools-mcp)
+[![MCP Registry](https://img.shields.io/badge/MCP_Registry-io.github.tacps126%2Fwebdata--tools--mcp-2b6cb0)](https://github.com/modelcontextprotocol/registry)
+[![Smithery](https://img.shields.io/badge/Smithery-tacps126%2Fwebdata--tools--mcp-ff5601)](https://smithery.ai/servers/tacps126/webdata-tools-mcp)
 [![webdata-tools-mcp MCP server](https://glama.ai/mcp/servers/tacps126/webdata-tools-mcp/badges/score.svg)](https://glama.ai/mcp/servers/tacps126/webdata-tools-mcp)
 
-An [MCP](https://modelcontextprotocol.io) server that gives AI agents ten web-data tools: job
+An [MCP](https://modelcontextprotocol.io) server that gives AI agents eleven web-data tools: job
 postings, hiring signals, Google News, Trustpilot and app-store reviews, Reddit mentions, website
-contacts, German property listings and Shopify products.
+contacts, German and Austrian property listings, Shopify products and trade-show exhibitor lists.
 
 Each tool runs a ready-made [Apify](https://apify.com/tacps126) Actor and returns clean JSON. You
 pay Apify per result (about $1–3 per 1,000 results); there is no subscription and nothing is sent
@@ -26,8 +28,9 @@ anywhere except Apify.
 | `get_app_reviews` | App Store and Google Play reviews | $0.20 / 1,000 reviews | [app-reviews](https://apify.com/tacps126/app-reviews) |
 | `search_reddit` | Reddit posts and comments by keyword or subreddit | $1 / 1,000 items | [reddit-monitor](https://apify.com/tacps126/reddit-monitor) |
 | `find_website_contacts` | Emails, phones, socials from websites | $2 / 1,000 sites with contacts | [contact-details](https://apify.com/tacps126/contact-details) |
-| `search_german_property_listings` | Rent/buy listings in Germany (ImmoScout24) | $1 / 1,000 listings | [immobilienscout24-scraper](https://apify.com/tacps126/immobilienscout24-scraper) |
+| `search_german_property_listings` | Rent/buy listings in Germany and Austria (ImmoScout24) | $1 / 1,000 listings | [immobilienscout24-scraper](https://apify.com/tacps126/immobilienscout24-scraper) |
 | `get_shopify_products` | Prices, discounts, stock, variants from Shopify stores | $1 / 1,000 products | [shopify-products](https://apify.com/tacps126/shopify-products) |
+| `get_trade_show_exhibitors` | Trade-show exhibitors: booth, email, phone, website, address (76 shows or any supported exhibitor-list link) | $2 / 1,000 exhibitors | [exhibition-scraper](https://apify.com/tacps126/exhibition-scraper) |
 
 Every tool also takes an optional `extra_input` object for any other field the Actor documents.
 Every result comes back as text and as structured content (`tool`, `count`, `shown`, `truncated`,
@@ -40,6 +43,10 @@ More about the tools: <https://tacps126.github.io/mcp.html>
 1. Create a free [Apify account](https://apify.com) and copy your API token from
    **Console → Settings → API & Integrations**.
 2. Add the server to your client. The token goes in `APIFY_TOKEN`.
+
+**Claude Desktop, one click:** download `webdata-tools-mcp-<version>.mcpb` from the
+[latest release](https://github.com/tacps126/webdata-tools-mcp/releases/latest) and open it. Claude
+Desktop installs it and asks for your Apify token.
 
 **Claude Desktop / Cursor / Windsurf** (`mcpServers` config):
 
@@ -62,6 +69,8 @@ claude mcp add webdata -e APIFY_TOKEN=<your Apify token> -- npx -y webdata-tools
 ```
 
 Requires Node.js 18 or newer.
+
+Maintainers: how releases and directory listings are published is in [PUBLISHING.md](PUBLISHING.md).
 
 ## Try it
 
@@ -117,6 +126,13 @@ a tool sends a field the Actor does not accept.
 
 The Actors read publicly available pages. You are responsible for following each site's terms and
 the law that applies to you (GDPR, CAN-SPAM) when you use the data, especially contact details.
+
+## Listed on
+
+<a href="https://glama.ai/mcp/servers/tacps126/webdata-tools-mcp"><img width="380" height="200" src="https://glama.ai/mcp/servers/tacps126/webdata-tools-mcp/badges/card.svg" alt="webdata-tools-mcp on Glama" /></a>
+<a href="https://mcprush.com/to/webdata-tools-mcp?ref=badge"><img width="380" height="200" src="https://mcprush.com/badge/webdata-tools-mcp/card.svg" alt="Webdata Tools MCP server on MCPRush" /></a>
+
+Also on [npm](https://www.npmjs.com/package/webdata-tools-mcp), the official [MCP Registry](https://github.com/modelcontextprotocol/registry) (`io.github.tacps126/webdata-tools-mcp`), and [Smithery](https://smithery.ai/servers/tacps126/webdata-tools-mcp).
 
 ## License
 

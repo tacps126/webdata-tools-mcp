@@ -3,9 +3,9 @@
   "name": "webdata-tools-mcp",
   "display_name": "Web Data Tools",
   "icon": "icon.png",
-  "version": "0.2.0",
-  "description": "Ten web-data tools for agents: jobs, hiring signals, news, reviews, Reddit, contacts, real estate, Shopify.",
-  "long_description": "Runs ready-made Apify Actors (published by tacps126) on your own Apify account and returns clean JSON. Covers job postings from career pages, LinkedIn and Indeed, hiring signals, Google News, Trustpilot and app-store reviews, Reddit mentions, website contact details, German property listings and Shopify products. You pay Apify per result (about $1-3 per 1,000); every call has a spend cap.",
+  "version": "0.4.0",
+  "description": "Eleven web-data tools for agents: jobs, hiring signals, news, reviews, Reddit, contacts, real estate, Shopify, exhibitors.",
+  "long_description": "Runs ready-made Apify Actors (published by tacps126) on your own Apify account and returns clean JSON. Covers job postings from career pages, LinkedIn and Indeed, hiring signals, Google News, Trustpilot and app-store reviews, Reddit mentions, website contact details, German property listings, Shopify products and trade-show exhibitor lists. You pay Apify per result (about $1-3 per 1,000); every call has a spend cap.",
   "author": {
     "name": "tacps126",
     "email": "tacps126@gmail.com",
@@ -77,11 +77,15 @@
     },
     {
       "name": "search_german_property_listings",
-      "description": "Apartments and houses for rent or sale in Germany: price, rent, area, rooms, address with coordinates, energy class, features, agent, photos and dates. Germany only."
+      "description": "Apartments and houses for rent or sale in Germany or Austria: price, rent, area, rooms, address with coordinates, energy class, features, agent, photos and dates. Not Switzerland."
     },
     {
       "name": "get_shopify_products",
       "description": "Products from any Shopify store: prices, sale prices, discounts, stock, variants, SKUs, images and descriptions. Whole stores, collections or single products. Useful for price and stock monitoring."
+    },
+    {
+      "name": "get_trade_show_exhibitors",
+      "description": "Exhibitor lists of trade shows as B2B leads: company, booth and hall, email, phone, website, address, socials and categories. 76 built-in shows (e.g. medica, sema-show, nab-show, fabtech, ish, automechanika, wtm-london, world-health-expo) or any exhibitor-list link on Messe Frankfurt, Messe Düsseldorf, RX, Map Your Show, a2z / A2Z Connect, Swapcard or Corussoft; the link's own show and year are used. Contact coverage depends on what the organiser publishes."
     }
   ],
   "user_config": {

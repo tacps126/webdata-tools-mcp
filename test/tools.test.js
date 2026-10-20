@@ -20,6 +20,7 @@ const SAMPLE = {
   find_website_contacts: { websites: ['apify.com'] },
   search_german_property_listings: { locations: ['Berlin'], min_rooms: 2 },
   get_shopify_products: { stores: ['allbirds.com'], only_on_sale: true },
+  get_trade_show_exhibitors: { shows: ['medica'], urls: ['https://ish.messefrankfurt.com/frankfurt/en/exhibitor-search.html'], max_items: 20 },
 };
 
 test('every tool has a sample and a published Actor to map onto', () => {
@@ -139,4 +140,14 @@ test('a successful call returns text plus validated structured content', async (
   assert.equal(res.structuredContent.items[0].text.length, 601, 'long text is shortened');
   assert.match(res.content[0].text, /2 result/);
   await client.close();
+});
+
+test('exhibitor links go as {url} objects and the limit counts every show', () => {
+  const t = TOOLS.find((x) => x.name === 'get_trade_show_exhibitors');
+  const args = z.object(t.shape).parse(SAMPLE[t.name]);
+  const input = t.map(args);
+  assert.deepEqual(input.startUrls, [{ url: 'https://ish.messefrankfurt.com/frankfurt/en/exhibitor-search.html' }]);
+  assert.deepEqual(input.exhibitionList, ['medica']);
+  assert.equal(t.limit(args), 40);
+  assert.equal('startUrls' in t.map(z.object(t.shape).parse({ shows: ['medica'] })), false);
 });
