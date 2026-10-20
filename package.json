@@ -16,7 +16,9 @@
   ],
   "scripts": {
     "start": "node src/index.js",
-    "test": "node --test test/*.test.js"
+    "test": "node --test test/*.test.js",
+    "build:mcpb": "node scripts/build-mcpb.mjs",
+    "sync:inputs": "node scripts/sync-actor-inputs.mjs"
   },
   "keywords": [
     "mcp",

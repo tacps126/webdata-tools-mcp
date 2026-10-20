@@ -42,6 +42,10 @@ More about the tools: <https://tacps126.github.io/mcp.html>
    **Console → Settings → API & Integrations**.
 2. Add the server to your client. The token goes in `APIFY_TOKEN`.
 
+**Claude Desktop, one click:** download `webdata-tools-mcp-<version>.mcpb` from the
+[latest release](https://github.com/tacps126/webdata-tools-mcp/releases/latest) and open it. Claude
+Desktop installs it and asks for your Apify token.
+
 **Claude Desktop / Cursor / Windsurf** (`mcpServers` config):
 
 ```json
@@ -63,6 +67,8 @@ claude mcp add webdata -e APIFY_TOKEN=<your Apify token> -- npx -y webdata-tools
 ```
 
 Requires Node.js 18 or newer.
+
+Maintainers: how releases and directory listings are published is in [PUBLISHING.md](PUBLISHING.md).
 
 ## Try it
 

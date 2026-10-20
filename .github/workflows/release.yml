@@ -1,0 +1,102 @@
+# Release: when package.json's version changes on main (or on a manual run), tag vX.Y.Z and publish
+# a GitHub Release with both bundles:
+#   webdata-tools-mcp-X.Y.Z.mcpb           - MCP Bundle (Claude Desktop one-click install)
+#   webdata-tools-mcp-X.Y.Z.smithery.mcpb  - same files, manifest with per-tool input schemas (Smithery)
+# A version that already has a tag is skipped, so pushing other changes is safe.
+#
+# Optional, off until enabled (see PUBLISHING.md):
+#   repo variable PUBLISH_NPM=true           -> npm publish via npm Trusted Publishing (OIDC, no token)
+#   repo variable PUBLISH_MCP_REGISTRY=true  -> mcp-publisher publish via GitHub OIDC (no token)
+name: Release
+
+on:
+  push:
+    branches: [main]
+    paths: [package.json]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      created: ${{ steps.version.outputs.created }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - id: version
+        name: Read version; skip if already tagged
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          if git rev-parse -q --verify "refs/tags/v$VERSION" >/dev/null; then
+            echo "v$VERSION is already released; nothing to do."
+            echo "created=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "created=true" >> "$GITHUB_OUTPUT"
+          fi
+      - if: steps.version.outputs.created == 'true'
+        run: npm ci
+      - if: steps.version.outputs.created == 'true'
+        run: npm test
+      - if: steps.version.outputs.created == 'true'
+        name: Build both bundles
+        run: npm run build:mcpb
+      - if: steps.version.outputs.created == 'true'
+        name: manifest.json must be committed as generated
+        run: git diff --exit-code manifest.json || (echo "::error::manifest.json is stale. Run 'npm run build:mcpb' and commit it." && exit 1)
+      - if: steps.version.outputs.created == 'true'
+        name: Tag and publish the GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          gh release create "v$VERSION" \
+            "dist/webdata-tools-mcp-$VERSION.mcpb" \
+            "dist/webdata-tools-mcp-$VERSION.smithery.mcpb" \
+            --target "$GITHUB_SHA" \
+            --title "v$VERSION" \
+            --generate-notes
+
+  npm:
+    needs: release
+    if: needs.release.outputs.created == 'true' && vars.PUBLISH_NPM == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org
+      # Trusted Publishing needs a recent npm CLI.
+      - run: npm install -g npm@latest
+      - run: npm ci
+      - run: npm publish --provenance --access public
+
+  mcp-registry:
+    needs: [release, npm]
+    # Runs after npm (the registry checks the npm package exists), or alone when npm publishing is off.
+    if: always() && needs.release.outputs.created == 'true' && vars.PUBLISH_MCP_REGISTRY == 'true' && needs.npm.result != 'failure'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install mcp-publisher
+        run: |
+          OS=$(uname -s | tr '[:upper:]' '[:lower:]'); ARCH=$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/')
+          curl -fsSL "https://github.com/modelcontextprotocol/registry/releases/latest/download/mcp-publisher_${OS}_${ARCH}.tar.gz" | tar xz mcp-publisher
+      - run: ./mcp-publisher login github-oidc
+      - run: ./mcp-publisher publish
