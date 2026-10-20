@@ -249,12 +249,13 @@ export const TOOLS = [
   {
     name: 'search_german_property_listings',
     actor: 'tacps126/immobilienscout24-scraper',
-    title: 'Search German property listings (ImmoScout24)',
+    title: 'Search German and Austrian property listings (ImmoScout24)',
     price: 'about $0.001 per listing',
     description:
-      'Apartments and houses for rent or sale in Germany: price, rent, area, rooms, address with coordinates, energy class, features, agent, photos and dates. Germany only.',
+      'Apartments and houses for rent or sale in Germany or Austria: price, rent, area, rooms, address with coordinates, energy class, features, agent, photos and dates. Not Switzerland.',
     shape: {
-      locations: strings('Cities, districts or regions in plain words, e.g. ["Berlin","München Schwabing"].'),
+      country: z.enum(['de', 'at']).default('de').describe('de = Germany (immobilienscout24.de), at = Austria (immobilienscout24.at).'),
+      locations: strings('Cities, districts or regions in plain words, e.g. ["Berlin","München Schwabing"]; in Austria a city or federal state, e.g. ["Wien","Tirol"].'),
       offer_type: z.enum(['rent', 'buy']).default('rent').describe('Rent or buy listings.'),
       property_type: z.enum(['apartment', 'house']).default('apartment').describe('Apartments or houses.'),
       min_price: z.number().optional().describe('Minimum price in EUR (monthly rent or purchase price).'),
@@ -265,6 +266,7 @@ export const TOOLS = [
     },
     map: (a) =>
       clean({
+        country: a.country,
         locations: a.locations,
         offerType: a.offer_type,
         propertyType: a.property_type,

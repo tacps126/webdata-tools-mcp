@@ -8,7 +8,7 @@
 
 An [MCP](https://modelcontextprotocol.io) server that gives AI agents ten web-data tools: job
 postings, hiring signals, Google News, Trustpilot and app-store reviews, Reddit mentions, website
-contacts, German property listings and Shopify products.
+contacts, German and Austrian property listings and Shopify products.
 
 Each tool runs a ready-made [Apify](https://apify.com/tacps126) Actor and returns clean JSON. You
 pay Apify per result (about $1–3 per 1,000 results); there is no subscription and nothing is sent
@@ -26,7 +26,7 @@ anywhere except Apify.
 | `get_app_reviews` | App Store and Google Play reviews | $0.20 / 1,000 reviews | [app-reviews](https://apify.com/tacps126/app-reviews) |
 | `search_reddit` | Reddit posts and comments by keyword or subreddit | $1 / 1,000 items | [reddit-monitor](https://apify.com/tacps126/reddit-monitor) |
 | `find_website_contacts` | Emails, phones, socials from websites | $2 / 1,000 sites with contacts | [contact-details](https://apify.com/tacps126/contact-details) |
-| `search_german_property_listings` | Rent/buy listings in Germany (ImmoScout24) | $1 / 1,000 listings | [immobilienscout24-scraper](https://apify.com/tacps126/immobilienscout24-scraper) |
+| `search_german_property_listings` | Rent/buy listings in Germany and Austria (ImmoScout24) | $1 / 1,000 listings | [immobilienscout24-scraper](https://apify.com/tacps126/immobilienscout24-scraper) |
 | `get_shopify_products` | Prices, discounts, stock, variants from Shopify stores | $1 / 1,000 products | [shopify-products](https://apify.com/tacps126/shopify-products) |
 
 Every tool also takes an optional `extra_input` object for any other field the Actor documents.

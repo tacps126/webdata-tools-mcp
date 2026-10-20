@@ -185,6 +185,7 @@
     "debug"
   ],
   "tacps126/immobilienscout24-scraper": [
+    "country",
     "locations",
     "propertyType",
     "offerType",
