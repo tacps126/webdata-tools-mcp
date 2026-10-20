@@ -1,17 +1,16 @@
 # Publishing a release
 
-One version goes to several places. GitHub Releases are automatic. npm, the MCP Registry and Smithery are automatic once you switch them on (step 0); until then they are manual. The directories are manual.
+One version goes to several places. GitHub Releases are automatic. npm and the MCP Registry are automatic once you switch them on (step 0); until then they are manual. The directories are manual.
 
-## 0. One-time setup: let CI publish to npm, the MCP Registry and Smithery
+## 0. One-time setup: let CI publish to npm and the MCP Registry
 
 | Target | What to set up | Where |
 |---|---|---|
-| **Smithery** | Secret `SMITHERY_API_KEY` (an API key from your Smithery account settings) | GitHub → Settings → Secrets and variables → Actions → **Secrets** |
 | **npm** | 1. Trusted Publisher on npmjs.com: package `webdata-tools-mcp` → Settings → Trusted Publisher → GitHub Actions; owner `tacps126`, repository `webdata-tools-mcp`, workflow `release.yml`. 2. Variable `PUBLISH_NPM` = `true` | npmjs.com, then GitHub → … → **Variables** |
 | **MCP Registry** | Variable `PUBLISH_MCP_REGISTRY` = `true`. Nothing else: the workflow proves the `io.github.tacps126` namespace with GitHub's OIDC identity | GitHub → … → **Variables** |
 
 Notes:
-- Smithery runs whenever the `SMITHERY_API_KEY` secret exists. A `PUBLISH_SMITHERY` entry isn't needed; delete it if you added one.
+- Smithery is no longer published to (see step 4). Delete the `SMITHERY_API_KEY` and `PUBLISH_SMITHERY` secrets.
 - Variables and secrets are different lists in GitHub. `PUBLISH_NPM` and `PUBLISH_MCP_REGISTRY` must be **Variables**, because workflows can't read secrets in the conditions that decide whether a job runs.
 - npm Trusted Publishing needs no token: npm trusts this repo's `release.yml` and adds a provenance badge. If your npm account requires approval for publishes, approve it on npmjs.com when the job runs.
 - Without these, publish by hand (steps 3 and 4).
@@ -46,11 +45,10 @@ Notes:
 2. fails if the committed `manifest.json` is stale;
 3. creates the tag `vX.Y.Z` and a **GitHub Release** with two files:
    - `webdata-tools-mcp-X.Y.Z.mcpb`: the MCP Bundle. Claude Desktop installs it with one click.
-   - `webdata-tools-mcp-X.Y.Z.smithery.mcpb`: the same files with per-tool input schemas. Smithery needs those schemas, but the official MCPB validator rejects them, hence two files.
+   - `webdata-tools-mcp-X.Y.Z.smithery.mcpb`: the same files with per-tool input schemas. Smithery used those schemas, but the official MCPB validator rejects them, hence two files.
 4. Publishes to whatever step 0 set up:
    - `npm publish --provenance`
    - then `mcp-publisher publish`
-   - and `smithery mcp publish` of the `.smithery.mcpb` file
 
 A version that is already tagged is skipped. To re-run by hand, use **Actions → Release → Run workflow**.
 
@@ -72,19 +70,9 @@ mcp-publisher publish
 
 `npm publish` asks for your passkey.
 
-## 4. Smithery (when CI publishing is off)
+## 4. Smithery (no longer updated)
 
-Smithery has no web upload; publish with its CLI. You are already logged in on this machine; otherwise run `npx -y @smithery/cli@latest auth login` first.
-
-```bash
-npm run build:mcpb
-```
-
-```bash
-npx -y @smithery/cli@latest mcp publish dist/webdata-tools-mcp-X.Y.Z.smithery.mcpb -n tacps126/webdata-tools-mcp
-```
-
-Use the **`.smithery.mcpb`** file, not the plain `.mcpb`. It carries the per-tool input schemas Smithery needs for its tool forms and score. The same file is attached to each GitHub Release.
+Smithery stopped accepting server updates in October 2026: `smithery mcp publish` answers `403 Updating servers has been removed`, and its CLI, API and API keys shut down on 31 October 2026 (smithery.ai/future). The smithery.ai directory stays online (run by Arcade.dev), so the existing listing remains but stays at the last version Smithery accepted. Nothing to do per release. The `.smithery.mcpb` bundle is still attached to releases for any client that wants per-tool schemas.
 
 ## 5. Directories and lists
 
@@ -93,7 +81,7 @@ Use the **`.smithery.mcpb`** file, not the plain `.mcpb`. It carries the per-too
 | GitHub Releases | CI, every version | Automatic |
 | npm | CI (if enabled) or `npm publish` | Every version |
 | Official MCP Registry | CI (if enabled) or `mcp-publisher publish` | Every version. Description ≤ 100 characters |
-| Smithery | CI (if enabled) or `smithery mcp publish` of `.smithery.mcpb` | Every version (step 4) |
+| Smithery | Frozen: Smithery no longer accepts updates (step 4) | Nothing to do |
 | Glama | Syncs from the GitHub repo (`glama.json`) | Check the listing after a release; answering issues and regular commits raise its score |
 | MCPRush | Listed (mcprush.com/to/webdata-tools-mcp) | Check after releases; README card badge in place |
 | awesome-mcp-servers | PR `punkpeye/awesome-mcp-servers#16764` (fork branch `add-webdata-tools-mcp`), **open, not merged yet** | Edit the entry on the fork branch when the tool count changes |
@@ -113,7 +101,6 @@ The rows marked "reportedly", plus the submission flows of directories we haven'
 - [ ] `npm run build:mcpb`; `manifest.json` committed; pushed to `main`
 - [ ] GitHub Release `vX.Y.Z` has both `.mcpb` files
 - [ ] npm and MCP Registry published (CI or manual)
-- [ ] Smithery: `.smithery.mcpb` published (CI or CLI)
 - [ ] If the tool list or count changed: README, awesome-mcp-servers entry, and the site (`tacps126.github.io`: `MCP_TOOLS` in `build.mjs`, then `node build.mjs`)
 - [ ] If a listing was added or removed: README badges and **Listed on** section, this table, and the site's listing links (`build.mjs`: header links, MCP page pills, FAQ "Where is it listed?")
 

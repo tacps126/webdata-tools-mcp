@@ -1,14 +1,15 @@
 # Release: when package.json's version changes on main, tag vX.Y.Z and publish a GitHub Release
 # with both bundles, then publish to the registries that are set up:
 #   webdata-tools-mcp-X.Y.Z.mcpb           - MCP Bundle (Claude Desktop one-click install)
-#   webdata-tools-mcp-X.Y.Z.smithery.mcpb  - same files, manifest with per-tool input schemas (Smithery)
+#   webdata-tools-mcp-X.Y.Z.smithery.mcpb  - same files, manifest with per-tool input schemas
 # A version that already has a tag is not released again. To (re)publish an existing version,
 # run the workflow by hand ("Run workflow") with "republish" ticked.
 #
 # Publishing (see PUBLISHING.md):
-#   Smithery     - runs whenever the repo SECRET SMITHERY_API_KEY exists.
 #   npm          - repo VARIABLE PUBLISH_NPM=true + npm Trusted Publishing set up on npmjs.com (OIDC).
 #   MCP Registry - repo VARIABLE PUBLISH_MCP_REGISTRY=true (GitHub OIDC, nothing else to set up).
+# Smithery stopped accepting server updates in October 2026 (its CLI, API and keys shut down on
+# Oct 31), so there is no Smithery job; the existing listing stays in its directory.
 name: Release
 
 on:
@@ -18,7 +19,7 @@ on:
   workflow_dispatch:
     inputs:
       republish:
-        description: Publish the current version to npm / MCP Registry / Smithery even if it is already released
+        description: Publish the current version to npm / MCP Registry even if it is already released
         type: boolean
         default: false
 
@@ -113,30 +114,3 @@ jobs:
       - run: ./mcp-publisher login github-oidc
       - run: ./mcp-publisher publish
 
-  smithery:
-    needs: release
-    if: needs.release.outputs.publish == 'true'
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-    env:
-      # Secrets can't be tested in a job's `if`; the steps check this instead.
-      SMITHERY_API_KEY: ${{ secrets.SMITHERY_API_KEY }}
-    steps:
-      - if: env.SMITHERY_API_KEY == ''
-        run: echo "No SMITHERY_API_KEY secret; skipping Smithery."
-      - uses: actions/setup-node@v7
-        if: env.SMITHERY_API_KEY != ''
-        with:
-          node-version: 24
-      - name: Download the Smithery bundle from the release
-        if: env.SMITHERY_API_KEY != ''
-        env:
-          GH_TOKEN: ${{ github.token }}
-          VERSION: ${{ needs.release.outputs.version }}
-        run: gh release download "v$VERSION" --repo "$GITHUB_REPOSITORY" --pattern "*.smithery.mcpb"
-      - name: Publish to Smithery
-        if: env.SMITHERY_API_KEY != ''
-        env:
-          VERSION: ${{ needs.release.outputs.version }}
-        run: npx -y @smithery/cli@latest mcp publish "webdata-tools-mcp-$VERSION.smithery.mcpb" -n tacps126/webdata-tools-mcp
