@@ -2,22 +2,21 @@
 
 One version goes to several places. GitHub Releases are automatic. npm, the MCP Registry and Smithery are automatic once you switch them on (step 0); until then they are manual. The directories are manual.
 
-## 0. One-time setup (optional): let CI publish to npm, the MCP Registry and Smithery
+## 0. One-time setup: let CI publish to npm, the MCP Registry and Smithery
 
-The `Release` workflow can publish to npm and the MCP Registry without any stored token, using GitHub's OIDC identity. Smithery needs an API key.
+| Target | What to set up | Where |
+|---|---|---|
+| **Smithery** | Secret `SMITHERY_API_KEY` (an API key from your Smithery account settings) | GitHub → Settings → Secrets and variables → Actions → **Secrets** |
+| **npm** | 1. Trusted Publisher on npmjs.com: package `webdata-tools-mcp` → Settings → Trusted Publisher → GitHub Actions; owner `tacps126`, repository `webdata-tools-mcp`, workflow `release.yml`. 2. Variable `PUBLISH_NPM` = `true` | npmjs.com, then GitHub → … → **Variables** |
+| **MCP Registry** | Variable `PUBLISH_MCP_REGISTRY` = `true`. Nothing else: the workflow proves the `io.github.tacps126` namespace with GitHub's OIDC identity | GitHub → … → **Variables** |
 
-1. **npm Trusted Publishing:**
-   1. On npmjs.com, open the package `webdata-tools-mcp`, then **Settings → Trusted Publisher → GitHub Actions**.
-   2. Organization or user: `tacps126`. Repository: `webdata-tools-mcp`. Workflow filename: `release.yml`.
-   3. Save.
-2. **MCP Registry:** nothing to configure. The `io.github.tacps126/...` namespace is proved by the workflow running in `github.com/tacps126`.
-3. In the GitHub repo, open **Settings → Secrets and variables → Actions → Variables** and add:
-   - `PUBLISH_NPM` = `true`
-   - `PUBLISH_MCP_REGISTRY` = `true`
-   - `PUBLISH_SMITHERY` = `true`
-4. **Smithery:** create an API key in your Smithery account settings. In the GitHub repo, open **Settings → Secrets and variables → Actions → Secrets** and add `SMITHERY_API_KEY` with that key. The CLI reads `SMITHERY_API_KEY`.
+Notes:
+- Smithery runs whenever the `SMITHERY_API_KEY` secret exists. A `PUBLISH_SMITHERY` entry isn't needed; delete it if you added one.
+- Variables and secrets are different lists in GitHub. `PUBLISH_NPM` and `PUBLISH_MCP_REGISTRY` must be **Variables**, because workflows can't read secrets in the conditions that decide whether a job runs.
+- npm Trusted Publishing needs no token: npm trusts this repo's `release.yml` and adds a provenance badge. If your npm account requires approval for publishes, approve it on npmjs.com when the job runs.
+- Without these, publish by hand (steps 3 and 4).
 
-Each job runs only when its variable is set; otherwise you publish by hand (steps 3 and 4).
+**Publish an existing version** (e.g. after adding the setup above): Actions → Release → **Run workflow**, tick **republish**. The GitHub Release isn't recreated; only the publish jobs run.
 
 ## 1. Prepare the version (on your machine)
 
@@ -48,7 +47,7 @@ Each job runs only when its variable is set; otherwise you publish by hand (step
 3. creates the tag `vX.Y.Z` and a **GitHub Release** with two files:
    - `webdata-tools-mcp-X.Y.Z.mcpb`: the MCP Bundle. Claude Desktop installs it with one click.
    - `webdata-tools-mcp-X.Y.Z.smithery.mcpb`: the same files with per-tool input schemas. Smithery needs those schemas, but the official MCPB validator rejects them, hence two files.
-4. If enabled:
+4. Publishes to whatever step 0 set up:
    - `npm publish --provenance`
    - then `mcp-publisher publish`
    - and `smithery mcp publish` of the `.smithery.mcpb` file

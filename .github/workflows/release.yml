@@ -1,14 +1,14 @@
-# Release: when package.json's version changes on main (or on a manual run), tag vX.Y.Z and publish
-# a GitHub Release with both bundles:
+# Release: when package.json's version changes on main, tag vX.Y.Z and publish a GitHub Release
+# with both bundles, then publish to the registries that are set up:
 #   webdata-tools-mcp-X.Y.Z.mcpb           - MCP Bundle (Claude Desktop one-click install)
 #   webdata-tools-mcp-X.Y.Z.smithery.mcpb  - same files, manifest with per-tool input schemas (Smithery)
-# A version that already has a tag is skipped, so pushing other changes is safe.
+# A version that already has a tag is not released again. To (re)publish an existing version,
+# run the workflow by hand ("Run workflow") with "republish" ticked.
 #
-# Optional, off until enabled (see PUBLISHING.md):
-#   repo variable PUBLISH_NPM=true           -> npm publish via npm Trusted Publishing (OIDC, no token)
-#   repo variable PUBLISH_MCP_REGISTRY=true  -> mcp-publisher publish via GitHub OIDC (no token)
-#   repo variable PUBLISH_SMITHERY=true      -> smithery mcp publish of the .smithery.mcpb
-#                                               (needs repo secret SMITHERY_API_KEY)
+# Publishing (see PUBLISHING.md):
+#   Smithery     - runs whenever the repo SECRET SMITHERY_API_KEY exists.
+#   npm          - repo VARIABLE PUBLISH_NPM=true + npm Trusted Publishing set up on npmjs.com (OIDC).
+#   MCP Registry - repo VARIABLE PUBLISH_MCP_REGISTRY=true (GitHub OIDC, nothing else to set up).
 name: Release
 
 on:
@@ -16,6 +16,11 @@ on:
     branches: [main]
     paths: [package.json]
   workflow_dispatch:
+    inputs:
+      republish:
+        description: Publish the current version to npm / MCP Registry / Smithery even if it is already released
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -26,24 +31,29 @@ jobs:
     outputs:
       version: ${{ steps.version.outputs.version }}
       created: ${{ steps.version.outputs.created }}
+      publish: ${{ steps.version.outputs.publish }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
-          node-version: 22
+          node-version: 24
           cache: npm
       - id: version
-        name: Read version; skip if already tagged
+        name: Read version; skip the release if already tagged
+        env:
+          REPUBLISH: ${{ inputs.republish }}
         run: |
           VERSION=$(node -p "require('./package.json').version")
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
           if git rev-parse -q --verify "refs/tags/v$VERSION" >/dev/null; then
-            echo "v$VERSION is already released; nothing to do."
+            echo "v$VERSION is already released."
             echo "created=false" >> "$GITHUB_OUTPUT"
+            if [ "$REPUBLISH" = "true" ]; then echo "publish=true" >> "$GITHUB_OUTPUT"; else echo "publish=false" >> "$GITHUB_OUTPUT"; fi
           else
             echo "created=true" >> "$GITHUB_OUTPUT"
+            echo "publish=true" >> "$GITHUB_OUTPUT"
           fi
       - if: steps.version.outputs.created == 'true'
         run: npm ci
@@ -70,32 +80,32 @@ jobs:
 
   npm:
     needs: release
-    if: needs.release.outputs.created == 'true' && vars.PUBLISH_NPM == 'true'
+    if: needs.release.outputs.publish == 'true' && vars.PUBLISH_NPM == 'true'
     runs-on: ubuntu-latest
     permissions:
       contents: read
       id-token: write
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
-          node-version: 22
+          node-version: 24
           registry-url: https://registry.npmjs.org
-      # Trusted Publishing needs a recent npm CLI.
+      # Trusted Publishing (OIDC) needs npm 11.5.1 or newer.
       - run: npm install -g npm@latest
       - run: npm ci
       - run: npm publish --provenance --access public
 
   mcp-registry:
     needs: [release, npm]
-    # Runs after npm (the registry checks the npm package exists), or alone when npm publishing is off.
-    if: always() && needs.release.outputs.created == 'true' && vars.PUBLISH_MCP_REGISTRY == 'true' && needs.npm.result != 'failure'
+    # After npm (the registry checks the npm package exists), or alone when npm publishing is off.
+    if: always() && needs.release.outputs.publish == 'true' && vars.PUBLISH_MCP_REGISTRY == 'true' && needs.npm.result != 'failure'
     runs-on: ubuntu-latest
     permissions:
       contents: read
       id-token: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Install mcp-publisher
         run: |
           OS=$(uname -s | tr '[:upper:]' '[:lower:]'); ARCH=$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/')
@@ -105,18 +115,28 @@ jobs:
 
   smithery:
     needs: release
-    if: needs.release.outputs.created == 'true' && vars.PUBLISH_SMITHERY == 'true'
+    if: needs.release.outputs.publish == 'true'
     runs-on: ubuntu-latest
     permissions:
       contents: read
+    env:
+      # Secrets can't be tested in a job's `if`; the steps check this instead.
+      SMITHERY_API_KEY: ${{ secrets.SMITHERY_API_KEY }}
     steps:
+      - if: env.SMITHERY_API_KEY == ''
+        run: echo "No SMITHERY_API_KEY secret; skipping Smithery."
+      - uses: actions/setup-node@v7
+        if: env.SMITHERY_API_KEY != ''
+        with:
+          node-version: 24
       - name: Download the Smithery bundle from the release
+        if: env.SMITHERY_API_KEY != ''
         env:
           GH_TOKEN: ${{ github.token }}
           VERSION: ${{ needs.release.outputs.version }}
         run: gh release download "v$VERSION" --repo "$GITHUB_REPOSITORY" --pattern "*.smithery.mcpb"
       - name: Publish to Smithery
+        if: env.SMITHERY_API_KEY != ''
         env:
-          SMITHERY_API_KEY: ${{ secrets.SMITHERY_API_KEY }}
           VERSION: ${{ needs.release.outputs.version }}
         run: npx -y @smithery/cli@latest mcp publish "webdata-tools-mcp-$VERSION.smithery.mcpb" -n tacps126/webdata-tools-mcp
