@@ -8,7 +8,7 @@
 [![Smithery](https://img.shields.io/badge/Smithery-tacps126%2Fwebdata--tools--mcp-ff5601)](https://smithery.ai/servers/tacps126/webdata-tools-mcp)
 [![webdata-tools-mcp MCP server](https://glama.ai/mcp/servers/tacps126/webdata-tools-mcp/badges/score.svg)](https://glama.ai/mcp/servers/tacps126/webdata-tools-mcp)
 
-An [MCP](https://modelcontextprotocol.io) server that gives AI agents twelve web-data tools: job
+An [MCP](https://modelcontextprotocol.io) server that gives AI agents thirteen web-data tools: job
 postings, hiring signals, Google News, Trustpilot and app-store reviews, Reddit mentions, website
 contacts, German and Austrian property listings, Shopify products, trade-show exhibitor lists and
 upcoming events.
@@ -25,13 +25,14 @@ anywhere except Apify.
 | `find_hiring_companies` | Which companies are hiring for given roles (buying-intent signal) | 1¢ per company with a signal | [hiring-signals](https://apify.com/tacps126/hiring-signals) |
 | `get_company_jobs` | All open jobs from career pages (Greenhouse, Lever, Ashby, Workday, …) | $1 / 1,000 jobs | [jobs-harvester](https://apify.com/tacps126/jobs-harvester) |
 | `search_indeed_jobs` | Indeed listings in 9 countries | $3 / 1,000 jobs | [indeed-jobs](https://apify.com/tacps126/indeed-jobs) |
+| `search_naukri_jobs` | Naukri.com jobs (India): full description, salary in rupees, experience, rating | $1.50 / 1,000 jobs | [naukri-jobs-scraper](https://apify.com/tacps126/naukri-jobs-scraper) |
 | `get_trustpilot_reviews` | Reviews, TrustScore and company profile | $0.50 / 1,000 reviews | [trustpilot-reviews](https://apify.com/tacps126/trustpilot-reviews) |
 | `get_app_reviews` | App Store and Google Play reviews | $0.20 / 1,000 reviews | [app-reviews](https://apify.com/tacps126/app-reviews) |
 | `search_reddit` | Reddit posts and comments by keyword or subreddit | $1 / 1,000 items | [reddit-monitor](https://apify.com/tacps126/reddit-monitor) |
 | `find_website_contacts` | Emails, phones, socials from websites | $2 / 1,000 sites with contacts | [contact-details](https://apify.com/tacps126/contact-details) |
 | `search_german_property_listings` | Rent/buy listings in Germany and Austria (ImmoScout24) | $1 / 1,000 listings | [immobilienscout24-scraper](https://apify.com/tacps126/immobilienscout24-scraper) |
 | `get_shopify_products` | Prices, discounts, stock, variants from Shopify stores | $1 / 1,000 products | [shopify-products](https://apify.com/tacps126/shopify-products) |
-| `get_trade_show_exhibitors` | Trade-show exhibitors: booth, email, phone, website, address (76 shows or any supported exhibitor-list link) | $2 / 1,000 exhibitors | [exhibition-scraper](https://apify.com/tacps126/exhibition-scraper) |
+| `get_trade_show_exhibitors` | Trade-show exhibitors: booth, email, phone, website, address (91 shows or any supported exhibitor-list link; changes-only monitoring) | $2 / 1,000 exhibitors | [exhibition-scraper](https://apify.com/tacps126/exhibition-scraper) |
 | `find_events` | Upcoming events from Luma, Eventbrite, Meetup: venue, organiser, hosts, tickets, attendees | $1 / 1,000 events | [events-scraper](https://apify.com/tacps126/events-scraper) |
 
 Every tool also takes an optional `extra_input` object for any other field the Actor documents.

@@ -146,6 +146,30 @@ export const TOOLS = [
     limit: (a) => a.max_items,
   },
   {
+    name: 'search_naukri_jobs',
+    actor: 'tacps126/naukri-jobs-scraper',
+    title: 'Search Naukri.com jobs (India)',
+    price: 'about $0.0015 per job',
+    description:
+      "Jobs from Naukri.com, India's largest job board, by keyword and city: title, company, AmbitionBox rating, experience range in years, skills, and (with details) the full description, salary in rupees, industry, department and qualifications.",
+    shape: {
+      query: z.string().min(1).describe('Job title, skill or company, e.g. "python developer".'),
+      location: z.string().optional().describe('City in India, e.g. "Bangalore", "Pune", "Delhi NCR". Empty = all of India.'),
+      date_posted_days: z.enum(['1', '3', '7', '15', '30']).optional().describe('Only jobs posted in the last N days.'),
+      include_details: z.boolean().default(true).describe('Open each job for the full description, salary, industry and qualifications. Off = faster, search-card fields only.'),
+      max_items: maxItems(30, 500),
+    },
+    map: (a) =>
+      clean({
+        queries: [a.query],
+        locations: a.location ? [a.location] : undefined,
+        datePosted: a.date_posted_days,
+        includeDetails: a.include_details,
+        maxItems: a.max_items,
+      }),
+    limit: (a) => a.max_items,
+  },
+  {
     name: 'get_trustpilot_reviews',
     actor: 'tacps126/trustpilot-reviews',
     title: 'Get Trustpilot reviews and company rating',
@@ -262,6 +286,10 @@ export const TOOLS = [
       max_price: z.number().optional().describe('Maximum price in EUR (monthly rent or purchase price).'),
       min_area: z.number().optional().describe('Minimum area in m2.'),
       min_rooms: z.number().optional().describe('Minimum number of rooms.'),
+      changes_only: z
+        .boolean()
+        .default(false)
+        .describe('Only listings that are new, changed (old and new price, rent, size, rooms) or removed since the last call with the same search. For price tracking on a schedule.'),
       max_items: maxItems(50),
     },
     map: (a) =>
@@ -274,6 +302,7 @@ export const TOOLS = [
         maxPrice: a.max_price,
         minArea: a.min_area,
         minRooms: a.min_rooms,
+        changesOnly: a.changes_only || undefined,
         maxItems: a.max_items,
       }),
     limit: (a) => a.max_items,
@@ -308,11 +337,15 @@ export const TOOLS = [
     title: 'Get trade show exhibitor lists (booths and contacts)',
     price: 'about $0.002 per exhibitor',
     description:
-      "Exhibitor lists of trade shows as B2B leads: company, booth and hall, email, phone, website, address, socials and categories. 76 built-in shows (e.g. medica, sema-show, nab-show, fabtech, ish, automechanika, wtm-london, world-health-expo) or any exhibitor-list link on Messe Frankfurt, Messe Düsseldorf, RX, Map Your Show, a2z / A2Z Connect, Swapcard or Corussoft; the link's own show and year are used. Contact coverage depends on what the organiser publishes.",
+      "Exhibitor lists of trade shows as B2B leads: company, booth and hall, email, phone, website, address, socials and categories. 91 built-in shows (e.g. medica, sema-show, nab-show, fabtech, ish, automechanika, wtm-london, orgatec, eurotier, wine-paris, biofach) or any exhibitor-list link or show homepage on Messe Frankfurt, Messe Düsseldorf, Koelnmesse, NürnbergMesse, Newfront/ExpoPlatform, RX, Map Your Show, a2z / A2Z Connect, Swapcard or Corussoft; the link's own show and year are used. Contact coverage depends on what the organiser publishes.",
     shape: {
       shows: z.array(z.string().min(1)).optional().describe('Built-in show ids, e.g. ["medica","sema-show"]. The Actor README lists all ids.'),
       urls: z.array(z.string().url()).optional().describe("Links to any show's exhibitor list or exhibitor search page (or its homepage)."),
       include_contacts: z.boolean().default(true).describe('Open each exhibitor profile for email, phone, website, address and socials. Off = names and booths only (faster).'),
+      changes_only: z
+        .boolean()
+        .default(false)
+        .describe('Only exhibitors that are new, changed (old and new booth, email, phone, website, address) or removed since the last call with the same shows. Removed ones need the whole list, so it ignores max_items for that.'),
       max_items: maxItems(50, 2000),
     },
     map: (a) =>
@@ -320,6 +353,7 @@ export const TOOLS = [
         exhibitionList: a.shows,
         startUrls: (a.urls ?? []).map((url) => ({ url })),
         includeDetails: a.include_contacts,
+        changesOnly: a.changes_only || undefined,
         maxResults: a.max_items,
       }),
     // max_items applies per show.
@@ -336,7 +370,7 @@ export const TOOLS = [
       searches: z.array(z.string().min(1)).optional().describe('Topics or keywords, e.g. ["AI","startup"].'),
       location: z.string().optional().describe('City in plain words (e.g. "London", "Bengaluru") or "online". Luma searches within a city.'),
       urls: z.array(z.string().url()).optional().describe('Luma city/category/calendar/event links, Eventbrite searches or events, Meetup search or group links, or any events page.'),
-      sources: z.array(z.enum(['luma', 'eventbrite'])).optional().describe('Sites searched for `searches` (default both). Meetup works through links.'),
+      sources: z.array(z.enum(['luma', 'eventbrite', 'meetup'])).optional().describe('Sites searched for `searches` (default all three). Meetup knows about 70 big cities by name; others as "City, CC" (e.g. "Lyon, FR").'),
       include_details: z.boolean().default(true).describe('Open each event for organiser, tickets and full description. Off = faster.'),
       max_items: maxItems(30, 500),
     },
@@ -352,7 +386,7 @@ export const TOOLS = [
     // max_items applies per link and per search on each site.
     limit: (a) =>
       a.max_items *
-      Math.max(1, (a.searches?.length ?? 0) * (a.sources?.length ?? 2) + (a.urls?.length ?? 0)),
+      Math.max(1, (a.searches?.length ?? 0) * (a.sources?.length ?? 3) + (a.urls?.length ?? 0)),
   },
 ];
 

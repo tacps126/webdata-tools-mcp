@@ -22,6 +22,7 @@ const SAMPLE = {
   get_shopify_products: { stores: ['allbirds.com'], only_on_sale: true },
   get_trade_show_exhibitors: { shows: ['medica'], urls: ['https://ish.messefrankfurt.com/frankfurt/en/exhibitor-search.html'], max_items: 20 },
   find_events: { searches: ['AI'], location: 'London', urls: ['https://luma.com/ai'], max_items: 10 },
+  search_naukri_jobs: { query: 'python developer', location: 'Bangalore', max_items: 5 },
 };
 
 test('every tool has a sample and a published Actor to map onto', () => {
@@ -159,5 +160,5 @@ test('find_events sends links as {url} objects and counts each search per site',
   const input = t.map(args);
   assert.deepEqual(input.startUrls, [{ url: 'https://luma.com/ai' }]);
   assert.equal(input.location, 'London');
-  assert.equal(t.limit(args), 30);
+  assert.equal(t.limit(args), 40);
 });
