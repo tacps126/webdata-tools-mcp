@@ -23,6 +23,11 @@ const SAMPLE = {
   get_trade_show_exhibitors: { shows: ['medica'], urls: ['https://ish.messefrankfurt.com/frankfurt/en/exhibitor-search.html'], max_items: 20 },
   find_events: { searches: ['AI'], location: 'London', urls: ['https://luma.com/ai'], max_items: 10 },
   search_naukri_jobs: { query: 'python developer', location: 'Bangalore', max_items: 5 },
+  find_remote_jobs: { title_includes: ['engineer'], countries: ['US'] },
+  search_startup_jobs: { role: 'software engineer', city: 'San Francisco' },
+  search_tech_jobs: { query: 'data engineer', location: 'New York' },
+  find_reddit_leads: { categories: ['CRM'], competitors: ['HubSpot'] },
+  analyze_shopify_stores: { stores: ['allbirds.com'] },
 };
 
 test('every tool has a sample and a published Actor to map onto', () => {
@@ -54,6 +59,10 @@ test('tools that need a source reject calls without one', () => {
   assert.match(hiring.check({ role_keywords: ['data'] }), /companies|searches/);
   const reddit = TOOLS.find((x) => x.name === 'search_reddit');
   assert.match(reddit.check({}), /keywords or subreddits/);
+  const jobs = TOOLS.find((x) => x.name === 'get_company_jobs');
+  assert.match(jobs.check({}), /career_page_urls or company_names/);
+  const leads = TOOLS.find((x) => x.name === 'find_reddit_leads');
+  assert.match(leads.check({}), /categories or competitors/);
 });
 
 test('runActorSync sends token, limit and spend cap; parses items', async () => {

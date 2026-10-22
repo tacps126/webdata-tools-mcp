@@ -99,22 +99,98 @@ export const TOOLS = [
     title: 'Get all open jobs from company career pages',
     price: 'about $0.001 per job',
     description:
-      'All open jobs from company career pages in one normalized format (title, company, location, remote/hybrid, seniority, salary, apply URL, posted date). Paste career-page URLs from Greenhouse, Lever, Ashby, Workable, SmartRecruiters, Recruitee, Workday, Personio or Teamtailor; the board type is detected automatically.',
+      'All open jobs from companies in one normalized format (title, company, location with country code, remote/hybrid, seniority, salary, skills, apply URL, posted date). Give career-page URLs (the company\'s own careers page or its job board) or just company names; 13 job-board systems are supported (Greenhouse, Lever, Ashby, Workday, SmartRecruiters, Workable, Rippling, BambooHR, Pinpoint, Breezy, Recruitee, Personio, Teamtailor) and found automatically.',
     shape: {
-      career_page_urls: strings('Career page URLs, e.g. "https://jobs.lever.co/spotify".'),
+      career_page_urls: z.array(z.string()).optional().describe('Career page URLs, e.g. "https://www.figma.com/careers" or "https://jobs.lever.co/spotify".'),
+      company_names: z.array(z.string()).optional().describe('Company names, e.g. ["Datadog", "Ramp"]; each is looked up on every supported job-board system.'),
       title_includes: z.array(z.string()).optional().describe('Keep jobs whose title contains any of these.'),
       location_includes: z.array(z.string()).optional().describe('Keep jobs in these locations.'),
+      countries: z.array(z.string()).optional().describe('Keep jobs in these countries: ISO codes ("US", "DE") or names.'),
       remote_only: z.boolean().optional().describe('Only remote jobs.'),
       posted_within_days: z.number().int().min(1).max(365).optional().describe('Only jobs posted in the last N days.'),
       max_items: maxItems(50),
     },
+    check: (a) =>
+      (a.career_page_urls?.length || a.company_names?.length)
+        ? null
+        : 'Provide at least one of: career_page_urls or company_names.',
     map: (a) =>
       clean({
         careerPageUrls: a.career_page_urls,
+        companyNames: a.company_names,
         titleIncludes: a.title_includes,
         locationIncludes: a.location_includes,
+        countries: a.countries,
         remoteOnly: a.remote_only,
         postedWithinDays: a.posted_within_days,
+        maxItems: a.max_items,
+      }),
+    limit: (a) => a.max_items,
+  },
+  {
+    name: 'find_remote_jobs',
+    actor: 'tacps126/remote-jobs-scraper',
+    title: 'Find remote jobs from company career sites and remote-job feeds',
+    price: 'about $0.002 per job',
+    description:
+      'Remote jobs straight from employers: hundreds of company job boards plus the Remote OK, Jobicy, Working Nomads and Himalayas feeds, keeping only roles the posting marks as remote. Normalized title, company, country, seniority, salary and skills; each job links to its source.',
+    shape: {
+      title_includes: z.array(z.string()).optional().describe('Keep jobs whose title contains any of these, e.g. ["engineer"].'),
+      countries: z.array(z.string()).optional().describe('Keep jobs open to these countries: ISO codes ("US", "CA") or names.'),
+      posted_within_days: z.number().int().min(1).max(365).optional().describe('Only jobs posted in the last N days.'),
+      min_annual_salary: z.number().int().min(0).optional().describe('Minimum yearly pay in the posting\'s currency (jobs without pay are kept).'),
+      max_items: maxItems(50),
+    },
+    map: (a) =>
+      clean({
+        titleIncludes: a.title_includes,
+        countries: a.countries,
+        postedWithinDays: a.posted_within_days,
+        minAnnualSalary: a.min_annual_salary,
+        maxItems: a.max_items,
+      }),
+    limit: (a) => a.max_items,
+  },
+  {
+    name: 'search_startup_jobs',
+    actor: 'tacps126/wellfound-jobs-scraper',
+    title: 'Search startup jobs on Wellfound (AngelList Talent)',
+    price: 'about $0.002 per job',
+    description:
+      'Startup jobs from Wellfound by role and city, or remote: title, startup name, size and pitch, salary and equity range, years of experience, remote or on-site, apply link.',
+    shape: {
+      role: z.string().min(1).describe('The role, e.g. "software engineer", "product manager", "designer".'),
+      city: z.string().optional().describe('Optional city, e.g. "San Francisco", "New York", "London".'),
+      remote: z.boolean().default(false).describe('Only remote jobs (ignores city).'),
+      max_items: maxItems(50),
+    },
+    map: (a) =>
+      clean({
+        query: a.role,
+        location: a.remote ? undefined : a.city,
+        remote: a.remote || undefined,
+        maxItems: a.max_items,
+      }),
+    limit: (a) => a.max_items,
+  },
+  {
+    name: 'search_tech_jobs',
+    actor: 'tacps126/dice-jobs-scraper',
+    title: 'Search US tech jobs on Dice',
+    price: 'about $0.0006 per job',
+    description:
+      'US tech jobs from Dice by keyword and city: title, company, location, salary text, employer type (direct hire or recruiter), Easy Apply, remote / on-site / hybrid, posted and updated dates.',
+    shape: {
+      query: z.string().min(1).describe('What to search for, e.g. "data engineer", "java developer".'),
+      location: z.string().optional().describe('Optional US city or state, e.g. "Austin, TX".'),
+      remote: z.boolean().default(false).describe('Only remote jobs.'),
+      max_items: maxItems(50, 300),
+    },
+    map: (a) =>
+      clean({
+        query: a.query,
+        location: a.location,
+        remote: a.remote || undefined,
         maxItems: a.max_items,
       }),
     limit: (a) => a.max_items,
@@ -249,6 +325,35 @@ export const TOOLS = [
     limit: (a) => a.max_items,
   },
   {
+    name: 'find_reddit_leads',
+    actor: 'tacps126/reddit-lead-finder',
+    title: 'Find buying-intent posts on Reddit',
+    price: 'about $0.002 per lead plus $0.0001 per post read',
+    description:
+      'Reddit posts and comments where people ask for a tool like yours, look for an alternative to a competitor, compare options or complain. Each lead is tagged with its intent (recommendation_request, alternative_seeking, comparison, pain_point) and the phrase that showed it.',
+    shape: {
+      categories: z.array(z.string()).optional().describe('What you sell, as buyers say it, e.g. ["CRM", "invoice software"].'),
+      competitors: z.array(z.string()).optional().describe('Products whose users you want, e.g. ["HubSpot"].'),
+      subreddits: z.array(z.string()).optional().describe('Only search these subreddits, e.g. ["smallbusiness", "SaaS"].'),
+      time: z.enum(['day', 'week', 'month', 'year']).default('month').describe('How far back to look.'),
+      max_items: maxItems(30, 300),
+    },
+    check: (a) =>
+      (a.categories?.length || a.competitors?.length)
+        ? null
+        : 'Provide at least one of: categories or competitors.',
+    map: (a) =>
+      clean({
+        keywords: a.categories,
+        competitors: a.competitors,
+        subreddits: a.subreddits,
+        time: a.time,
+        maxItems: a.max_items,
+        maxPostsPerSource: 50,
+      }),
+    limit: (a) => a.max_items,
+  },
+  {
     name: 'find_website_contacts',
     actor: 'tacps126/contact-details',
     title: 'Find emails, phones and social profiles on websites',
@@ -327,6 +432,28 @@ export const TOOLS = [
         keywords: a.keywords,
         onlyOnSale: a.only_on_sale || undefined,
         onlyAvailable: a.only_available || undefined,
+        maxItems: a.max_items,
+      }),
+    limit: (a) => a.max_items,
+  },
+  {
+    name: 'analyze_shopify_stores',
+    actor: 'tacps126/shopify-store-analyzer',
+    title: 'Analyze Shopify stores (location, catalog, contacts)',
+    price: 'about $0.004 per store',
+    description:
+      'For each Shopify store: name, city and country, currency, product and collection counts, a catalog snapshot (price range and median, share on sale and in stock, top brands and product types, newest product) and its e-mails, phones and social profiles. Non-Shopify sites are skipped for free.',
+    shape: {
+      stores: strings('Store websites or domains, e.g. ["allbirds.com", "gymshark.com"].'),
+      include_contacts: z.boolean().default(true).describe('Also read the store\'s contact pages for e-mails, phones and socials.'),
+      countries: z.array(z.string()).optional().describe('Keep only stores based in these countries (ISO codes or names).'),
+      max_items: maxItems(20, 1000),
+    },
+    map: (a) =>
+      clean({
+        startUrls: a.stores,
+        includeContacts: a.include_contacts,
+        countries: a.countries,
         maxItems: a.max_items,
       }),
     limit: (a) => a.max_items,

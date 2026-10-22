@@ -8,10 +8,11 @@
 [![Smithery](https://img.shields.io/badge/Smithery-tacps126%2Fwebdata--tools--mcp-ff5601)](https://smithery.ai/servers/tacps126/webdata-tools-mcp)
 [![webdata-tools-mcp MCP server](https://glama.ai/mcp/servers/tacps126/webdata-tools-mcp/badges/score.svg)](https://glama.ai/mcp/servers/tacps126/webdata-tools-mcp)
 
-An [MCP](https://modelcontextprotocol.io) server that gives AI agents thirteen web-data tools: job
-postings, hiring signals, Google News, Trustpilot and app-store reviews, Reddit mentions, website
-contacts, German and Austrian property listings, Shopify products, trade-show exhibitor lists and
-upcoming events.
+An [MCP](https://modelcontextprotocol.io) server that gives AI agents eighteen web-data tools: job
+postings (company career sites, remote jobs, startups on Wellfound, US tech jobs on Dice, Indeed,
+Naukri), hiring signals, Google News, Trustpilot and app-store reviews, Reddit mentions and
+buying-intent leads, website contacts, German and Austrian property listings, Shopify products and
+store analysis, trade-show exhibitor lists and upcoming events.
 
 Each tool runs a ready-made [Apify](https://apify.com/tacps126) Actor and returns clean JSON. You
 pay Apify per result (about $1–3 per 1,000 results); there is no subscription and nothing is sent
@@ -23,15 +24,20 @@ anywhere except Apify.
 |------|-----------------|----------------|-------|
 | `search_google_news` | News articles with the publisher's real URL, date, related coverage | $2 / 1,000 articles | [google-news](https://apify.com/tacps126/google-news) |
 | `find_hiring_companies` | Which companies are hiring for given roles (buying-intent signal) | 1¢ per company with a signal | [hiring-signals](https://apify.com/tacps126/hiring-signals) |
-| `get_company_jobs` | All open jobs from career pages (Greenhouse, Lever, Ashby, Workday, …) | $1 / 1,000 jobs | [jobs-harvester](https://apify.com/tacps126/jobs-harvester) |
+| `get_company_jobs` | All open jobs from career pages or company names (13 job-board systems: Greenhouse, Lever, Ashby, Workday, Rippling, …) | $1 / 1,000 jobs | [jobs-harvester](https://apify.com/tacps126/jobs-harvester) |
+| `find_remote_jobs` | Remote jobs from company job boards plus the Remote OK, Jobicy, Working Nomads and Himalayas feeds | $2 / 1,000 jobs | [remote-jobs-scraper](https://apify.com/tacps126/remote-jobs-scraper) |
+| `search_startup_jobs` | Startup jobs on Wellfound by role and city: salary and equity, startup size and pitch | $2 / 1,000 jobs | [wellfound-jobs-scraper](https://apify.com/tacps126/wellfound-jobs-scraper) |
+| `search_tech_jobs` | US tech jobs on Dice: salary, employer type, Easy Apply, remote flag | $0.55 / 1,000 jobs | [dice-jobs-scraper](https://apify.com/tacps126/dice-jobs-scraper) |
 | `search_indeed_jobs` | Indeed listings in 9 countries | $3 / 1,000 jobs | [indeed-jobs](https://apify.com/tacps126/indeed-jobs) |
 | `search_naukri_jobs` | Naukri.com jobs (India): full description, salary in rupees, experience, rating | $1.50 / 1,000 jobs | [naukri-jobs-scraper](https://apify.com/tacps126/naukri-jobs-scraper) |
 | `get_trustpilot_reviews` | Reviews, TrustScore and company profile | $0.50 / 1,000 reviews | [trustpilot-reviews](https://apify.com/tacps126/trustpilot-reviews) |
 | `get_app_reviews` | App Store and Google Play reviews | $0.20 / 1,000 reviews | [app-reviews](https://apify.com/tacps126/app-reviews) |
-| `search_reddit` | Reddit posts and comments by keyword or subreddit | $1 / 1,000 items | [reddit-monitor](https://apify.com/tacps126/reddit-monitor) |
+| `search_reddit` | Reddit posts and comments by keyword or subreddit, tagged with buying intent | $1 / 1,000 items | [reddit-monitor](https://apify.com/tacps126/reddit-monitor) |
+| `find_reddit_leads` | Reddit posts asking for a tool like yours, seeking a competitor alternative, comparing or complaining | $2 / 1,000 leads + $0.10 / 1,000 posts read | [reddit-lead-finder](https://apify.com/tacps126/reddit-lead-finder) |
 | `find_website_contacts` | Emails, phones, socials from websites | $2 / 1,000 sites with contacts | [contact-details](https://apify.com/tacps126/contact-details) |
 | `search_german_property_listings` | Rent/buy listings in Germany and Austria (ImmoScout24) | $1 / 1,000 listings | [immobilienscout24-scraper](https://apify.com/tacps126/immobilienscout24-scraper) |
 | `get_shopify_products` | Prices, discounts, stock, variants from Shopify stores | $1 / 1,000 products | [shopify-products](https://apify.com/tacps126/shopify-products) |
+| `analyze_shopify_stores` | Store location, currency, catalog size and snapshot, e-mails, phones, socials | $4 / 1,000 stores | [shopify-store-analyzer](https://apify.com/tacps126/shopify-store-analyzer) |
 | `get_trade_show_exhibitors` | Trade-show exhibitors: booth, email, phone, website, address (91 shows or any supported exhibitor-list link; changes-only monitoring) | $2 / 1,000 exhibitors | [exhibition-scraper](https://apify.com/tacps126/exhibition-scraper) |
 | `find_events` | Upcoming events from Luma, Eventbrite, Meetup: venue, organiser, hosts, tickets, attendees | $1 / 1,000 events | [events-scraper](https://apify.com/tacps126/events-scraper) |
 
@@ -78,6 +84,9 @@ Maintainers: how releases and directory listings are published is in [PUBLISHING
 ## Try it
 
 - "Which of these companies are hiring data engineers right now? https://boards.greenhouse.io/stripe, https://jobs.lever.co/spotify"
+- "Find remote senior engineer jobs open to people in Canada posted this week."
+- "Who on Reddit is looking for an alternative to HubSpot this month?"
+- "Analyze these Shopify stores and give me their country, product count and contact e-mail: allbirds.com, gymshark.com"
 - "Show the 1 and 2 star Trustpilot reviews of example.com from the last 30 days and group the complaints."
 - "Find news from the last 7 days about open-source LLM licensing, with the real publisher links."
 - "Get contact emails for these 20 agency websites." (use only for lawful business outreach)

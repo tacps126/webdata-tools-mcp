@@ -29,11 +29,11 @@ export function buildManifest({ withInputSchemas = false } = {}) {
   display_name: 'Web Data Tools',
   icon: 'icon.png',
   version: pkg.version,
-  description: 'Twelve web-data tools for agents: jobs, hiring signals, news, reviews, Reddit, contacts, real estate, Shopify, exhibitors, events.',
+  description: 'Eighteen web-data tools for agents: jobs, hiring signals, news, reviews, Reddit leads, contacts, real estate, Shopify, exhibitors, events.',
   long_description:
     'Runs ready-made Apify Actors (published by tacps126) on your own Apify account and returns clean JSON. ' +
-    'Covers job postings from career pages, LinkedIn and Indeed, hiring signals, Google News, Trustpilot and app-store reviews, ' +
-    'Reddit mentions, website contact details, German property listings, Shopify products, trade-show exhibitor lists and upcoming events. ' +
+    'Covers job postings from career pages, remote-job feeds, Wellfound, Dice, Indeed and Naukri, hiring signals, Google News, Trustpilot and app-store reviews, ' +
+    'Reddit mentions and buying-intent leads, website contact details, German property listings, Shopify products and store analysis, trade-show exhibitor lists and upcoming events. ' +
     'You pay Apify per result (about $1-3 per 1,000); every call has a spend cap.',
   author: { name: 'tacps126', email: 'tacps126@gmail.com', url: 'https://github.com/tacps126' },
   repository: { type: 'git', url: 'https://github.com/tacps126/webdata-tools-mcp' },
