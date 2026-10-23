@@ -12,7 +12,8 @@ An [MCP](https://modelcontextprotocol.io) server that gives AI agents twenty-one
 postings (company career sites, remote jobs, startups on Wellfound, US tech jobs on Dice, Indeed,
 Naukri), hiring signals, Google News, research papers and patents, field trends and idea validation, Trustpilot and app-store reviews, Reddit mentions and
 buying-intent leads, website contacts, German and Austrian property listings, Shopify products and
-store analysis, trade-show exhibitor lists and upcoming events.
+store analysis, trade-show exhibitor lists and upcoming events. Two ready-made prompts turn the research
+tools into an innovation analyst that works the same with any model.
 
 Each tool runs a ready-made [Apify](https://apify.com/tacps126) Actor and returns clean JSON. You
 pay Apify per result (about $1–3 per 1,000 results); there is no subscription and nothing is sent
@@ -34,9 +35,9 @@ anywhere except Apify.
 | `get_app_reviews` | App Store and Google Play reviews | $0.20 / 1,000 reviews | [app-reviews](https://apify.com/tacps126/app-reviews) |
 | `search_reddit` | Reddit posts and comments by keyword or subreddit, tagged with buying intent | $1 / 1,000 items | [reddit-monitor](https://apify.com/tacps126/reddit-monitor) |
 | `find_reddit_leads` | Reddit posts asking for a tool like yours, seeking a competitor alternative, comparing or complaining | $2 / 1,000 leads + $0.10 / 1,000 posts read | [reddit-lead-finder](https://apify.com/tacps126/reddit-lead-finder) |
-| `search_research` | Recent papers, preprints and patents from OpenAlex, arXiv, PubMed and Europe PMC, merged and newest first | $3 / 1,000 results | [research-radar](https://apify.com/tacps126/research-radar) |
-| `analyze_field` | A technology field's growth, momentum, leading countries, institutions and funders, rising topics | $0.03 / field | [innovation-radar](https://apify.com/tacps126/innovation-radar) |
-| `validate_idea` | How new or crowded an idea is, with the closest prior work | $0.03 / idea | [innovation-radar](https://apify.com/tacps126/innovation-radar) |
+| `search_research` | Papers, preprints and patents from OpenAlex, arXiv, PubMed and Europe PMC, merged; newest or most influential first, with field-normalized impact | $3 / 1,000 results | [research-radar](https://apify.com/tacps126/research-radar) |
+| `analyze_field` | A technology field's opportunity score with reasons, growth and momentum, industry participation and top companies, leading countries, institutions and funders, rising topics; several fields ranked | $0.03 / field | [innovation-radar](https://apify.com/tacps126/innovation-radar) |
+| `validate_idea` | How new or crowded an idea is, who is working on it, and the closest prior work | $0.03 / idea | [innovation-radar](https://apify.com/tacps126/innovation-radar) |
 | `find_website_contacts` | Emails, phones, socials from websites | $2 / 1,000 sites with contacts | [contact-details](https://apify.com/tacps126/contact-details) |
 | `search_german_property_listings` | Rent/buy listings in Germany and Austria (ImmoScout24) | $1 / 1,000 listings | [immobilienscout24-scraper](https://apify.com/tacps126/immobilienscout24-scraper) |
 | `get_shopify_products` | Prices, discounts, stock, variants from Shopify stores | $1 / 1,000 products | [shopify-products](https://apify.com/tacps126/shopify-products) |
