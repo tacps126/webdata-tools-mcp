@@ -27,6 +27,7 @@ const SAMPLE = {
   search_startup_jobs: { role: 'software engineer', city: 'San Francisco' },
   search_tech_jobs: { query: 'data engineer', location: 'New York' },
   find_reddit_leads: { categories: ['CRM'], competitors: ['HubSpot'] },
+  search_research: { queries: ['solid state battery'], posted_within_days: 30 },
   analyze_shopify_stores: { stores: ['allbirds.com'] },
 };
 

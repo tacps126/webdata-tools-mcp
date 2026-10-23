@@ -339,6 +339,25 @@
     "tenantId",
     "debug"
   ],
+  "tacps126/research-radar": [
+    "queries",
+    "sources",
+    "postedWithinDays",
+    "dateFrom",
+    "openAccessOnly",
+    "maxItemsPerSource",
+    "maxItems",
+    "onlyNew",
+    "stateKey",
+    "summarize",
+    "summaryLanguage",
+    "languages",
+    "aiProvider",
+    "aiApiKey",
+    "aiModel",
+    "aiBaseUrl",
+    "openalexApiKey"
+  ],
   "tacps126/contact-details": [
     "startUrls",
     "datasetId",

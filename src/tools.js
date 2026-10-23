@@ -356,6 +356,31 @@ export const TOOLS = [
     limit: (a) => a.max_items,
   },
   {
+    name: 'search_research',
+    actor: 'tacps126/research-radar',
+    title: 'Search papers, preprints and patents',
+    price: 'about $0.003 per result',
+    description:
+      'Recent papers, preprints and patents from OpenAlex, arXiv, PubMed and Europe PMC in one deduplicated, newest-first list: title, abstract, authors and affiliations, venue, DOI, PDF link, citations, open-access status, and for patents the number, applicants and IPC/CPC classes.',
+    shape: {
+      queries: strings('Topics, keywords or phrases, e.g. "solid state battery".'),
+      sources: z.array(z.enum(['openalex', 'arxiv', 'pubmed', 'europepmc', 'patents', 'crossref'])).optional().describe('Which sources to search. Default: openalex, arxiv, pubmed, europepmc, patents.'),
+      posted_within_days: z.number().int().min(1).max(3650).optional().describe('Only results published in the last N days.'),
+      open_access_only: z.boolean().default(false).describe('Only papers that are free to read.'),
+      max_items: maxItems(30, 500),
+    },
+    map: (a) =>
+      clean({
+        queries: a.queries,
+        sources: a.sources,
+        postedWithinDays: a.posted_within_days,
+        openAccessOnly: a.open_access_only,
+        maxItemsPerSource: Math.min(Math.max(a.max_items, 10), 100),
+        maxItems: a.max_items,
+      }),
+    limit: (a) => a.max_items,
+  },
+  {
     name: 'find_website_contacts',
     actor: 'tacps126/contact-details',
     title: 'Find emails, phones and social profiles on websites',
