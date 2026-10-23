@@ -103,6 +103,16 @@ export function buildManifest({ withInputSchemas = false } = {}) {
       outputSchema: outputSchemaJson(),
       annotations: annotationsOf(t),
     }));
+    // Smithery's registry wants MCP-style prompt arguments ({name, description, required});
+    // the MCPB manifest schema wants plain names, so only this copy carries objects.
+    m.prompts = PROMPTS.map((p) => ({
+      ...m.prompts.find((x) => x.name === p.name),
+      arguments: Object.entries(p.args).map(([name, schema]) => ({
+        name,
+        description: schema.description ?? name,
+        required: !schema.safeParse(undefined).success,
+      })),
+    }));
   }
   return m;
 }

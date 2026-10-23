@@ -56,8 +56,11 @@ export const PROMPTS = [
       audience: z.string().optional().describe('Who the analysis is for, e.g. "a seed-stage founder", "a corporate R&D team". Default: founders, R&D leaders and investors.'),
     },
     text: ({ fields, audience }) => {
-      const names = list(fields);
-      return `Call the analyze_field tool with fields ${JSON.stringify(names)} (one call for all of them; ${names.length > 1 ? 'the records come back ranked by opportunity score' : 'one record'}).
+      // A manifest template passes placeholders instead of values.
+      const template = String(fields).startsWith('${');
+      const names = template ? fields : JSON.stringify(list(fields));
+      const ranking = template || list(fields).length > 1 ? 'several fields come back ranked by opportunity score' : 'one record';
+      return `Call the analyze_field tool with fields ${names} (one call for all of them; ${ranking}).
 Then use only its records as the evidence.${audience ? `\nThe analysis is for ${audience}.` : ''}
 
 ${LANDSCAPE}
