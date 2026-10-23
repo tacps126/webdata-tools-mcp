@@ -381,6 +381,33 @@ export const TOOLS = [
     limit: (a) => a.max_items,
   },
   {
+    name: 'analyze_field',
+    actor: 'tacps126/innovation-radar',
+    title: 'Analyse a technology or research field',
+    price: 'about $0.03 per field',
+    description:
+      'A landscape of a technology or research field from open research data: works per year, growth and momentum (emerging, growing, mature, cooling), leading countries, institutions and funders, rising sub-topics, standout recent work and related patents.',
+    shape: {
+      fields: strings('Fields or technologies, e.g. "solid state battery", "CRISPR base editing".'),
+      years: z.number().int().min(2).max(40).default(10).describe('Years of history for the trend.'),
+    },
+    map: (a) => clean({ mode: 'landscape', fields: a.fields, years: a.years, topWorks: 10 }),
+    limit: (a) => a.fields.length,
+  },
+  {
+    name: 'validate_idea',
+    actor: 'tacps126/innovation-radar',
+    title: 'Check how new or crowded an idea is',
+    price: 'about $0.03 per idea',
+    description:
+      'How much research already covers a product or research idea: matching works, works in the last two years, crowdedness (open, early, active, crowded), growth, the closest prior work and related patents.',
+    shape: {
+      ideas: strings('Ideas in plain words, e.g. "a window that generates solar power with perovskite tandem cells".'),
+    },
+    map: (a) => clean({ mode: 'validate', ideas: a.ideas, topWorks: 10 }),
+    limit: (a) => a.ideas.length,
+  },
+  {
     name: 'find_website_contacts',
     actor: 'tacps126/contact-details',
     title: 'Find emails, phones and social profiles on websites',

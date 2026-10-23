@@ -358,6 +358,19 @@
     "aiBaseUrl",
     "openalexApiKey"
   ],
+  "tacps126/innovation-radar": [
+    "mode",
+    "fields",
+    "ideas",
+    "years",
+    "topWorks",
+    "aiProvider",
+    "aiApiKey",
+    "aiModel",
+    "aiBaseUrl",
+    "insightLanguage",
+    "openalexApiKey"
+  ],
   "tacps126/contact-details": [
     "startUrls",
     "datasetId",

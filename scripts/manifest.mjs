@@ -29,7 +29,7 @@ export function buildManifest({ withInputSchemas = false } = {}) {
   display_name: 'Web Data Tools',
   icon: 'icon.png',
   version: pkg.version,
-  description: 'Nineteen web-data tools for agents: jobs, hiring signals, news, research papers and patents, reviews, Reddit leads, contacts, real estate, Shopify, exhibitors, events.',
+  description: 'Twenty-one web-data tools for agents: jobs, hiring signals, news, research papers and patents, field trends and idea validation, reviews, Reddit leads, contacts, real estate, Shopify, exhibitors, events.',
   long_description:
     'Runs ready-made Apify Actors (published by tacps126) on your own Apify account and returns clean JSON. ' +
     'Covers job postings from career pages, remote-job feeds, Wellfound, Dice, Indeed and Naukri, hiring signals, Google News, Trustpilot and app-store reviews, ' +

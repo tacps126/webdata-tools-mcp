@@ -3,8 +3,8 @@
   "name": "webdata-tools-mcp",
   "display_name": "Web Data Tools",
   "icon": "icon.png",
-  "version": "0.8.0",
-  "description": "Nineteen web-data tools for agents: jobs, hiring signals, news, research papers and patents, reviews, Reddit leads, contacts, real estate, Shopify, exhibitors, events.",
+  "version": "0.9.0",
+  "description": "Twenty-one web-data tools for agents: jobs, hiring signals, news, research papers and patents, field trends and idea validation, reviews, Reddit leads, contacts, real estate, Shopify, exhibitors, events.",
   "long_description": "Runs ready-made Apify Actors (published by tacps126) on your own Apify account and returns clean JSON. Covers job postings from career pages, remote-job feeds, Wellfound, Dice, Indeed and Naukri, hiring signals, Google News, Trustpilot and app-store reviews, Reddit mentions and buying-intent leads, website contact details, German property listings, Shopify products and store analysis, trade-show exhibitor lists and upcoming events. You pay Apify per result (about $1-3 per 1,000); every call has a spend cap.",
   "author": {
     "name": "tacps126",
@@ -94,6 +94,14 @@
     {
       "name": "search_research",
       "description": "Recent papers, preprints and patents from OpenAlex, arXiv, PubMed and Europe PMC in one deduplicated, newest-first list: title, abstract, authors and affiliations, venue, DOI, PDF link, citations, open-access status, and for patents the number, applicants and IPC/CPC classes."
+    },
+    {
+      "name": "analyze_field",
+      "description": "A landscape of a technology or research field from open research data: works per year, growth and momentum (emerging, growing, mature, cooling), leading countries, institutions and funders, rising sub-topics, standout recent work and related patents."
+    },
+    {
+      "name": "validate_idea",
+      "description": "How much research already covers a product or research idea: matching works, works in the last two years, crowdedness (open, early, active, crowded), growth, the closest prior work and related patents."
     },
     {
       "name": "find_website_contacts",
