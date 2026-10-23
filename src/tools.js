@@ -177,7 +177,7 @@ export const TOOLS = [
     name: 'search_tech_jobs',
     actor: 'tacps126/dice-jobs-scraper',
     title: 'Search US tech jobs on Dice',
-    price: 'about $0.0006 per job',
+    price: 'about $0.00055 per job',
     description:
       'US tech jobs from Dice by keyword and city: title, company, location, salary text, employer type (direct hire or recruiter), Easy Apply, remote / on-site / hybrid, posted and updated dates.',
     shape: {
