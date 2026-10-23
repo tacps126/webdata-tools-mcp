@@ -30,6 +30,7 @@ Each field or idea costs about $0.03 on the user's Apify account. Don't call the
 - `relatedPatents[].likelyExpiredByTerm`: filed over 20 years ago — possibly free to use (not legal advice).
 - `growth.stage` says when counts are small: percentages are noisy then; say so.
 - Validation: `crowdedness` (open, early, active, crowded), `matchingWorks`, `worksLastTwoYears`, `closestWorks`, `whoIsWorkingOnIt`.
+- `broaderSpace` / `position`: the biggest neighbouring space with one term left out. "Open niche in a crowded field" means the application is new but the base technology is busy: proof it works, and competition for talent and suppliers.
 
 ## Write the analysis
 

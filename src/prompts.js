@@ -14,6 +14,7 @@ export const SIGNALS = `How to read the evidence:
 - risingTopics: sub-topics whose share grew most; standoutRecentWorks: the most cited recent papers.
 - topCompanies / keyResearchers / topInstitutions / topFunders: who to partner with, hire from, license from or compete against.
 - reviewShare: a high share of review papers means the field is consolidating.
+- broaderSpace / position (validation): the biggest neighbouring space with one term left out; "open niche in a crowded field" means the application is new but the technology around it is busy (competition for talent, suppliers and attention; also proof the base technology works).
 - relatedPatents.likelyExpiredByTerm: filed more than 20 years ago — possibly free to use (not legal advice).
 Small counts make percentages noisy — say so when growth.stage reports it.`;
 
