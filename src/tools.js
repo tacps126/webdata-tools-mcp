@@ -361,12 +361,13 @@ export const TOOLS = [
     title: 'Search papers, preprints and patents',
     price: 'about $0.003 per result',
     description:
-      'Recent papers, preprints and patents from OpenAlex, arXiv, PubMed and Europe PMC in one deduplicated, newest-first list: title, abstract, authors and affiliations, venue, DOI, PDF link, citations, open-access status, and for patents the number, applicants and IPC/CPC classes.',
+      'Papers, preprints and patents from OpenAlex, arXiv, PubMed and Europe PMC in one deduplicated list, newest first or most influential first: title, abstract, authors and affiliations, venue, DOI, PDF link, citations, citations per year, field-normalized impact (top 1% / 10%), open-access status, and for patents the number, applicants and IPC/CPC classes. Retracted papers are left out.',
     shape: {
       queries: strings('Topics, keywords or phrases, e.g. "solid state battery".'),
       sources: z.array(z.enum(['openalex', 'arxiv', 'pubmed', 'europepmc', 'patents', 'crossref'])).optional().describe('Which sources to search. Default: openalex, arxiv, pubmed, europepmc, patents.'),
       posted_within_days: z.number().int().min(1).max(3650).optional().describe('Only results published in the last N days.'),
       open_access_only: z.boolean().default(false).describe('Only papers that are free to read.'),
+      sort_by: z.enum(['newest', 'citations', 'impact']).default('newest').describe('newest first, most cited, or highest field-normalized impact (influential work).'),
       max_items: maxItems(30, 500),
     },
     map: (a) =>
@@ -375,6 +376,7 @@ export const TOOLS = [
         sources: a.sources,
         postedWithinDays: a.posted_within_days,
         openAccessOnly: a.open_access_only,
+        sortBy: a.sort_by,
         maxItemsPerSource: Math.min(Math.max(a.max_items, 10), 100),
         maxItems: a.max_items,
       }),
@@ -386,7 +388,7 @@ export const TOOLS = [
     title: 'Analyse a technology or research field',
     price: 'about $0.03 per field',
     description:
-      'A landscape of a technology or research field from open research data: works per year, growth and momentum (emerging, growing, mature, cooling), leading countries, institutions and funders, rising sub-topics, standout recent work and related patents.',
+      'A landscape of a technology or research field from open research data: an opportunity score (0-100) with its reasons, momentum, lab-to-market gap and geographic concentration; works per year and growth stage; industry participation and the top companies; key researchers, institutions, countries and funders; rising sub-topics, standout recent work and related patents. Several fields come back ranked. For written opportunities, use the field-opportunity-analysis prompt.',
     shape: {
       fields: strings('Fields or technologies, e.g. "solid state battery", "CRISPR base editing".'),
       years: z.number().int().min(2).max(40).default(10).describe('Years of history for the trend.'),
@@ -400,7 +402,7 @@ export const TOOLS = [
     title: 'Check how new or crowded an idea is',
     price: 'about $0.03 per idea',
     description:
-      'How much research already covers a product or research idea: matching works, works in the last two years, crowdedness (open, early, active, crowded), growth, the closest prior work and related patents.',
+      'How much research already covers a product or research idea: matching works, works in the last two years, crowdedness (open, early, active, crowded), growth, who is working on it (researchers, institutions, companies), the closest prior work and related patents. For a written assessment, use the idea-validation prompt.',
     shape: {
       ideas: strings('Ideas in plain words, e.g. "a window that generates solar power with perovskite tandem cells".'),
     },

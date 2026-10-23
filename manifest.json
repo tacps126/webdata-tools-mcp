@@ -3,7 +3,7 @@
   "name": "webdata-tools-mcp",
   "display_name": "Web Data Tools",
   "icon": "icon.png",
-  "version": "0.9.0",
+  "version": "0.10.0",
   "description": "Twenty-one web-data tools for agents: jobs, hiring signals, news, research papers and patents, field trends and idea validation, reviews, Reddit leads, contacts, real estate, Shopify, exhibitors, events.",
   "long_description": "Runs ready-made Apify Actors (published by tacps126) on your own Apify account and returns clean JSON. Covers job postings from career pages, remote-job feeds, Wellfound, Dice, Indeed and Naukri, hiring signals, Google News, Trustpilot and app-store reviews, Reddit mentions and buying-intent leads, website contact details, German property listings, Shopify products and store analysis, trade-show exhibitor lists and upcoming events. You pay Apify per result (about $1-3 per 1,000); every call has a spend cap.",
   "author": {
@@ -93,15 +93,15 @@
     },
     {
       "name": "search_research",
-      "description": "Recent papers, preprints and patents from OpenAlex, arXiv, PubMed and Europe PMC in one deduplicated, newest-first list: title, abstract, authors and affiliations, venue, DOI, PDF link, citations, open-access status, and for patents the number, applicants and IPC/CPC classes."
+      "description": "Papers, preprints and patents from OpenAlex, arXiv, PubMed and Europe PMC in one deduplicated list, newest first or most influential first: title, abstract, authors and affiliations, venue, DOI, PDF link, citations, citations per year, field-normalized impact (top 1% / 10%), open-access status, and for patents the number, applicants and IPC/CPC classes. Retracted papers are left out."
     },
     {
       "name": "analyze_field",
-      "description": "A landscape of a technology or research field from open research data: works per year, growth and momentum (emerging, growing, mature, cooling), leading countries, institutions and funders, rising sub-topics, standout recent work and related patents."
+      "description": "A landscape of a technology or research field from open research data: an opportunity score (0-100) with its reasons, momentum, lab-to-market gap and geographic concentration; works per year and growth stage; industry participation and the top companies; key researchers, institutions, countries and funders; rising sub-topics, standout recent work and related patents. Several fields come back ranked. For written opportunities, use the field-opportunity-analysis prompt."
     },
     {
       "name": "validate_idea",
-      "description": "How much research already covers a product or research idea: matching works, works in the last two years, crowdedness (open, early, active, crowded), growth, the closest prior work and related patents."
+      "description": "How much research already covers a product or research idea: matching works, works in the last two years, crowdedness (open, early, active, crowded), growth, who is working on it (researchers, institutions, companies), the closest prior work and related patents. For a written assessment, use the idea-validation prompt."
     },
     {
       "name": "find_website_contacts",
@@ -126,6 +126,25 @@
     {
       "name": "find_events",
       "description": "Upcoming events by topic and city, or from Luma / Eventbrite / Meetup links (or any page with schema.org events): name, dates, venue with address and coordinates, organiser, hosts, ticket prices, free/sold-out and attendee count, in one format. Use for event prospecting, sponsorships and community research."
+    }
+  ],
+  "prompts": [
+    {
+      "name": "field-opportunity-analysis",
+      "description": "Analyse one or more technology or research fields with analyze_field, then write ranked, evidence-backed product and business opportunities (why now, capital needed, who to talk to).",
+      "arguments": [
+        "fields",
+        "audience"
+      ],
+      "text": "Call the analyze_field tool with fields [\"${arguments.fields}\"] (one call for all of them; one record).\nThen use only its records as the evidence.\nThe analysis is for ${arguments.audience}.\n\nYou are a pragmatic technology and innovation analyst advising founders, R&D leaders and investors.\nFrom the field evidence, find concrete product or business opportunities.\nFor each opportunity say what to build, for whom, why now (which signal shows the timing), what it would take\n(capital bucket: under $50k software/service, $50k-$1M hardware or regulated software, over $1M deep tech, manufacturing or clinical),\nand who in the evidence could be a partner, customer or competitor.\nBe specific, cite the signals you rely on, and say when the evidence is thin. No generic advice.\n\nHow to read the evidence:\n- scores.opportunity (0-100) and scores.why: the overall ranking and the signals behind it.\n- scores.momentum (0-100): research output in the last two full years against the two before; 50 = about +40%.\n- scores.labToMarketGap (0-100): high momentum with few company authors — research is ahead of products.\n- industry.recentShare: share of recent works with a company author (under 5% academic, 5-15% engaging, over 15% active); industry.trend says whether companies are moving in or out.\n- scores.geographicConcentration: share of the top country among the leading countries; high means one country dominates (supply-chain, policy and partner risk).\n- risingTopics: sub-topics whose share grew most; standoutRecentWorks: the most cited recent papers.\n- topCompanies / keyResearchers / topInstitutions / topFunders: who to partner with, hire from, license from or compete against.\n- reviewShare: a high share of review papers means the field is consolidating.\n- relatedPatents.likelyExpiredByTerm: filed more than 20 years ago — possibly free to use (not legal advice).\nSmall counts make percentages noisy — say so when growth.stage reports it.\n\nAnswer in these sections:\n1. Summary — two or three sentences; when several fields were analysed, the ranking and why.\n2. Opportunities — three to five, best first. For each: the idea, for whom, why now, capital bucket with the reason, who to talk to.\n3. Risks.\n4. Evidence quality — strong, moderate or thin, and why."
+    },
+    {
+      "name": "idea-validation",
+      "description": "Check an idea with validate_idea (how much research already covers it, who is working on it, closest prior work, related patents), then assess novelty, timing, capital, risks and next steps.",
+      "arguments": [
+        "idea"
+      ],
+      "text": "Call the validate_idea tool with ideas [\"${arguments.idea}\"].\nThen use only its record as the evidence. If the idea is broad, you may also call analyze_field on its core technology for growth and industry signals.\n\nYou are a pragmatic technology and innovation analyst. Assess the idea against the evidence:\nhow new it is (crowdedness, closest prior work), whether the timing is right (growth), who is already working on it\n(researchers, institutions, companies), what it would take to build (capital bucket: under $50k, $50k-$1M, over $1M),\nthe main risks, and the three most useful next steps. Be specific, cite the evidence, and say when it is thin.\n\nHow to read the evidence:\n- scores.opportunity (0-100) and scores.why: the overall ranking and the signals behind it.\n- scores.momentum (0-100): research output in the last two full years against the two before; 50 = about +40%.\n- scores.labToMarketGap (0-100): high momentum with few company authors — research is ahead of products.\n- industry.recentShare: share of recent works with a company author (under 5% academic, 5-15% engaging, over 15% active); industry.trend says whether companies are moving in or out.\n- scores.geographicConcentration: share of the top country among the leading countries; high means one country dominates (supply-chain, policy and partner risk).\n- risingTopics: sub-topics whose share grew most; standoutRecentWorks: the most cited recent papers.\n- topCompanies / keyResearchers / topInstitutions / topFunders: who to partner with, hire from, license from or compete against.\n- reviewShare: a high share of review papers means the field is consolidating.\n- relatedPatents.likelyExpiredByTerm: filed more than 20 years ago — possibly free to use (not legal advice).\nSmall counts make percentages noisy — say so when growth.stage reports it.\n\nAnswer in these sections: Novelty, Closest prior work, Timing, Who is already there,\nCapital (bucket and why), Risks, Next steps (three), Evidence quality (strong, moderate or thin)."
     }
   ],
   "user_config": {

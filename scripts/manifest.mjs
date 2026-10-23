@@ -3,6 +3,7 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { z } from 'zod';
 import { annotationsOf, outputShape } from '../src/server.js';
+import { PROMPTS } from '../src/prompts.js';
 import { extraInput, TOOLS } from '../src/tools.js';
 
 const root = new URL('..', import.meta.url).pathname;
@@ -55,6 +56,12 @@ export function buildManifest({ withInputSchemas = false } = {}) {
     },
   },
   tools: TOOLS.map((t) => ({ name: t.name, description: t.description })),
+  prompts: PROMPTS.map((p) => ({
+    name: p.name,
+    description: p.description,
+    arguments: Object.keys(p.args),
+    text: p.text(Object.fromEntries(Object.keys(p.args).map((k) => [k, `\${arguments.${k}}`]))),
+  })),
   user_config: {
     apify_token: {
       type: 'string',

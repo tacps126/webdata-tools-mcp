@@ -4,6 +4,7 @@ import { readFileSync } from 'node:fs';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z } from 'zod';
 import { ApifyError, runActorSync } from './apify.js';
+import { PROMPTS } from './prompts.js';
 import { extraInput, TOOLS } from './tools.js';
 
 const { version: VERSION } = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'));
@@ -100,6 +101,16 @@ export function buildServer({ env = process.env, fetchImpl = fetch } = {}) {
           return { isError: true, content: [{ type: 'text', text }] };
         }
       },
+    );
+  }
+  for (const prompt of PROMPTS) {
+    server.registerPrompt(
+      prompt.name,
+      { title: prompt.title, description: prompt.description, argsSchema: prompt.args },
+      (args) => ({
+        description: prompt.description,
+        messages: [{ role: 'user', content: { type: 'text', text: prompt.text(args) } }],
+      }),
     );
   }
   return server;

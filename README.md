@@ -50,6 +50,17 @@ Every result comes back as text and as structured content (`tool`, `count`, `sho
 
 More about the tools: <https://tacps126.github.io/mcp.html>
 
+## Prompts and agent skill
+
+Two ready-made prompts turn the research tools into an analyst, whichever model you use (Claude, GPT, Gemini, a local model): the evidence, the reading guide and the answer shape are fixed, so results stay comparable.
+
+| Prompt | What it does |
+|--------|--------------|
+| `field-opportunity-analysis` | Runs `analyze_field` on your fields, then writes ranked opportunities: what to build, for whom, why now, capital needed, who to talk to |
+| `idea-validation` | Runs `validate_idea`, then assesses novelty, closest prior work, timing, who is already there, capital, risks and next steps |
+
+For agents that load skills (Claude Code, Codex and others), copy [`skills/innovation-analyst`](skills/innovation-analyst/SKILL.md) into your skills folder.
+
 ## Setup
 
 1. Create a free [Apify account](https://apify.com) and copy your API token from
@@ -92,6 +103,8 @@ Maintainers: how releases and directory listings are published is in [PUBLISHING
 - "Analyze these Shopify stores and give me their country, product count and contact e-mail: allbirds.com, gymshark.com"
 - "Show the 1 and 2 star Trustpilot reviews of example.com from the last 30 days and group the complaints."
 - "Find news from the last 7 days about open-source LLM licensing, with the real publisher links."
+- "What should a seed-stage founder build in sodium-ion batteries? Compare it with solid-state." (field-opportunity-analysis prompt)
+- "Find the most influential papers of the last three years on retrieval augmented generation."
 - "Get contact emails for these 20 agency websites." (use only for lawful business outreach)
 
 ## Settings

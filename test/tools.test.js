@@ -174,3 +174,21 @@ test('find_events sends links as {url} objects and counts each search per site',
   assert.equal(input.location, 'London');
   assert.equal(t.limit(args), 40);
 });
+
+test('analyst prompts carry the rubric and name the tool to call', async () => {
+  const { Client } = await import('@modelcontextprotocol/sdk/client/index.js');
+  const { InMemoryTransport } = await import('@modelcontextprotocol/sdk/inMemory.js');
+  const server = buildServer({ env: {} });
+  const client = new Client({ name: 'test', version: '0' });
+  const [a, b] = InMemoryTransport.createLinkedPair();
+  await Promise.all([server.connect(a), client.connect(b)]);
+  const { prompts } = await client.listPrompts();
+  assert.deepEqual(prompts.map((p) => p.name).sort(), ['field-opportunity-analysis', 'idea-validation']);
+  const field = await client.getPrompt({ name: 'field-opportunity-analysis', arguments: { fields: 'sodium-ion battery; solid state battery' } });
+  const text = field.messages[0].content.text;
+  assert.match(text, /analyze_field tool with fields \["sodium-ion battery","solid state battery"\]/);
+  assert.match(text, /labToMarketGap/);
+  assert.match(text, /Evidence quality/);
+  const idea = await client.getPrompt({ name: 'idea-validation', arguments: { idea: 'a drone that plants trees' } });
+  assert.match(idea.messages[0].content.text, /validate_idea tool with ideas \["a drone that plants trees"\]/);
+});
