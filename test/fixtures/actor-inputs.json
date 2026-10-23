@@ -431,6 +431,8 @@
     "incrementalScrape",
     "changesOnly",
     "monitorName",
+    "delivery",
+    "googleServiceAccountJson",
     "proxyConfiguration",
     "debug",
     "workerOutput",

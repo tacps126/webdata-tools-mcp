@@ -201,13 +201,14 @@ export const TOOLS = [
     title: 'Search Indeed jobs',
     price: 'about $0.003 per job',
     description:
-      'Search Indeed job listings by keyword and location in 9 countries (us, uk, ca, au, ie, de, fr, nl, sg): title, company, location, salary, job type, benefits, skills and apply link.',
+      'Search Indeed job listings by keyword and location in 9 countries (us, uk, ca, au, ie, de, fr, nl, sg): title, company, location, salary, job type, benefits, skills, apply link and (with details) the full job description.',
     shape: {
       query: z.string().min(1).describe('Job title, skill or company, e.g. "react developer".'),
       location: z.string().optional().describe('City, state, postcode or "Remote". Empty = whole country.'),
       country: z.enum(['us', 'uk', 'ca', 'au', 'ie', 'de', 'fr', 'nl', 'sg']).default('us').describe('Indeed country site.'),
       date_posted_days: z.enum(['1', '3', '7', '14']).optional().describe('Only jobs posted in the last N days.'),
       job_type: z.enum(['fulltime', 'parttime', 'contract', 'temporary', 'internship']).optional().describe('Only this employment type.'),
+      include_details: z.boolean().default(true).describe("Add each job's full description. Off = search-card summary only."),
       max_items: maxItems(30),
     },
     map: (a) =>
@@ -217,6 +218,7 @@ export const TOOLS = [
         country: a.country,
         datePosted: a.date_posted_days,
         jobType: a.job_type,
+        includeDetails: a.include_details,
         maxItems: a.max_items,
       }),
     limit: (a) => a.max_items,
