@@ -94,7 +94,7 @@ claude mcp add webdata -e APIFY_TOKEN=<your Apify token> -- npx -y webdata-tools
 
 Requires Node.js 18 or newer.
 
-Maintainers: how releases and directory listings are published is in [PUBLISHING.md](PUBLISHING.md).
+Releases are tagged and published by CI from `main` (`.github/workflows/release.yml`).
 
 ## Try it
 

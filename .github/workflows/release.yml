@@ -5,7 +5,7 @@
 # A version that already has a tag is not released again. To (re)publish an existing version,
 # run the workflow by hand ("Run workflow") with "republish" ticked.
 #
-# Publishing (see PUBLISHING.md):
+# Publishing:
 #   npm          - repo VARIABLE PUBLISH_NPM=true + npm Trusted Publishing set up on npmjs.com (OIDC).
 #   MCP Registry - repo VARIABLE PUBLISH_MCP_REGISTRY=true (GitHub OIDC, nothing else to set up).
 # Smithery stopped accepting server updates in October 2026 (its CLI, API and keys shut down on
