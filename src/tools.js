@@ -533,7 +533,7 @@ export const TOOLS = [
     title: 'Search public tenders and contract awards',
     price: 'about $0.004 per notice',
     description:
-      'Public procurement notices from official portals in one schema: US SAM.gov (federal), EU TED (every EU/EEA country), UK Find a Tender and Contracts Finder, France BOAMP, Spain PLACSP, Germany, Netherlands TenderNed, Canada CanadaBuys, Colombia SECOP II, Ukraine Prozorro, EU institutions (Funding & Tenders portal), Australia AusTender (awards) and South Africa eTenders. Title, buyer, deadline, value and currency, CPV/UNSPSC/NAICS codes, sectors, buyer contacts, suppliers for awards, notice link. Open tenders by default.',
+      'Public procurement notices from official portals in one schema: US SAM.gov (federal), EU TED (every EU/EEA country), UK Find a Tender and Contracts Finder, France BOAMP, Spain PLACSP, Germany, Netherlands TenderNed, Canada CanadaBuys, Colombia SECOP II, Brazil PNCP, India GeM, Ukraine Prozorro, EU institutions (Funding & Tenders portal), US contract awards (USAspending), Australia AusTender (awards) and South Africa eTenders. Title, buyer, deadline, value and currency, CPV/UNSPSC/NAICS codes, sectors, buyer contacts, suppliers for awards, notice link. Open tenders by default.',
     shape: {
       keywords: strings('Words matched literally on title and description; add translations for non-English portals, e.g. ["software", "logiciel"].').optional(),
       sectors: z.array(z.enum(['banking', 'securities', 'insurance', 'tax', 'trade', 'health', 'food', 'energy', 'environment', 'tech', 'transport', 'employment', 'housing', 'defense', 'education'])).optional().describe('Sectors from CPV/UNSPSC/NAICS/PSC codes and multilingual terms (housing = construction and real estate).'),
