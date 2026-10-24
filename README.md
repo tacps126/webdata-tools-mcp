@@ -8,9 +8,9 @@
 [![Smithery](https://img.shields.io/badge/Smithery-tacps126%2Fwebdata--tools--mcp-ff5601)](https://smithery.ai/servers/tacps126/webdata-tools-mcp)
 [![webdata-tools-mcp MCP server](https://glama.ai/mcp/servers/tacps126/webdata-tools-mcp/badges/score.svg)](https://glama.ai/mcp/servers/tacps126/webdata-tools-mcp)
 
-An [MCP](https://modelcontextprotocol.io) server that gives AI agents twenty-four web-data tools: job
+An [MCP](https://modelcontextprotocol.io) server that gives AI agents twenty-five web-data tools: job
 postings (company career sites, remote jobs, startups on Wellfound, US tech jobs on Dice, Indeed,
-Naukri), hiring signals, Google News, official government updates (US, UK, EU, India), public tenders and contract awards (US, EU, UK, France, Spain, Canada, Australia and more), official weather and disaster warnings (US, Europe, India, Brazil, worldwide), research papers and patents, field trends and idea validation, Trustpilot and app-store reviews, Reddit mentions and
+Naukri), hiring signals, Google News, official government updates (US, UK, EU, India), public tenders and contract awards (US, EU, UK, France, Spain, Canada, Australia and more), official weather and disaster warnings (US, Europe, India, Brazil, worldwide), public funding calls (US Grants.gov, EU Horizon Europe and more, UKRI), research papers and patents, field trends and idea validation, Trustpilot and app-store reviews, Reddit mentions and
 buying-intent leads, website contacts, German and Austrian property listings, Shopify products and
 store analysis, trade-show exhibitor lists and upcoming events. Two ready-made prompts turn the research
 tools into an innovation analyst that works the same with any model.
@@ -37,6 +37,7 @@ anywhere except Apify.
 | `find_reddit_leads` | Reddit posts asking for a tool like yours, seeking a competitor alternative, comparing or complaining | $2 / 1,000 leads + $0.10 / 1,000 posts read | [reddit-lead-finder](https://apify.com/tacps126/reddit-lead-finder) |
 | `search_gov_updates` | Official government updates: Federal Register rules and notices, GOV.UK, European Commission, SEC, RBI and SEBI circulars, any RSS feed; sector and keyword filters | $3 / 1,000 updates | [gov-radar](https://apify.com/tacps126/gov-radar) |
 | `get_alerts` | Official weather and disaster warnings: US NWS, MeteoAlarm (38 countries), India NDMA, Brazil INMET, GDACS, USGS; hazard, severity, area filters | $2 / 1,000 alerts | [alerts-radar](https://apify.com/tacps126/alerts-radar) |
+| `search_grants` | Open and forecast funding calls: US Grants.gov, EU Funding & Tenders (Horizon Europe…), UKRI; grant size, budget, deadline, eligibility | $3 / 1,000 calls | [grants-radar](https://apify.com/tacps126/grants-radar) |
 | `search_tenders` | Public tenders and contract awards: US SAM.gov, EU TED, UK, France, Spain, Germany, Netherlands, Canada, Colombia, Australia, South Africa; sector, CPV/UNSPSC, value filters | $4 / 1,000 notices | [tenders-radar](https://apify.com/tacps126/tenders-radar) |
 | `search_research` | Papers, preprints and patents from OpenAlex, arXiv, PubMed and Europe PMC, merged; newest or most influential first, with field-normalized impact | $3 / 1,000 results | [research-radar](https://apify.com/tacps126/research-radar) |
 | `analyze_field` | A technology field's opportunity score with reasons, growth and momentum, industry participation and top companies, leading countries, institutions and funders, rising topics; several fields ranked | $0.03 / field | [innovation-radar](https://apify.com/tacps126/innovation-radar) |

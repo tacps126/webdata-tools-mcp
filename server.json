@@ -1,7 +1,7 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.github.tacps126/webdata-tools-mcp",
-  "description": "24 web-data tools for AI agents: jobs, news, tenders, gov updates, alerts, research, reviews, leads.",
+  "description": "25 web-data tools for AI agents: jobs, news, tenders, grants, gov updates, alerts, research, leads.",
   "repository": {
     "url": "https://github.com/tacps126/webdata-tools-mcp",
     "source": "github"

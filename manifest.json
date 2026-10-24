@@ -4,7 +4,7 @@
   "display_name": "Web Data Tools",
   "icon": "icon.png",
   "version": "0.12.0",
-  "description": "Twenty-four web-data tools for agents: jobs, hiring signals, news, public tenders, government updates, weather and disaster alerts, research papers and patents, field trends and idea validation, reviews, Reddit leads, contacts, real estate, Shopify, exhibitors, events.",
+  "description": "Twenty-five web-data tools for agents: jobs, hiring signals, news, public tenders, grants and funding calls, government updates, weather and disaster alerts, research papers and patents, field trends and idea validation, reviews, Reddit leads, contacts, real estate, Shopify, exhibitors, events.",
   "long_description": "Runs ready-made Apify Actors (published by tacps126) on your own Apify account and returns clean JSON. Covers job postings from career pages, remote-job feeds, Wellfound, Dice, Indeed and Naukri, hiring signals, Google News, official government updates (US Federal Register, GOV.UK, European Commission, SEC, RBI, SEBI), public tenders and contract awards (US SAM.gov, EU TED, UK, France, Spain, Germany, Netherlands, Canada, Colombia, Australia, South Africa), research papers, preprints and patents, technology-field landscapes and idea validation, Trustpilot and app-store reviews, Reddit mentions and buying-intent leads, website contact details, German property listings, Shopify products and store analysis, trade-show exhibitor lists and upcoming events. Two analyst prompts (field-opportunity-analysis, idea-validation) turn the research tools into a model-agnostic innovation analyst. You pay Apify per result (about $1-3 per 1,000); every call has a spend cap.",
   "author": {
     "name": "tacps126",
@@ -106,8 +106,12 @@
       "description": "Official warnings in force from national services in one schema: US National Weather Service, MeteoAlarm (38 European countries), India NDMA (IMD, CWC, state disaster authorities), Brazil INMET, plus worldwide GDACS disasters and USGS earthquakes. Event, hazard type, severity, areas, start and expiry, instructions, issuing service. Most severe first."
     },
     {
+      "name": "search_grants",
+      "description": "Open and forecast public funding calls in one schema: US Grants.gov (every federal agency), EU Funding & Tenders (Horizon Europe, Digital Europe, LIFE, EU4Health, Erasmus+, cascade calls) and UKRI. Title, funder, programme, grant size (min/max), total budget, expected awards, deadline, eligibility, contacts, link. Soonest deadline first."
+    },
+    {
       "name": "search_tenders",
-      "description": "Public procurement notices from official portals in one schema: US SAM.gov (federal), EU TED (every EU/EEA country), UK Find a Tender and Contracts Finder, France BOAMP, Spain PLACSP, Germany, Netherlands TenderNed, Canada CanadaBuys, Colombia SECOP II, Australia AusTender (awards) and South Africa eTenders. Title, buyer, deadline, value and currency, CPV/UNSPSC/NAICS codes, sectors, buyer contacts, suppliers for awards, notice link. Open tenders by default."
+      "description": "Public procurement notices from official portals in one schema: US SAM.gov (federal), EU TED (every EU/EEA country), UK Find a Tender and Contracts Finder, France BOAMP, Spain PLACSP, Germany, Netherlands TenderNed, Canada CanadaBuys, Colombia SECOP II, Ukraine Prozorro, EU institutions (Funding & Tenders portal), Australia AusTender (awards) and South Africa eTenders. Title, buyer, deadline, value and currency, CPV/UNSPSC/NAICS codes, sectors, buyer contacts, suppliers for awards, notice link. Open tenders by default."
     },
     {
       "name": "analyze_field",

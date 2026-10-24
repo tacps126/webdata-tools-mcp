@@ -445,6 +445,38 @@ export const TOOLS = [
     limit: (a) => a.max_items,
   },
   {
+    name: 'search_grants',
+    actor: 'tacps126/grants-radar',
+    title: 'Search open public funding calls',
+    price: 'about $0.003 per call',
+    description:
+      'Open and forecast public funding calls in one schema: US Grants.gov (every federal agency), EU Funding & Tenders (Horizon Europe, Digital Europe, LIFE, EU4Health, Erasmus+, cascade calls) and UKRI. Title, funder, programme, grant size (min/max), total budget, expected awards, deadline, eligibility, contacts, link. Soonest deadline first.',
+    shape: {
+      keywords: strings('Words matched on title, programme and description, e.g. ["battery", "energy storage"].').optional(),
+      sectors: z.array(z.enum(['banking', 'securities', 'insurance', 'tax', 'trade', 'health', 'food', 'energy', 'environment', 'tech', 'transport', 'employment', 'housing', 'defense', 'education'])).optional().describe('Only calls about these sectors.'),
+      countries: z.array(z.enum(['US', 'EU', 'GB'])).optional().describe('Funders: US (Grants.gov), EU (Funding & Tenders), GB (UKRI).'),
+      min_award: z.number().optional().describe('Smallest grant size wanted (maximum award, in the call currency).'),
+      min_days_to_deadline: z.number().int().min(0).default(0).describe('Leave out calls closing sooner than this.'),
+      include_forecasts: z.boolean().default(true).describe('Include calls announced but not open yet.'),
+      max_items: maxItems(30, 500),
+    },
+    check: (a) =>
+      !(a.keywords?.length || a.sectors?.length || a.countries?.length)
+        ? 'Give keywords, sectors or countries so the search stays focused.'
+        : undefined,
+    map: (a) =>
+      clean({
+        keywords: a.keywords,
+        sectors: a.sectors,
+        countries: a.countries,
+        minAward: a.min_award,
+        minDaysToDeadline: a.min_days_to_deadline,
+        includeForecasts: a.include_forecasts,
+        maxItems: a.max_items,
+      }),
+    limit: (a) => a.max_items,
+  },
+  {
     name: 'search_tenders',
     actor: 'tacps126/tenders-radar',
     title: 'Search public tenders and contract awards',
