@@ -9,6 +9,14 @@ npm ci
 npm test            # offline
 ```
 
+## Code style
+
+- Plain ES modules, no build step; Node 22+.
+- Every tool argument has a `zod` type and a `.describe()` written for an AI agent: what it does, an example.
+- Tool descriptions state the source, the main fields and the price; keep counts and prices in sync with the Actors (the release test checks the manifests).
+- Never log or echo the Apify token; it is read from `APIFY_TOKEN` or the request header only.
+- `npm run lint` (syntax check of every source file) and `npm test` must pass; CI runs both, offline.
+
 ## Add or change a tool
 
 1. Edit `src/tools.js`: the tool name, the Actor it runs, a description, one `zod` shape with a

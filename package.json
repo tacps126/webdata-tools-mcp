@@ -20,7 +20,8 @@
     "test": "node --test test/*.test.js",
     "build:mcpb": "node scripts/build-mcpb.mjs && node scripts/lobehub-manifest.mjs",
     "sync:inputs": "node scripts/sync-actor-inputs.mjs",
-    "build:lobehub": "node scripts/lobehub-manifest.mjs"
+    "build:lobehub": "node scripts/lobehub-manifest.mjs",
+    "lint": "node -e \"for (const f of require('fs').readdirSync('src')) require('child_process').execFileSync(process.execPath, ['--check', 'src/' + f])\" && node --check scripts/*.mjs"
   },
   "keywords": [
     "mcp",
