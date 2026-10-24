@@ -33,6 +33,7 @@ const SAMPLE = {
   get_alerts: { countries: ['IN'], hazards: ['flood'] },
   search_grants: { keywords: ['battery'], countries: ['EU'] },
   get_india_district_notices: { states: ['Bihar'], categories: ['tenders'] },
+  search_legislation: { keywords: ['sanctions'], countries: ['EU'] },
   analyze_field: { fields: ['solid state battery'] },
   validate_idea: { ideas: ['a drone that plants trees'] },
   analyze_shopify_stores: { stores: ['allbirds.com'] },

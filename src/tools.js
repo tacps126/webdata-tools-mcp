@@ -504,6 +504,30 @@ export const TOOLS = [
     limit: (a) => a.max_items,
   },
   {
+    name: 'search_legislation',
+    actor: 'tacps126/legislation-radar',
+    title: 'Search new laws, regulations and bills',
+    price: 'about $0.003 per law',
+    description:
+      'New legislation from official publishers in one schema: EU regulations, directives and decisions (EUR-Lex), UK Acts and statutory instruments of all four nations (legislation.gov.uk), US public laws and bill texts with their stage (GovInfo). Number, title, date, sectors, official text and PDF links. Newest first.',
+    shape: {
+      keywords: strings('Whole words matched on titles, e.g. ["sanctions", "artificial intelligence"].').optional(),
+      countries: z.array(z.enum(['EU', 'GB', 'US'])).optional().describe('Jurisdictions (default: all).'),
+      kinds: z.array(z.enum(['regulation', 'directive', 'decision', 'act', 'statutory-instrument', 'public-law', 'bill'])).optional().describe('Kinds of legislation.'),
+      posted_within_days: z.number().int().min(1).max(365).default(7).describe('Only laws dated in the last N days.'),
+      max_items: maxItems(30, 500),
+    },
+    map: (a) =>
+      clean({
+        keywords: a.keywords,
+        countries: a.countries,
+        kinds: a.kinds,
+        postedWithinDays: a.posted_within_days,
+        maxItems: a.max_items,
+      }),
+    limit: (a) => a.max_items,
+  },
+  {
     name: 'search_tenders',
     actor: 'tacps126/tenders-radar',
     title: 'Search public tenders and contract awards',

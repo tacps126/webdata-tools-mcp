@@ -2173,6 +2173,131 @@
       }
     },
     {
+      "name": "search_legislation",
+      "title": "Search new laws, regulations and bills",
+      "description": "New legislation from official publishers in one schema: EU regulations, directives and decisions (EUR-Lex), UK Acts and statutory instruments of all four nations (legislation.gov.uk), US public laws and bill texts with their stage (GovInfo). Number, title, date, sectors, official text and PDF links. Newest first. Runs the Apify Actor tacps126/legislation-radar on your Apify account (about $0.003 per law; spend per call is capped at $0.5).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "keywords": {
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "Whole words matched on titles, e.g. [\"sanctions\", \"artificial intelligence\"]."
+          },
+          "countries": {
+            "description": "Jurisdictions (default: all).",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "EU",
+                "GB",
+                "US"
+              ]
+            }
+          },
+          "kinds": {
+            "description": "Kinds of legislation.",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "regulation",
+                "directive",
+                "decision",
+                "act",
+                "statutory-instrument",
+                "public-law",
+                "bill"
+              ]
+            }
+          },
+          "posted_within_days": {
+            "default": 7,
+            "description": "Only laws dated in the last N days.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 365
+          },
+          "max_items": {
+            "default": 30,
+            "description": "Maximum results to return (default 30, max 500). Cost scales with this.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 500
+          },
+          "extra_input": {
+            "description": "Advanced: extra Actor input fields, merged over the defaults.",
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          }
+        },
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "tool": {
+            "type": "string",
+            "description": "Name of the tool that produced the result."
+          },
+          "count": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records the Actor returned."
+          },
+          "shown": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records included in `items` (can be lower than count when the result is long)."
+          },
+          "truncated": {
+            "type": "boolean",
+            "description": "True when records were left out to keep the result short; ask for fewer items."
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "propertyNames": {
+                "type": "string"
+              },
+              "additionalProperties": {}
+            },
+            "description": "The records. Long text fields are shortened to 600 characters."
+          }
+        },
+        "required": [
+          "tool",
+          "count",
+          "shown",
+          "truncated",
+          "items"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
+      },
+      "annotations": {
+        "title": "Search new laws, regulations and bills",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
       "name": "search_tenders",
       "title": "Search public tenders and contract awards",
       "description": "Public procurement notices from official portals in one schema: US SAM.gov (federal), EU TED (every EU/EEA country), UK Find a Tender and Contracts Finder, France BOAMP, Spain PLACSP, Germany, Netherlands TenderNed, Canada CanadaBuys, Colombia SECOP II, Ukraine Prozorro, EU institutions (Funding & Tenders portal), Australia AusTender (awards) and South Africa eTenders. Title, buyer, deadline, value and currency, CPV/UNSPSC/NAICS codes, sectors, buyer contacts, suppliers for awards, notice link. Open tenders by default. Runs the Apify Actor tacps126/tenders-radar on your Apify account (about $0.004 per notice; spend per call is capped at $0.5).",

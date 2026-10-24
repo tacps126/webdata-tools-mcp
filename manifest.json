@@ -4,7 +4,7 @@
   "display_name": "Web Data Tools",
   "icon": "icon.png",
   "version": "0.12.0",
-  "description": "Twenty-six web-data tools for agents: jobs, hiring signals, news, public tenders, Indian district notices, grants and funding calls, government updates, weather and disaster alerts, research papers and patents, field trends and idea validation, reviews, Reddit leads, contacts, real estate, Shopify, exhibitors, events.",
+  "description": "Twenty-seven web-data tools for agents: jobs, hiring signals, news, public tenders, new laws and bills, Indian district notices, grants and funding calls, government updates, weather and disaster alerts, research papers and patents, field trends and idea validation, reviews, Reddit leads, contacts, real estate, Shopify, exhibitors, events.",
   "long_description": "Runs ready-made Apify Actors (published by tacps126) on your own Apify account and returns clean JSON. Covers job postings from career pages, remote-job feeds, Wellfound, Dice, Indeed and Naukri, hiring signals, Google News, official government updates (US Federal Register, GOV.UK, European Commission, SEC, RBI, SEBI), public tenders and contract awards (US SAM.gov, EU TED, UK, France, Spain, Germany, Netherlands, Canada, Colombia, Australia, South Africa), research papers, preprints and patents, technology-field landscapes and idea validation, Trustpilot and app-store reviews, Reddit mentions and buying-intent leads, website contact details, German property listings, Shopify products and store analysis, trade-show exhibitor lists and upcoming events. Two analyst prompts (field-opportunity-analysis, idea-validation) turn the research tools into a model-agnostic innovation analyst. You pay Apify per result (about $1-3 per 1,000); every call has a spend cap.",
   "author": {
     "name": "tacps126",
@@ -112,6 +112,10 @@
     {
       "name": "get_india_district_notices",
       "description": "Tenders, recruitment and announcements from the official websites of India's 748 districts (collector offices), by state and district: title (often Hindi or the state language), date, district, state, official PDF link. Newest first."
+    },
+    {
+      "name": "search_legislation",
+      "description": "New legislation from official publishers in one schema: EU regulations, directives and decisions (EUR-Lex), UK Acts and statutory instruments of all four nations (legislation.gov.uk), US public laws and bill texts with their stage (GovInfo). Number, title, date, sectors, official text and PDF links. Newest first."
     },
     {
       "name": "search_tenders",
