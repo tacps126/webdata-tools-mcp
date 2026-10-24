@@ -477,6 +477,33 @@ export const TOOLS = [
     limit: (a) => a.max_items,
   },
   {
+    name: 'get_india_district_notices',
+    actor: 'tacps126/india-district-notices',
+    title: "Get notices from India's district websites",
+    price: 'about $0.003 per notice',
+    description:
+      "Tenders, recruitment and announcements from the official websites of India's 748 districts (collector offices), by state and district: title (often Hindi or the state language), date, district, state, official PDF link. Newest first.",
+    shape: {
+      states: strings('States or union territories by name or ISO code, e.g. ["Bihar"], ["IN-UP"]. Up to 120 districts per call.').optional(),
+      districts: strings('District names, e.g. ["Patna", "Lucknow"].').optional(),
+      categories: z.array(z.enum(['tenders', 'recruitment', 'announcements'])).default(['tenders']).describe('Notice lists to read.'),
+      keywords: strings('Whole words matched on titles.').optional(),
+      posted_within_days: z.number().int().min(0).max(3650).default(30).describe('Only notices dated in the last N days (0 = any).'),
+      max_items: maxItems(30, 500),
+    },
+    check: (a) => (!(a.states?.length || a.districts?.length) ? 'Give states or districts.' : undefined),
+    map: (a) =>
+      clean({
+        states: a.states,
+        districts: a.districts,
+        categories: a.categories,
+        keywords: a.keywords,
+        postedWithinDays: a.posted_within_days,
+        maxItems: a.max_items,
+      }),
+    limit: (a) => a.max_items,
+  },
+  {
     name: 'search_tenders',
     actor: 'tacps126/tenders-radar',
     title: 'Search public tenders and contract awards',

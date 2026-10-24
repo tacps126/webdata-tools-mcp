@@ -2043,6 +2043,136 @@
       }
     },
     {
+      "name": "get_india_district_notices",
+      "title": "Get notices from India's district websites",
+      "description": "Tenders, recruitment and announcements from the official websites of India's 748 districts (collector offices), by state and district: title (often Hindi or the state language), date, district, state, official PDF link. Newest first. Runs the Apify Actor tacps126/india-district-notices on your Apify account (about $0.003 per notice; spend per call is capped at $0.5).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "states": {
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "States or union territories by name or ISO code, e.g. [\"Bihar\"], [\"IN-UP\"]. Up to 120 districts per call."
+          },
+          "districts": {
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "District names, e.g. [\"Patna\", \"Lucknow\"]."
+          },
+          "categories": {
+            "default": [
+              "tenders"
+            ],
+            "description": "Notice lists to read.",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "tenders",
+                "recruitment",
+                "announcements"
+              ]
+            }
+          },
+          "keywords": {
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "Whole words matched on titles."
+          },
+          "posted_within_days": {
+            "default": 30,
+            "description": "Only notices dated in the last N days (0 = any).",
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 3650
+          },
+          "max_items": {
+            "default": 30,
+            "description": "Maximum results to return (default 30, max 500). Cost scales with this.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 500
+          },
+          "extra_input": {
+            "description": "Advanced: extra Actor input fields, merged over the defaults.",
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          }
+        },
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "tool": {
+            "type": "string",
+            "description": "Name of the tool that produced the result."
+          },
+          "count": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records the Actor returned."
+          },
+          "shown": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records included in `items` (can be lower than count when the result is long)."
+          },
+          "truncated": {
+            "type": "boolean",
+            "description": "True when records were left out to keep the result short; ask for fewer items."
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "propertyNames": {
+                "type": "string"
+              },
+              "additionalProperties": {}
+            },
+            "description": "The records. Long text fields are shortened to 600 characters."
+          }
+        },
+        "required": [
+          "tool",
+          "count",
+          "shown",
+          "truncated",
+          "items"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
+      },
+      "annotations": {
+        "title": "Get notices from India's district websites",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
       "name": "search_tenders",
       "title": "Search public tenders and contract awards",
       "description": "Public procurement notices from official portals in one schema: US SAM.gov (federal), EU TED (every EU/EEA country), UK Find a Tender and Contracts Finder, France BOAMP, Spain PLACSP, Germany, Netherlands TenderNed, Canada CanadaBuys, Colombia SECOP II, Ukraine Prozorro, EU institutions (Funding & Tenders portal), Australia AusTender (awards) and South Africa eTenders. Title, buyer, deadline, value and currency, CPV/UNSPSC/NAICS codes, sectors, buyer contacts, suppliers for awards, notice link. Open tenders by default. Runs the Apify Actor tacps126/tenders-radar on your Apify account (about $0.004 per notice; spend per call is capped at $0.5).",

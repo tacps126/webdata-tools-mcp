@@ -30,7 +30,7 @@ export function buildManifest({ withInputSchemas = false } = {}) {
   display_name: 'Web Data Tools',
   icon: 'icon.png',
   version: pkg.version,
-  description: 'Twenty-five web-data tools for agents: jobs, hiring signals, news, public tenders, grants and funding calls, government updates, weather and disaster alerts, research papers and patents, field trends and idea validation, reviews, Reddit leads, contacts, real estate, Shopify, exhibitors, events.',
+  description: 'Twenty-six web-data tools for agents: jobs, hiring signals, news, public tenders, Indian district notices, grants and funding calls, government updates, weather and disaster alerts, research papers and patents, field trends and idea validation, reviews, Reddit leads, contacts, real estate, Shopify, exhibitors, events.',
   long_description:
     'Runs ready-made Apify Actors (published by tacps126) on your own Apify account and returns clean JSON. ' +
     'Covers job postings from career pages, remote-job feeds, Wellfound, Dice, Indeed and Naukri, hiring signals, Google News, official government updates (US Federal Register, GOV.UK, European Commission, SEC, RBI, SEBI), public tenders and contract awards (US SAM.gov, EU TED, UK, France, Spain, Germany, Netherlands, Canada, Colombia, Australia, South Africa), research papers, preprints and patents, technology-field landscapes and idea validation, Trustpilot and app-store reviews, ' +
