@@ -415,6 +415,40 @@ export const TOOLS = [
     limit: (a) => a.max_items,
   },
   {
+    name: 'search_tenders',
+    actor: 'tacps126/tenders-radar',
+    title: 'Search public tenders and contract awards',
+    price: 'about $0.004 per notice',
+    description:
+      'Public procurement notices from official portals in one schema: EU TED (every EU/EEA country), UK Find a Tender and Contracts Finder, France BOAMP, Spain PLACSP, Germany, Netherlands TenderNed, Canada CanadaBuys, Colombia SECOP II, Australia AusTender (awards) and South Africa eTenders. Title, buyer, deadline, value and currency, CPV/UNSPSC codes, sectors, suppliers for awards, notice link. Open tenders by default.',
+    shape: {
+      keywords: strings('Words matched literally on title and description; add translations for non-English portals, e.g. ["software", "logiciel"].').optional(),
+      sectors: z.array(z.enum(['banking', 'securities', 'insurance', 'tax', 'trade', 'health', 'food', 'energy', 'environment', 'tech', 'transport', 'employment', 'housing', 'defense', 'education'])).optional().describe('Sectors from CPV/UNSPSC codes and multilingual terms (housing = construction and real estate).'),
+      countries: z.array(z.string()).optional().describe('ISO codes, e.g. ["GB", "FR", "CA"], or "EU" for every EU/EEA country.'),
+      notice_types: z.array(z.enum(['tender', 'award', 'planning', 'amendment', 'cancellation'])).default(['tender']).describe('tender = open opportunities; award = who won and for how much.'),
+      codes: z.array(z.string()).optional().describe('CPV or UNSPSC code prefixes, e.g. ["72"] for IT services.'),
+      min_value: z.number().optional().describe('Minimum estimated value in the notice currency.'),
+      posted_within_days: z.number().int().min(1).max(90).default(3).describe('Only notices from the last N days.'),
+      max_items: maxItems(30, 500),
+    },
+    check: (a) =>
+      !(a.keywords?.length || a.sectors?.length || a.countries?.length || a.codes?.length)
+        ? 'Give keywords, sectors, countries or codes so the search stays focused.'
+        : undefined,
+    map: (a) =>
+      clean({
+        keywords: a.keywords,
+        sectors: a.sectors,
+        countries: a.countries,
+        noticeTypes: a.notice_types,
+        codes: a.codes,
+        minValue: a.min_value,
+        postedWithinDays: a.posted_within_days,
+        maxItems: a.max_items,
+      }),
+    limit: (a) => a.max_items,
+  },
+  {
     name: 'analyze_field',
     actor: 'tacps126/innovation-radar',
     title: 'Analyse a technology or research field',

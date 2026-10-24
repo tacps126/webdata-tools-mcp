@@ -30,10 +30,10 @@ export function buildManifest({ withInputSchemas = false } = {}) {
   display_name: 'Web Data Tools',
   icon: 'icon.png',
   version: pkg.version,
-  description: 'Twenty-two web-data tools for agents: jobs, hiring signals, news, government updates, research papers and patents, field trends and idea validation, reviews, Reddit leads, contacts, real estate, Shopify, exhibitors, events.',
+  description: 'Twenty-three web-data tools for agents: jobs, hiring signals, news, public tenders, government updates, research papers and patents, field trends and idea validation, reviews, Reddit leads, contacts, real estate, Shopify, exhibitors, events.',
   long_description:
     'Runs ready-made Apify Actors (published by tacps126) on your own Apify account and returns clean JSON. ' +
-    'Covers job postings from career pages, remote-job feeds, Wellfound, Dice, Indeed and Naukri, hiring signals, Google News, official government updates (US Federal Register, GOV.UK, European Commission, SEC, RBI, SEBI), research papers, preprints and patents, technology-field landscapes and idea validation, Trustpilot and app-store reviews, ' +
+    'Covers job postings from career pages, remote-job feeds, Wellfound, Dice, Indeed and Naukri, hiring signals, Google News, official government updates (US Federal Register, GOV.UK, European Commission, SEC, RBI, SEBI), public tenders and contract awards (EU TED, UK, France, Spain, Germany, Netherlands, Canada, Colombia, Australia, South Africa), research papers, preprints and patents, technology-field landscapes and idea validation, Trustpilot and app-store reviews, ' +
     'Reddit mentions and buying-intent leads, website contact details, German property listings, Shopify products and store analysis, trade-show exhibitor lists and upcoming events. ' +
     'Two analyst prompts (field-opportunity-analysis, idea-validation) turn the research tools into a model-agnostic innovation analyst. ' +
     'You pay Apify per result (about $1-3 per 1,000); every call has a spend cap.',

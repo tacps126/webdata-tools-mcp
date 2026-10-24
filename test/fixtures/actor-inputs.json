@@ -379,6 +379,27 @@
     "tenantId",
     "debug"
   ],
+  "tacps126/tenders-radar": [
+    "keywords",
+    "sectors",
+    "countries",
+    "noticeTypes",
+    "openOnly",
+    "codes",
+    "minValue",
+    "maxValue",
+    "postedWithinDays",
+    "sources",
+    "excludeKeywords",
+    "maxItemsPerSource",
+    "maxItems",
+    "onlyNew",
+    "monitorName",
+    "delivery",
+    "googleServiceAccountJson",
+    "tenantId",
+    "debug"
+  ],
   "tacps126/innovation-radar": [
     "mode",
     "fields",
