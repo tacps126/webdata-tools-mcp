@@ -388,19 +388,20 @@ export const TOOLS = [
     title: 'Search official government updates',
     price: 'about $0.003 per update',
     description:
-      'Official government updates in one list: US Federal Register rules, proposed rules (with comment deadlines) and notices, SEC press releases, GOV.UK news, guidance and consultations, European Commission press releases, RBI and SEBI circulars, plus any RSS feed you name. Filter by sector, keyword, authority and type; every update is tagged with its sectors.',
+      'Official government updates in one list: US Federal Register rules, proposed rules (with comment deadlines) and notices, SEC press releases, GOV.UK news, guidance and consultations, European Commission press releases, Indian regulators (RBI, SEBI, TRAI, CERC, CDSCO, DGFT) circulars, orders and notifications, plus any RSS feed or official "What\'s new" list page you name. Filter by sector, keyword, authority and type; every update is tagged with its sectors.',
     shape: {
       keywords: strings('Words or phrases matched on title and summary, e.g. "AI", "stablecoin", "battery".').optional(),
       sectors: z.array(z.enum(['banking', 'securities', 'insurance', 'tax', 'trade', 'health', 'food', 'energy', 'environment', 'tech', 'transport', 'employment', 'housing', 'procurement', 'defense', 'education'])).optional().describe('Only updates about these sectors.'),
       jurisdictions: z.array(z.enum(['us', 'uk', 'eu', 'in'])).optional().describe('Countries / regions (default: all).'),
       types: z.array(z.string()).optional().describe('Update types, e.g. rule, proposed-rule, notice, guidance, consultation, circular, press-release.'),
       feed_urls: z.array(z.string().url()).optional().describe('Extra RSS/Atom feeds to read with the same filters.'),
+      page_urls: z.array(z.string().url()).optional().describe('Official list pages (circulars, notifications, "What\'s new") to read like a feed; robots.txt is respected.'),
       posted_within_days: z.number().int().min(1).max(365).default(7).describe('Only updates from the last N days.'),
       max_items: maxItems(30, 500),
     },
     check: (a) =>
-      !(a.keywords?.length || a.sectors?.length || a.jurisdictions?.length || a.feed_urls?.length)
-        ? 'Give keywords, sectors, jurisdictions or feed_urls so the search stays focused.'
+      !(a.keywords?.length || a.sectors?.length || a.jurisdictions?.length || a.feed_urls?.length || a.page_urls?.length)
+        ? 'Give keywords, sectors, jurisdictions, feed_urls or page_urls so the search stays focused.'
         : undefined,
     map: (a) =>
       clean({
@@ -409,7 +410,34 @@ export const TOOLS = [
         jurisdictions: a.jurisdictions,
         types: a.types,
         feedUrls: a.feed_urls,
+        pageUrls: a.page_urls,
         postedWithinDays: a.posted_within_days,
+        maxItems: a.max_items,
+      }),
+    limit: (a) => a.max_items,
+  },
+  {
+    name: 'get_alerts',
+    actor: 'tacps126/alerts-radar',
+    title: 'Get official weather and disaster warnings',
+    price: 'about $0.002 per alert',
+    description:
+      'Official warnings in force from national services in one schema: US National Weather Service, MeteoAlarm (38 European countries), India NDMA (IMD, CWC, state disaster authorities), Brazil INMET, plus worldwide GDACS disasters and USGS earthquakes. Event, hazard type, severity, areas, start and expiry, instructions, issuing service. Most severe first.',
+    shape: {
+      countries: z.array(z.string()).optional().describe('ISO codes or names, e.g. ["IN"], ["US", "DE"], or "EU" for every MeteoAlarm country.'),
+      hazards: z.array(z.enum(['weather', 'flood', 'storm', 'heat', 'cold', 'fire', 'drought', 'earthquake', 'tsunami', 'volcano', 'landslide', 'health', 'environment', 'transport', 'infrastructure', 'security', 'other'])).optional().describe('Only these hazard types.'),
+      min_severity: z.enum(['minor', 'moderate', 'severe', 'extreme']).default('moderate').describe('Lowest CAP severity kept.'),
+      areas: strings('Area names to match: a state, district, county or city, e.g. ["Kerala", "Texas"].').optional(),
+      sent_within_hours: z.number().int().min(1).max(720).default(24).describe('Only alerts issued in the last N hours.'),
+      max_items: maxItems(30, 500),
+    },
+    map: (a) =>
+      clean({
+        countries: a.countries,
+        hazards: a.hazards,
+        minSeverity: a.min_severity,
+        areas: a.areas,
+        sentWithinHours: a.sent_within_hours,
         maxItems: a.max_items,
       }),
     limit: (a) => a.max_items,

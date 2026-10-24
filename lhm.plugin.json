@@ -1,7 +1,7 @@
 {
   "author": "tacps126",
   "authorUrl": "https://github.com/tacps126",
-  "description": "MCP server for AI agents: job postings (career sites, remote, startups, US tech, Indeed, Naukri), hiring signals, Google News, official government updates, public tenders and contract awards, research papers and patents, technology-field trends and idea validation (with analyst prompts), Trustpilot and app reviews, Reddit mentions and buying-intent leads, website contacts, German real estate, Shopify products and store analysis, trade-show exhibitors and upcoming events. Runs ready-made Apify Actors with your own Apify token.",
+  "description": "MCP server for AI agents: job postings (career sites, remote, startups, US tech, Indeed, Naukri), hiring signals, Google News, official government updates, public tenders and contract awards, weather and disaster alerts, research papers and patents, technology-field trends and idea validation (with analyst prompts), Trustpilot and app reviews, Reddit mentions and buying-intent leads, website contacts, German real estate, Shopify products and store analysis, trade-show exhibitors and upcoming events. Runs ready-made Apify Actors with your own Apify token.",
   "homepage": "https://github.com/tacps126/webdata-tools-mcp",
   "icon": "https://raw.githubusercontent.com/tacps126/webdata-tools-mcp/main/icon.png",
   "identifier": "tacps126-webdata-tools-mcp",
@@ -61,7 +61,9 @@
     "regulatory",
     "compliance",
     "tenders",
-    "procurement"
+    "procurement",
+    "alerts",
+    "weather"
   ],
   "tools": [
     {
@@ -1590,7 +1592,7 @@
     {
       "name": "search_gov_updates",
       "title": "Search official government updates",
-      "description": "Official government updates in one list: US Federal Register rules, proposed rules (with comment deadlines) and notices, SEC press releases, GOV.UK news, guidance and consultations, European Commission press releases, RBI and SEBI circulars, plus any RSS feed you name. Filter by sector, keyword, authority and type; every update is tagged with its sectors. Runs the Apify Actor tacps126/gov-radar on your Apify account (about $0.003 per update; spend per call is capped at $0.5).",
+      "description": "Official government updates in one list: US Federal Register rules, proposed rules (with comment deadlines) and notices, SEC press releases, GOV.UK news, guidance and consultations, European Commission press releases, Indian regulators (RBI, SEBI, TRAI, CERC, CDSCO, DGFT) circulars, orders and notifications, plus any RSS feed or official \"What's new\" list page you name. Filter by sector, keyword, authority and type; every update is tagged with its sectors. Runs the Apify Actor tacps126/gov-radar on your Apify account (about $0.003 per update; spend per call is capped at $0.5).",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -1650,6 +1652,14 @@
           },
           "feed_urls": {
             "description": "Extra RSS/Atom feeds to read with the same filters.",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uri"
+            }
+          },
+          "page_urls": {
+            "description": "Official list pages (circulars, notifications, \"What's new\") to read like a feed; robots.txt is respected.",
             "type": "array",
             "items": {
               "type": "string",
@@ -1728,6 +1738,147 @@
       },
       "annotations": {
         "title": "Search official government updates",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "get_alerts",
+      "title": "Get official weather and disaster warnings",
+      "description": "Official warnings in force from national services in one schema: US National Weather Service, MeteoAlarm (38 European countries), India NDMA (IMD, CWC, state disaster authorities), Brazil INMET, plus worldwide GDACS disasters and USGS earthquakes. Event, hazard type, severity, areas, start and expiry, instructions, issuing service. Most severe first. Runs the Apify Actor tacps126/alerts-radar on your Apify account (about $0.002 per alert; spend per call is capped at $0.5).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "countries": {
+            "description": "ISO codes or names, e.g. [\"IN\"], [\"US\", \"DE\"], or \"EU\" for every MeteoAlarm country.",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "hazards": {
+            "description": "Only these hazard types.",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "weather",
+                "flood",
+                "storm",
+                "heat",
+                "cold",
+                "fire",
+                "drought",
+                "earthquake",
+                "tsunami",
+                "volcano",
+                "landslide",
+                "health",
+                "environment",
+                "transport",
+                "infrastructure",
+                "security",
+                "other"
+              ]
+            }
+          },
+          "min_severity": {
+            "default": "moderate",
+            "description": "Lowest CAP severity kept.",
+            "type": "string",
+            "enum": [
+              "minor",
+              "moderate",
+              "severe",
+              "extreme"
+            ]
+          },
+          "areas": {
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "Area names to match: a state, district, county or city, e.g. [\"Kerala\", \"Texas\"]."
+          },
+          "sent_within_hours": {
+            "default": 24,
+            "description": "Only alerts issued in the last N hours.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 720
+          },
+          "max_items": {
+            "default": 30,
+            "description": "Maximum results to return (default 30, max 500). Cost scales with this.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 500
+          },
+          "extra_input": {
+            "description": "Advanced: extra Actor input fields, merged over the defaults.",
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          }
+        },
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "tool": {
+            "type": "string",
+            "description": "Name of the tool that produced the result."
+          },
+          "count": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records the Actor returned."
+          },
+          "shown": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records included in `items` (can be lower than count when the result is long)."
+          },
+          "truncated": {
+            "type": "boolean",
+            "description": "True when records were left out to keep the result short; ask for fewer items."
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "propertyNames": {
+                "type": "string"
+              },
+              "additionalProperties": {}
+            },
+            "description": "The records. Long text fields are shortened to 600 characters."
+          }
+        },
+        "required": [
+          "tool",
+          "count",
+          "shown",
+          "truncated",
+          "items"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
+      },
+      "annotations": {
+        "title": "Get official weather and disaster warnings",
         "readOnlyHint": true,
         "destructiveHint": false,
         "idempotentHint": true,
