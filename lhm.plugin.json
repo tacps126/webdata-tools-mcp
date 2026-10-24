@@ -1,0 +1,2452 @@
+{
+  "author": "tacps126",
+  "authorUrl": "https://github.com/tacps126",
+  "description": "MCP server for AI agents: job postings (career sites, remote, startups, US tech, Indeed, Naukri), hiring signals, Google News, research papers and patents, technology-field trends and idea validation (with analyst prompts), Trustpilot and app reviews, Reddit mentions and buying-intent leads, website contacts, German real estate, Shopify products and store analysis, trade-show exhibitors and upcoming events. Runs ready-made Apify Actors with your own Apify token.",
+  "homepage": "https://github.com/tacps126/webdata-tools-mcp",
+  "icon": "https://raw.githubusercontent.com/tacps126/webdata-tools-mcp/main/icon.png",
+  "identifier": "tacps126-webdata-tools-mcp",
+  "name": "Web Data Tools",
+  "prompts": [
+    {
+      "name": "field-opportunity-analysis",
+      "title": "Find opportunities in a technology field",
+      "description": "Analyse one or more technology or research fields with analyze_field, then write ranked, evidence-backed product and business opportunities (why now, capital needed, who to talk to).",
+      "arguments": [
+        {
+          "name": "fields",
+          "description": "Fields or technologies, one per line or separated by semicolons, e.g. \"sodium-ion battery; solid state battery\".",
+          "required": true
+        },
+        {
+          "name": "audience",
+          "description": "Who the analysis is for, e.g. \"a seed-stage founder\", \"a corporate R&D team\". Default: founders, R&D leaders and investors.",
+          "required": false
+        }
+      ]
+    },
+    {
+      "name": "idea-validation",
+      "title": "Validate a product or research idea",
+      "description": "Check an idea with validate_idea (how much research already covers it, who is working on it, closest prior work, related patents), then assess novelty, timing, capital, risks and next steps.",
+      "arguments": [
+        {
+          "name": "idea",
+          "description": "The idea in a sentence or two, e.g. \"a window that generates solar power with perovskite tandem cells\".",
+          "required": true
+        }
+      ]
+    }
+  ],
+  "resources": [],
+  "tags": [
+    "mcp",
+    "model-context-protocol",
+    "apify",
+    "web-scraping",
+    "jobs",
+    "hiring-signals",
+    "google-news",
+    "trustpilot",
+    "reviews",
+    "lead-generation",
+    "trade-shows",
+    "exhibitors",
+    "events",
+    "luma",
+    "eventbrite",
+    "research",
+    "patents",
+    "innovation"
+  ],
+  "tools": [
+    {
+      "name": "search_google_news",
+      "title": "Search Google News",
+      "description": "Search Google News (any language and country) and return articles with the publisher's real article URL, publisher, date and related coverage. Supports Google operators (\"exact phrase\", -exclude, OR, intitle:) and site filters. Runs the Apify Actor tacps126/google-news on your Apify account (about $0.002 per article; spend per call is capped at $0.5).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Search query, e.g. \"generative AI\" or \"tesla -musk\"."
+          },
+          "country": {
+            "default": "US",
+            "description": "Two-letter edition country, e.g. US, GB, DE.",
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 2
+          },
+          "language": {
+            "default": "en",
+            "description": "Language code, e.g. en, de, fr.",
+            "type": "string",
+            "minLength": 2
+          },
+          "timeframe": {
+            "description": "Only articles newer than this.",
+            "type": "string",
+            "enum": [
+              "1h",
+              "1d",
+              "7d",
+              "30d",
+              "1y"
+            ]
+          },
+          "sites": {
+            "description": "Limit to these publisher domains, e.g. [\"reuters.com\"].",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "max_items": {
+            "default": 20,
+            "description": "Maximum results to return (default 20, max 200). Cost scales with this.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 200
+          },
+          "extra_input": {
+            "description": "Advanced: extra Actor input fields, merged over the defaults.",
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "tool": {
+            "type": "string",
+            "description": "Name of the tool that produced the result."
+          },
+          "count": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records the Actor returned."
+          },
+          "shown": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records included in `items` (can be lower than count when the result is long)."
+          },
+          "truncated": {
+            "type": "boolean",
+            "description": "True when records were left out to keep the result short; ask for fewer items."
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "propertyNames": {
+                "type": "string"
+              },
+              "additionalProperties": {}
+            },
+            "description": "The records. Long text fields are shortened to 600 characters."
+          }
+        },
+        "required": [
+          "tool",
+          "count",
+          "shown",
+          "truncated",
+          "items"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
+      },
+      "annotations": {
+        "title": "Search Google News",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "find_hiring_companies",
+      "title": "Find companies hiring for given roles",
+      "description": "Buying-intent signal: which companies are hiring for the roles you care about, how many roles, how fresh, and seniority/locations. Give target accounts (their jobs-page URLs on Greenhouse, Lever, Ashby, Workday, SmartRecruiters, Recruitee, Personio, Teamtailor) and/or job-search phrases to discover companies. Runs the Apify Actor tacps126/hiring-signals on your Apify account (about $0.01 per company with a matching signal; companies without one are free; spend per call is capped at $0.5).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "role_keywords": {
+            "description": "A role counts when its title contains any of these words, e.g. [\"data engineer\",\"security\"]. Empty = every role.",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "companies": {
+            "description": "Target accounts' jobs-page URLs, e.g. \"https://boards.greenhouse.io/stripe\".",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "searches": {
+            "description": "Job-search phrases to discover companies you do not know yet, e.g. \"head of security\".",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "locations": {
+            "description": "Keep roles in these locations.",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "posted_within_days": {
+            "default": 30,
+            "description": "Only roles posted in the last N days.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 365
+          },
+          "max_items": {
+            "default": 50,
+            "description": "Maximum results to return (default 50, max 500). Cost scales with this.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 500
+          },
+          "extra_input": {
+            "description": "Advanced: extra Actor input fields, merged over the defaults.",
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          }
+        },
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "tool": {
+            "type": "string",
+            "description": "Name of the tool that produced the result."
+          },
+          "count": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records the Actor returned."
+          },
+          "shown": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records included in `items` (can be lower than count when the result is long)."
+          },
+          "truncated": {
+            "type": "boolean",
+            "description": "True when records were left out to keep the result short; ask for fewer items."
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "propertyNames": {
+                "type": "string"
+              },
+              "additionalProperties": {}
+            },
+            "description": "The records. Long text fields are shortened to 600 characters."
+          }
+        },
+        "required": [
+          "tool",
+          "count",
+          "shown",
+          "truncated",
+          "items"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
+      },
+      "annotations": {
+        "title": "Find companies hiring for given roles",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "get_company_jobs",
+      "title": "Get all open jobs from company career pages",
+      "description": "All open jobs from companies in one normalized format (title, company, location with country code, remote/hybrid, seniority, salary, skills, apply URL, posted date). Give career-page URLs (the company's own careers page or its job board) or just company names; 13 job-board systems are supported (Greenhouse, Lever, Ashby, Workday, SmartRecruiters, Workable, Rippling, BambooHR, Pinpoint, Breezy, Recruitee, Personio, Teamtailor) and found automatically. Runs the Apify Actor tacps126/jobs-harvester on your Apify account (about $0.001 per job; spend per call is capped at $0.5).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "career_page_urls": {
+            "description": "Career page URLs, e.g. \"https://www.figma.com/careers\" or \"https://jobs.lever.co/spotify\".",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "company_names": {
+            "description": "Company names, e.g. [\"Datadog\", \"Ramp\"]; each is looked up on every supported job-board system.",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "title_includes": {
+            "description": "Keep jobs whose title contains any of these.",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "location_includes": {
+            "description": "Keep jobs in these locations.",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "countries": {
+            "description": "Keep jobs in these countries: ISO codes (\"US\", \"DE\") or names.",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "remote_only": {
+            "description": "Only remote jobs.",
+            "type": "boolean"
+          },
+          "posted_within_days": {
+            "description": "Only jobs posted in the last N days.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 365
+          },
+          "max_items": {
+            "default": 50,
+            "description": "Maximum results to return (default 50, max 500). Cost scales with this.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 500
+          },
+          "extra_input": {
+            "description": "Advanced: extra Actor input fields, merged over the defaults.",
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          }
+        },
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "tool": {
+            "type": "string",
+            "description": "Name of the tool that produced the result."
+          },
+          "count": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records the Actor returned."
+          },
+          "shown": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records included in `items` (can be lower than count when the result is long)."
+          },
+          "truncated": {
+            "type": "boolean",
+            "description": "True when records were left out to keep the result short; ask for fewer items."
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "propertyNames": {
+                "type": "string"
+              },
+              "additionalProperties": {}
+            },
+            "description": "The records. Long text fields are shortened to 600 characters."
+          }
+        },
+        "required": [
+          "tool",
+          "count",
+          "shown",
+          "truncated",
+          "items"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
+      },
+      "annotations": {
+        "title": "Get all open jobs from company career pages",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "find_remote_jobs",
+      "title": "Find remote jobs from company career sites and remote-job feeds",
+      "description": "Remote jobs straight from employers: hundreds of company job boards plus the Remote OK, Jobicy, Working Nomads and Himalayas feeds, keeping only roles the posting marks as remote. Normalized title, company, country, seniority, salary and skills; each job links to its source. Runs the Apify Actor tacps126/remote-jobs-scraper on your Apify account (about $0.002 per job; spend per call is capped at $0.5).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "title_includes": {
+            "description": "Keep jobs whose title contains any of these, e.g. [\"engineer\"].",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "countries": {
+            "description": "Keep jobs open to these countries: ISO codes (\"US\", \"CA\") or names.",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "posted_within_days": {
+            "description": "Only jobs posted in the last N days.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 365
+          },
+          "min_annual_salary": {
+            "description": "Minimum yearly pay in the posting's currency (jobs without pay are kept).",
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "max_items": {
+            "default": 50,
+            "description": "Maximum results to return (default 50, max 500). Cost scales with this.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 500
+          },
+          "extra_input": {
+            "description": "Advanced: extra Actor input fields, merged over the defaults.",
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          }
+        },
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "tool": {
+            "type": "string",
+            "description": "Name of the tool that produced the result."
+          },
+          "count": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records the Actor returned."
+          },
+          "shown": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records included in `items` (can be lower than count when the result is long)."
+          },
+          "truncated": {
+            "type": "boolean",
+            "description": "True when records were left out to keep the result short; ask for fewer items."
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "propertyNames": {
+                "type": "string"
+              },
+              "additionalProperties": {}
+            },
+            "description": "The records. Long text fields are shortened to 600 characters."
+          }
+        },
+        "required": [
+          "tool",
+          "count",
+          "shown",
+          "truncated",
+          "items"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
+      },
+      "annotations": {
+        "title": "Find remote jobs from company career sites and remote-job feeds",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "search_startup_jobs",
+      "title": "Search startup jobs on Wellfound (AngelList Talent)",
+      "description": "Startup jobs from Wellfound by role and city, or remote: title, startup name, size and pitch, salary and equity range, years of experience, remote or on-site, apply link. Runs the Apify Actor tacps126/wellfound-jobs-scraper on your Apify account (about $0.002 per job; spend per call is capped at $0.5).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "role": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The role, e.g. \"software engineer\", \"product manager\", \"designer\"."
+          },
+          "city": {
+            "description": "Optional city, e.g. \"San Francisco\", \"New York\", \"London\".",
+            "type": "string"
+          },
+          "remote": {
+            "default": false,
+            "description": "Only remote jobs (ignores city).",
+            "type": "boolean"
+          },
+          "max_items": {
+            "default": 50,
+            "description": "Maximum results to return (default 50, max 500). Cost scales with this.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 500
+          },
+          "extra_input": {
+            "description": "Advanced: extra Actor input fields, merged over the defaults.",
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          }
+        },
+        "required": [
+          "role"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "tool": {
+            "type": "string",
+            "description": "Name of the tool that produced the result."
+          },
+          "count": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records the Actor returned."
+          },
+          "shown": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records included in `items` (can be lower than count when the result is long)."
+          },
+          "truncated": {
+            "type": "boolean",
+            "description": "True when records were left out to keep the result short; ask for fewer items."
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "propertyNames": {
+                "type": "string"
+              },
+              "additionalProperties": {}
+            },
+            "description": "The records. Long text fields are shortened to 600 characters."
+          }
+        },
+        "required": [
+          "tool",
+          "count",
+          "shown",
+          "truncated",
+          "items"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
+      },
+      "annotations": {
+        "title": "Search startup jobs on Wellfound (AngelList Talent)",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "search_tech_jobs",
+      "title": "Search US tech jobs on Dice",
+      "description": "US tech jobs from Dice by keyword and city: title, company, location, salary text, employer type (direct hire or recruiter), Easy Apply, remote / on-site / hybrid, posted and updated dates. Runs the Apify Actor tacps126/dice-jobs-scraper on your Apify account (about $0.00055 per job; spend per call is capped at $0.5).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 1,
+            "description": "What to search for, e.g. \"data engineer\", \"java developer\"."
+          },
+          "location": {
+            "description": "Optional US city or state, e.g. \"Austin, TX\".",
+            "type": "string"
+          },
+          "remote": {
+            "default": false,
+            "description": "Only remote jobs.",
+            "type": "boolean"
+          },
+          "max_items": {
+            "default": 50,
+            "description": "Maximum results to return (default 50, max 300). Cost scales with this.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 300
+          },
+          "extra_input": {
+            "description": "Advanced: extra Actor input fields, merged over the defaults.",
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "tool": {
+            "type": "string",
+            "description": "Name of the tool that produced the result."
+          },
+          "count": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records the Actor returned."
+          },
+          "shown": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records included in `items` (can be lower than count when the result is long)."
+          },
+          "truncated": {
+            "type": "boolean",
+            "description": "True when records were left out to keep the result short; ask for fewer items."
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "propertyNames": {
+                "type": "string"
+              },
+              "additionalProperties": {}
+            },
+            "description": "The records. Long text fields are shortened to 600 characters."
+          }
+        },
+        "required": [
+          "tool",
+          "count",
+          "shown",
+          "truncated",
+          "items"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
+      },
+      "annotations": {
+        "title": "Search US tech jobs on Dice",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "search_indeed_jobs",
+      "title": "Search Indeed jobs",
+      "description": "Search Indeed job listings by keyword and location in 9 countries (us, uk, ca, au, ie, de, fr, nl, sg): title, company, location, salary, job type, benefits, skills, apply link and (with details) the full job description. Runs the Apify Actor tacps126/indeed-jobs on your Apify account (about $0.003 per job; spend per call is capped at $0.5).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Job title, skill or company, e.g. \"react developer\"."
+          },
+          "location": {
+            "description": "City, state, postcode or \"Remote\". Empty = whole country.",
+            "type": "string"
+          },
+          "country": {
+            "default": "us",
+            "description": "Indeed country site.",
+            "type": "string",
+            "enum": [
+              "us",
+              "uk",
+              "ca",
+              "au",
+              "ie",
+              "de",
+              "fr",
+              "nl",
+              "sg"
+            ]
+          },
+          "date_posted_days": {
+            "description": "Only jobs posted in the last N days.",
+            "type": "string",
+            "enum": [
+              "1",
+              "3",
+              "7",
+              "14"
+            ]
+          },
+          "job_type": {
+            "description": "Only this employment type.",
+            "type": "string",
+            "enum": [
+              "fulltime",
+              "parttime",
+              "contract",
+              "temporary",
+              "internship"
+            ]
+          },
+          "include_details": {
+            "default": true,
+            "description": "Add each job's full description. Off = search-card summary only.",
+            "type": "boolean"
+          },
+          "max_items": {
+            "default": 30,
+            "description": "Maximum results to return (default 30, max 500). Cost scales with this.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 500
+          },
+          "extra_input": {
+            "description": "Advanced: extra Actor input fields, merged over the defaults.",
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "tool": {
+            "type": "string",
+            "description": "Name of the tool that produced the result."
+          },
+          "count": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records the Actor returned."
+          },
+          "shown": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records included in `items` (can be lower than count when the result is long)."
+          },
+          "truncated": {
+            "type": "boolean",
+            "description": "True when records were left out to keep the result short; ask for fewer items."
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "propertyNames": {
+                "type": "string"
+              },
+              "additionalProperties": {}
+            },
+            "description": "The records. Long text fields are shortened to 600 characters."
+          }
+        },
+        "required": [
+          "tool",
+          "count",
+          "shown",
+          "truncated",
+          "items"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
+      },
+      "annotations": {
+        "title": "Search Indeed jobs",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "search_naukri_jobs",
+      "title": "Search Naukri.com jobs (India)",
+      "description": "Jobs from Naukri.com, India's largest job board, by keyword and city: title, company, AmbitionBox rating, experience range in years, skills, and (with details) the full description, salary in rupees, industry, department and qualifications. Runs the Apify Actor tacps126/naukri-jobs-scraper on your Apify account (about $0.0015 per job; spend per call is capped at $0.5).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Job title, skill or company, e.g. \"python developer\"."
+          },
+          "location": {
+            "description": "City in India, e.g. \"Bangalore\", \"Pune\", \"Delhi NCR\". Empty = all of India.",
+            "type": "string"
+          },
+          "date_posted_days": {
+            "description": "Only jobs posted in the last N days.",
+            "type": "string",
+            "enum": [
+              "1",
+              "3",
+              "7",
+              "15",
+              "30"
+            ]
+          },
+          "include_details": {
+            "default": true,
+            "description": "Open each job for the full description, salary, industry and qualifications. Off = faster, search-card fields only.",
+            "type": "boolean"
+          },
+          "max_items": {
+            "default": 30,
+            "description": "Maximum results to return (default 30, max 500). Cost scales with this.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 500
+          },
+          "extra_input": {
+            "description": "Advanced: extra Actor input fields, merged over the defaults.",
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "tool": {
+            "type": "string",
+            "description": "Name of the tool that produced the result."
+          },
+          "count": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records the Actor returned."
+          },
+          "shown": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records included in `items` (can be lower than count when the result is long)."
+          },
+          "truncated": {
+            "type": "boolean",
+            "description": "True when records were left out to keep the result short; ask for fewer items."
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "propertyNames": {
+                "type": "string"
+              },
+              "additionalProperties": {}
+            },
+            "description": "The records. Long text fields are shortened to 600 characters."
+          }
+        },
+        "required": [
+          "tool",
+          "count",
+          "shown",
+          "truncated",
+          "items"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
+      },
+      "annotations": {
+        "title": "Search Naukri.com jobs (India)",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "get_trustpilot_reviews",
+      "title": "Get Trustpilot reviews and company rating",
+      "description": "Trustpilot reviews for one or more companies (rating, title, text, reviewer, country, date, company reply) plus the company's TrustScore and review counts. Filter by stars, language, verified and date period. Runs the Apify Actor tacps126/trustpilot-reviews on your Apify account (about $0.0005 per review; company profile free; spend per call is capped at $0.5).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "companies": {
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "Company domains or Trustpilot URLs, e.g. \"apify.com\"."
+          },
+          "star_ratings": {
+            "description": "Only these ratings, e.g. [\"1\",\"2\"] for complaints.",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "1",
+                "2",
+                "3",
+                "4",
+                "5"
+              ]
+            }
+          },
+          "sort": {
+            "default": "recency",
+            "description": "Newest reviews first (recency) or most relevant first.",
+            "type": "string",
+            "enum": [
+              "recency",
+              "relevance"
+            ]
+          },
+          "search": {
+            "description": "Only reviews containing this text.",
+            "type": "string"
+          },
+          "date_period": {
+            "description": "Only reviews from this period.",
+            "type": "string",
+            "enum": [
+              "last30days",
+              "last3months",
+              "last6months"
+            ]
+          },
+          "max_reviews": {
+            "default": 50,
+            "description": "Maximum results to return (default 50, max 500). Cost scales with this.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 500
+          },
+          "extra_input": {
+            "description": "Advanced: extra Actor input fields, merged over the defaults.",
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          }
+        },
+        "required": [
+          "companies"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "tool": {
+            "type": "string",
+            "description": "Name of the tool that produced the result."
+          },
+          "count": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records the Actor returned."
+          },
+          "shown": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records included in `items` (can be lower than count when the result is long)."
+          },
+          "truncated": {
+            "type": "boolean",
+            "description": "True when records were left out to keep the result short; ask for fewer items."
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "propertyNames": {
+                "type": "string"
+              },
+              "additionalProperties": {}
+            },
+            "description": "The records. Long text fields are shortened to 600 characters."
+          }
+        },
+        "required": [
+          "tool",
+          "count",
+          "shown",
+          "truncated",
+          "items"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
+      },
+      "annotations": {
+        "title": "Get Trustpilot reviews and company rating",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "get_app_reviews",
+      "title": "Get App Store and Google Play reviews",
+      "description": "Reviews from the Apple App Store and Google Play in one dataset: rating, text, author, date, app version, developer reply, sentiment. Mix both stores and several countries. Runs the Apify Actor tacps126/app-reviews on your Apify account (about $0.0002 per review; spend per call is capped at $0.5).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "apps": {
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "App Store / Google Play links, App Store ids (\"id324684580\") or Android package names (\"com.spotify.music\")."
+          },
+          "countries": {
+            "default": [
+              "us"
+            ],
+            "description": "Two-letter store countries, e.g. [\"us\",\"gb\"].",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 2
+            }
+          },
+          "star_ratings": {
+            "description": "Only these ratings, e.g. [\"1\",\"2\"].",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "1",
+                "2",
+                "3",
+                "4",
+                "5"
+              ]
+            }
+          },
+          "max_items": {
+            "default": 100,
+            "description": "Maximum results to return (default 100, max 2000). Cost scales with this.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 2000
+          },
+          "extra_input": {
+            "description": "Advanced: extra Actor input fields, merged over the defaults.",
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          }
+        },
+        "required": [
+          "apps"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "tool": {
+            "type": "string",
+            "description": "Name of the tool that produced the result."
+          },
+          "count": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records the Actor returned."
+          },
+          "shown": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records included in `items` (can be lower than count when the result is long)."
+          },
+          "truncated": {
+            "type": "boolean",
+            "description": "True when records were left out to keep the result short; ask for fewer items."
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "propertyNames": {
+                "type": "string"
+              },
+              "additionalProperties": {}
+            },
+            "description": "The records. Long text fields are shortened to 600 characters."
+          }
+        },
+        "required": [
+          "tool",
+          "count",
+          "shown",
+          "truncated",
+          "items"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
+      },
+      "annotations": {
+        "title": "Get App Store and Google Play reviews",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "search_reddit",
+      "title": "Search Reddit posts and comments",
+      "description": "Reddit posts (and optionally comments) by keyword, subreddit or user: title, text, author, subreddit, score, links and dates. Good for brand and topic monitoring. Runs the Apify Actor tacps126/reddit-monitor on your Apify account (about $0.001 per post or comment; spend per call is capped at $0.5).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "keywords": {
+            "description": "Search all of Reddit; \"exact phrase\" works.",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "subreddits": {
+            "description": "Subreddit names, e.g. [\"webscraping\"].",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "sort": {
+            "default": "new",
+            "description": "Result order.",
+            "type": "string",
+            "enum": [
+              "new",
+              "hot",
+              "top",
+              "relevance"
+            ]
+          },
+          "time": {
+            "default": "week",
+            "description": "Time window for keyword searches.",
+            "type": "string",
+            "enum": [
+              "hour",
+              "day",
+              "week",
+              "month",
+              "year",
+              "all"
+            ]
+          },
+          "include_comments": {
+            "default": false,
+            "description": "Also return comments of the matched posts (more results, higher cost).",
+            "type": "boolean"
+          },
+          "max_items": {
+            "default": 50,
+            "description": "Maximum results to return (default 50, max 500). Cost scales with this.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 500
+          },
+          "extra_input": {
+            "description": "Advanced: extra Actor input fields, merged over the defaults.",
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          }
+        },
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "tool": {
+            "type": "string",
+            "description": "Name of the tool that produced the result."
+          },
+          "count": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records the Actor returned."
+          },
+          "shown": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records included in `items` (can be lower than count when the result is long)."
+          },
+          "truncated": {
+            "type": "boolean",
+            "description": "True when records were left out to keep the result short; ask for fewer items."
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "propertyNames": {
+                "type": "string"
+              },
+              "additionalProperties": {}
+            },
+            "description": "The records. Long text fields are shortened to 600 characters."
+          }
+        },
+        "required": [
+          "tool",
+          "count",
+          "shown",
+          "truncated",
+          "items"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
+      },
+      "annotations": {
+        "title": "Search Reddit posts and comments",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "find_reddit_leads",
+      "title": "Find buying-intent posts on Reddit",
+      "description": "Reddit posts and comments where people ask for a tool like yours, look for an alternative to a competitor, compare options or complain. Each lead is tagged with its intent (recommendation_request, alternative_seeking, comparison, pain_point) and the phrase that showed it. Runs the Apify Actor tacps126/reddit-lead-finder on your Apify account (about $0.002 per lead plus $0.0001 per post read; spend per call is capped at $0.5).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "categories": {
+            "description": "What you sell, as buyers say it, e.g. [\"CRM\", \"invoice software\"].",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "competitors": {
+            "description": "Products whose users you want, e.g. [\"HubSpot\"].",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "subreddits": {
+            "description": "Only search these subreddits, e.g. [\"smallbusiness\", \"SaaS\"].",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "time": {
+            "default": "month",
+            "description": "How far back to look.",
+            "type": "string",
+            "enum": [
+              "day",
+              "week",
+              "month",
+              "year"
+            ]
+          },
+          "max_items": {
+            "default": 30,
+            "description": "Maximum results to return (default 30, max 300). Cost scales with this.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 300
+          },
+          "extra_input": {
+            "description": "Advanced: extra Actor input fields, merged over the defaults.",
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          }
+        },
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "tool": {
+            "type": "string",
+            "description": "Name of the tool that produced the result."
+          },
+          "count": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records the Actor returned."
+          },
+          "shown": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records included in `items` (can be lower than count when the result is long)."
+          },
+          "truncated": {
+            "type": "boolean",
+            "description": "True when records were left out to keep the result short; ask for fewer items."
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "propertyNames": {
+                "type": "string"
+              },
+              "additionalProperties": {}
+            },
+            "description": "The records. Long text fields are shortened to 600 characters."
+          }
+        },
+        "required": [
+          "tool",
+          "count",
+          "shown",
+          "truncated",
+          "items"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
+      },
+      "annotations": {
+        "title": "Find buying-intent posts on Reddit",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "search_research",
+      "title": "Search papers, preprints and patents",
+      "description": "Papers, preprints and patents from OpenAlex, arXiv, PubMed and Europe PMC in one deduplicated list, newest first or most influential first: title, abstract, authors and affiliations, venue, DOI, PDF link, citations, citations per year, field-normalized impact (top 1% / 10%), open-access status, and for patents the number, applicants and IPC/CPC classes. Retracted papers are left out. Runs the Apify Actor tacps126/research-radar on your Apify account (about $0.003 per result; spend per call is capped at $0.5).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "queries": {
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "Topics, keywords or phrases, e.g. \"solid state battery\"."
+          },
+          "sources": {
+            "description": "Which sources to search. Default: openalex, arxiv, pubmed, europepmc, patents.",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "openalex",
+                "arxiv",
+                "pubmed",
+                "europepmc",
+                "patents",
+                "crossref"
+              ]
+            }
+          },
+          "posted_within_days": {
+            "description": "Only results published in the last N days.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 3650
+          },
+          "open_access_only": {
+            "default": false,
+            "description": "Only papers that are free to read.",
+            "type": "boolean"
+          },
+          "sort_by": {
+            "default": "newest",
+            "description": "newest first, most cited, or highest field-normalized impact (influential work).",
+            "type": "string",
+            "enum": [
+              "newest",
+              "citations",
+              "impact"
+            ]
+          },
+          "max_items": {
+            "default": 30,
+            "description": "Maximum results to return (default 30, max 500). Cost scales with this.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 500
+          },
+          "extra_input": {
+            "description": "Advanced: extra Actor input fields, merged over the defaults.",
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          }
+        },
+        "required": [
+          "queries"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "tool": {
+            "type": "string",
+            "description": "Name of the tool that produced the result."
+          },
+          "count": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records the Actor returned."
+          },
+          "shown": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records included in `items` (can be lower than count when the result is long)."
+          },
+          "truncated": {
+            "type": "boolean",
+            "description": "True when records were left out to keep the result short; ask for fewer items."
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "propertyNames": {
+                "type": "string"
+              },
+              "additionalProperties": {}
+            },
+            "description": "The records. Long text fields are shortened to 600 characters."
+          }
+        },
+        "required": [
+          "tool",
+          "count",
+          "shown",
+          "truncated",
+          "items"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
+      },
+      "annotations": {
+        "title": "Search papers, preprints and patents",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "analyze_field",
+      "title": "Analyse a technology or research field",
+      "description": "A landscape of a technology or research field from open research data: an opportunity score (0-100) with its reasons, momentum, lab-to-market gap and geographic concentration; works per year and growth stage; industry participation and the top companies; key researchers, institutions, countries and funders; rising sub-topics, standout recent work and related patents. Several fields come back ranked. For written opportunities, use the field-opportunity-analysis prompt. Runs the Apify Actor tacps126/innovation-radar on your Apify account (about $0.03 per field; spend per call is capped at $0.5).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "fields": {
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "Fields or technologies, e.g. \"solid state battery\", \"CRISPR base editing\"."
+          },
+          "years": {
+            "default": 10,
+            "description": "Years of history for the trend.",
+            "type": "integer",
+            "minimum": 2,
+            "maximum": 40
+          },
+          "extra_input": {
+            "description": "Advanced: extra Actor input fields, merged over the defaults.",
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          }
+        },
+        "required": [
+          "fields"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "tool": {
+            "type": "string",
+            "description": "Name of the tool that produced the result."
+          },
+          "count": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records the Actor returned."
+          },
+          "shown": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records included in `items` (can be lower than count when the result is long)."
+          },
+          "truncated": {
+            "type": "boolean",
+            "description": "True when records were left out to keep the result short; ask for fewer items."
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "propertyNames": {
+                "type": "string"
+              },
+              "additionalProperties": {}
+            },
+            "description": "The records. Long text fields are shortened to 600 characters."
+          }
+        },
+        "required": [
+          "tool",
+          "count",
+          "shown",
+          "truncated",
+          "items"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
+      },
+      "annotations": {
+        "title": "Analyse a technology or research field",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "validate_idea",
+      "title": "Check how new or crowded an idea is",
+      "description": "How much research already covers a product or research idea: matching works, works in the last two years, crowdedness (open, early, active, crowded), growth, who is working on it (researchers, institutions, companies), the closest prior work and related patents. For a written assessment, use the idea-validation prompt. Runs the Apify Actor tacps126/innovation-radar on your Apify account (about $0.03 per idea; spend per call is capped at $0.5).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "ideas": {
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "Ideas in plain words, e.g. \"a window that generates solar power with perovskite tandem cells\"."
+          },
+          "extra_input": {
+            "description": "Advanced: extra Actor input fields, merged over the defaults.",
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          }
+        },
+        "required": [
+          "ideas"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "tool": {
+            "type": "string",
+            "description": "Name of the tool that produced the result."
+          },
+          "count": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records the Actor returned."
+          },
+          "shown": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records included in `items` (can be lower than count when the result is long)."
+          },
+          "truncated": {
+            "type": "boolean",
+            "description": "True when records were left out to keep the result short; ask for fewer items."
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "propertyNames": {
+                "type": "string"
+              },
+              "additionalProperties": {}
+            },
+            "description": "The records. Long text fields are shortened to 600 characters."
+          }
+        },
+        "required": [
+          "tool",
+          "count",
+          "shown",
+          "truncated",
+          "items"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
+      },
+      "annotations": {
+        "title": "Check how new or crowded an idea is",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "find_website_contacts",
+      "title": "Find emails, phones and social profiles on websites",
+      "description": "Finds business emails, phone numbers, addresses and social profiles (LinkedIn, X, Facebook, Instagram, YouTube) on any list of websites; it visits the contact and about pages itself. Use only for lawful business outreach (GDPR / CAN-SPAM). Runs the Apify Actor tacps126/contact-details on your Apify account (about $0.002 per website with contacts found; nothing found, no charge; spend per call is capped at $0.5).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "websites": {
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "Website addresses or domains, e.g. \"apify.com\"."
+          },
+          "max_pages_per_site": {
+            "default": 5,
+            "description": "Pages read per website; contact, imprint and about pages are picked first.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20
+          },
+          "require_email": {
+            "default": false,
+            "description": "Drop sites where no email was found.",
+            "type": "boolean"
+          },
+          "max_items": {
+            "default": 50,
+            "description": "Maximum results to return (default 50, max 1000). Cost scales with this.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000
+          },
+          "extra_input": {
+            "description": "Advanced: extra Actor input fields, merged over the defaults.",
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          }
+        },
+        "required": [
+          "websites"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "tool": {
+            "type": "string",
+            "description": "Name of the tool that produced the result."
+          },
+          "count": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records the Actor returned."
+          },
+          "shown": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records included in `items` (can be lower than count when the result is long)."
+          },
+          "truncated": {
+            "type": "boolean",
+            "description": "True when records were left out to keep the result short; ask for fewer items."
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "propertyNames": {
+                "type": "string"
+              },
+              "additionalProperties": {}
+            },
+            "description": "The records. Long text fields are shortened to 600 characters."
+          }
+        },
+        "required": [
+          "tool",
+          "count",
+          "shown",
+          "truncated",
+          "items"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
+      },
+      "annotations": {
+        "title": "Find emails, phones and social profiles on websites",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "search_german_property_listings",
+      "title": "Search German and Austrian property listings (ImmoScout24)",
+      "description": "Apartments and houses for rent or sale in Germany or Austria: price, rent, area, rooms, address with coordinates, energy class, features, agent, photos and dates. Not Switzerland. Runs the Apify Actor tacps126/immobilienscout24-scraper on your Apify account (about $0.001 per listing; spend per call is capped at $0.5).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "country": {
+            "default": "de",
+            "description": "de = Germany (immobilienscout24.de), at = Austria (immobilienscout24.at).",
+            "type": "string",
+            "enum": [
+              "de",
+              "at"
+            ]
+          },
+          "locations": {
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "Cities, districts or regions in plain words, e.g. [\"Berlin\",\"München Schwabing\"]; in Austria a city or federal state, e.g. [\"Wien\",\"Tirol\"]."
+          },
+          "offer_type": {
+            "default": "rent",
+            "description": "Rent or buy listings.",
+            "type": "string",
+            "enum": [
+              "rent",
+              "buy"
+            ]
+          },
+          "property_type": {
+            "default": "apartment",
+            "description": "Apartments or houses.",
+            "type": "string",
+            "enum": [
+              "apartment",
+              "house"
+            ]
+          },
+          "min_price": {
+            "description": "Minimum price in EUR (monthly rent or purchase price).",
+            "type": "number"
+          },
+          "max_price": {
+            "description": "Maximum price in EUR (monthly rent or purchase price).",
+            "type": "number"
+          },
+          "min_area": {
+            "description": "Minimum area in m2.",
+            "type": "number"
+          },
+          "min_rooms": {
+            "description": "Minimum number of rooms.",
+            "type": "number"
+          },
+          "changes_only": {
+            "default": false,
+            "description": "Only listings that are new, changed (old and new price, rent, size, rooms) or removed since the last call with the same search. For price tracking on a schedule.",
+            "type": "boolean"
+          },
+          "max_items": {
+            "default": 50,
+            "description": "Maximum results to return (default 50, max 500). Cost scales with this.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 500
+          },
+          "extra_input": {
+            "description": "Advanced: extra Actor input fields, merged over the defaults.",
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          }
+        },
+        "required": [
+          "locations"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "tool": {
+            "type": "string",
+            "description": "Name of the tool that produced the result."
+          },
+          "count": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records the Actor returned."
+          },
+          "shown": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records included in `items` (can be lower than count when the result is long)."
+          },
+          "truncated": {
+            "type": "boolean",
+            "description": "True when records were left out to keep the result short; ask for fewer items."
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "propertyNames": {
+                "type": "string"
+              },
+              "additionalProperties": {}
+            },
+            "description": "The records. Long text fields are shortened to 600 characters."
+          }
+        },
+        "required": [
+          "tool",
+          "count",
+          "shown",
+          "truncated",
+          "items"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
+      },
+      "annotations": {
+        "title": "Search German and Austrian property listings (ImmoScout24)",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "get_shopify_products",
+      "title": "Get products from Shopify stores",
+      "description": "Products from any Shopify store: prices, sale prices, discounts, stock, variants, SKUs, images and descriptions. Whole stores, collections or single products. Useful for price and stock monitoring. Runs the Apify Actor tacps126/shopify-products on your Apify account (about $0.001 per product; spend per call is capped at $0.5).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "stores": {
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "Store domains, collection links or product links, e.g. \"allbirds.com\"."
+          },
+          "keywords": {
+            "description": "Only products matching any of these words.",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "only_on_sale": {
+            "default": false,
+            "description": "Only products with a sale price.",
+            "type": "boolean"
+          },
+          "only_available": {
+            "default": false,
+            "description": "Only products that are in stock.",
+            "type": "boolean"
+          },
+          "max_items": {
+            "default": 100,
+            "description": "Maximum results to return (default 100, max 1000). Cost scales with this.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000
+          },
+          "extra_input": {
+            "description": "Advanced: extra Actor input fields, merged over the defaults.",
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          }
+        },
+        "required": [
+          "stores"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "tool": {
+            "type": "string",
+            "description": "Name of the tool that produced the result."
+          },
+          "count": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records the Actor returned."
+          },
+          "shown": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records included in `items` (can be lower than count when the result is long)."
+          },
+          "truncated": {
+            "type": "boolean",
+            "description": "True when records were left out to keep the result short; ask for fewer items."
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "propertyNames": {
+                "type": "string"
+              },
+              "additionalProperties": {}
+            },
+            "description": "The records. Long text fields are shortened to 600 characters."
+          }
+        },
+        "required": [
+          "tool",
+          "count",
+          "shown",
+          "truncated",
+          "items"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
+      },
+      "annotations": {
+        "title": "Get products from Shopify stores",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "analyze_shopify_stores",
+      "title": "Analyze Shopify stores (location, catalog, contacts)",
+      "description": "For each Shopify store: name, city and country, currency, product and collection counts, a catalog snapshot (price range and median, share on sale and in stock, top brands and product types, newest product) and its e-mails, phones and social profiles. Non-Shopify sites are skipped for free. Runs the Apify Actor tacps126/shopify-store-analyzer on your Apify account (about $0.004 per store; spend per call is capped at $0.5).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "stores": {
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "Store websites or domains, e.g. [\"allbirds.com\", \"gymshark.com\"]."
+          },
+          "include_contacts": {
+            "default": true,
+            "description": "Also read the store's contact pages for e-mails, phones and socials.",
+            "type": "boolean"
+          },
+          "countries": {
+            "description": "Keep only stores based in these countries (ISO codes or names).",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "max_items": {
+            "default": 20,
+            "description": "Maximum results to return (default 20, max 1000). Cost scales with this.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000
+          },
+          "extra_input": {
+            "description": "Advanced: extra Actor input fields, merged over the defaults.",
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          }
+        },
+        "required": [
+          "stores"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "tool": {
+            "type": "string",
+            "description": "Name of the tool that produced the result."
+          },
+          "count": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records the Actor returned."
+          },
+          "shown": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records included in `items` (can be lower than count when the result is long)."
+          },
+          "truncated": {
+            "type": "boolean",
+            "description": "True when records were left out to keep the result short; ask for fewer items."
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "propertyNames": {
+                "type": "string"
+              },
+              "additionalProperties": {}
+            },
+            "description": "The records. Long text fields are shortened to 600 characters."
+          }
+        },
+        "required": [
+          "tool",
+          "count",
+          "shown",
+          "truncated",
+          "items"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
+      },
+      "annotations": {
+        "title": "Analyze Shopify stores (location, catalog, contacts)",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "get_trade_show_exhibitors",
+      "title": "Get trade show exhibitor lists (booths and contacts)",
+      "description": "Exhibitor lists of trade shows as B2B leads: company, booth and hall, email, phone, website, address, socials and categories. 91 built-in shows (e.g. medica, sema-show, nab-show, fabtech, ish, automechanika, wtm-london, orgatec, eurotier, wine-paris, biofach) or any exhibitor-list link or show homepage on Messe Frankfurt, Messe Düsseldorf, Koelnmesse, NürnbergMesse, Newfront/ExpoPlatform, RX, Map Your Show, a2z / A2Z Connect, Swapcard or Corussoft; the link's own show and year are used. Contact coverage depends on what the organiser publishes. Runs the Apify Actor tacps126/exhibition-scraper on your Apify account (about $0.002 per exhibitor; spend per call is capped at $0.5).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "shows": {
+            "description": "Built-in show ids, e.g. [\"medica\",\"sema-show\"]. The Actor README lists all ids.",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "urls": {
+            "description": "Links to any show's exhibitor list or exhibitor search page (or its homepage).",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uri"
+            }
+          },
+          "include_contacts": {
+            "default": true,
+            "description": "Open each exhibitor profile for email, phone, website, address and socials. Off = names and booths only (faster).",
+            "type": "boolean"
+          },
+          "changes_only": {
+            "default": false,
+            "description": "Only exhibitors that are new, changed (old and new booth, email, phone, website, address) or removed since the last call with the same shows. Removed ones need the whole list, so it ignores max_items for that.",
+            "type": "boolean"
+          },
+          "max_items": {
+            "default": 50,
+            "description": "Maximum results to return (default 50, max 2000). Cost scales with this.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 2000
+          },
+          "extra_input": {
+            "description": "Advanced: extra Actor input fields, merged over the defaults.",
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          }
+        },
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "tool": {
+            "type": "string",
+            "description": "Name of the tool that produced the result."
+          },
+          "count": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records the Actor returned."
+          },
+          "shown": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records included in `items` (can be lower than count when the result is long)."
+          },
+          "truncated": {
+            "type": "boolean",
+            "description": "True when records were left out to keep the result short; ask for fewer items."
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "propertyNames": {
+                "type": "string"
+              },
+              "additionalProperties": {}
+            },
+            "description": "The records. Long text fields are shortened to 600 characters."
+          }
+        },
+        "required": [
+          "tool",
+          "count",
+          "shown",
+          "truncated",
+          "items"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
+      },
+      "annotations": {
+        "title": "Get trade show exhibitor lists (booths and contacts)",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "find_events",
+      "title": "Find upcoming events (Luma, Eventbrite, Meetup)",
+      "description": "Upcoming events by topic and city, or from Luma / Eventbrite / Meetup links (or any page with schema.org events): name, dates, venue with address and coordinates, organiser, hosts, ticket prices, free/sold-out and attendee count, in one format. Use for event prospecting, sponsorships and community research. Runs the Apify Actor tacps126/events-scraper on your Apify account (about $0.001 per event; spend per call is capped at $0.5).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "searches": {
+            "description": "Topics or keywords, e.g. [\"AI\",\"startup\"].",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "location": {
+            "description": "City in plain words (e.g. \"London\", \"Bengaluru\") or \"online\". Luma searches within a city.",
+            "type": "string"
+          },
+          "urls": {
+            "description": "Luma city/category/calendar/event links, Eventbrite searches or events, Meetup search or group links, or any events page.",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uri"
+            }
+          },
+          "sources": {
+            "description": "Sites searched for `searches` (default all three). Meetup knows about 70 big cities by name; others as \"City, CC\" (e.g. \"Lyon, FR\").",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "luma",
+                "eventbrite",
+                "meetup"
+              ]
+            }
+          },
+          "include_details": {
+            "default": true,
+            "description": "Open each event for organiser, tickets and full description. Off = faster.",
+            "type": "boolean"
+          },
+          "max_items": {
+            "default": 30,
+            "description": "Maximum results to return (default 30, max 500). Cost scales with this.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 500
+          },
+          "extra_input": {
+            "description": "Advanced: extra Actor input fields, merged over the defaults.",
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          }
+        },
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "tool": {
+            "type": "string",
+            "description": "Name of the tool that produced the result."
+          },
+          "count": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records the Actor returned."
+          },
+          "shown": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records included in `items` (can be lower than count when the result is long)."
+          },
+          "truncated": {
+            "type": "boolean",
+            "description": "True when records were left out to keep the result short; ask for fewer items."
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "propertyNames": {
+                "type": "string"
+              },
+              "additionalProperties": {}
+            },
+            "description": "The records. Long text fields are shortened to 600 characters."
+          }
+        },
+        "required": [
+          "tool",
+          "count",
+          "shown",
+          "truncated",
+          "items"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
+      },
+      "annotations": {
+        "title": "Find upcoming events (Luma, Eventbrite, Meetup)",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    }
+  ],
+  "version": "0.10.1"
+}

@@ -18,8 +18,9 @@
   "scripts": {
     "start": "node src/index.js",
     "test": "node --test test/*.test.js",
-    "build:mcpb": "node scripts/build-mcpb.mjs",
-    "sync:inputs": "node scripts/sync-actor-inputs.mjs"
+    "build:mcpb": "node scripts/build-mcpb.mjs && node scripts/lobehub-manifest.mjs",
+    "sync:inputs": "node scripts/sync-actor-inputs.mjs",
+    "build:lobehub": "node scripts/lobehub-manifest.mjs"
   },
   "keywords": [
     "mcp",

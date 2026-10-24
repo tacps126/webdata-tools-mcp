@@ -19,3 +19,12 @@ test('server.json fits the MCP Registry limits', () => {
   assert.ok(server.description.length <= 100, `server.json description is ${server.description.length} chars (max 100)`);
   assert.equal(server.name, pkg.mcpName, 'server.json name must equal package.json mcpName');
 });
+
+test('lhm.plugin.json (LobeHub) matches the package version and the tool list', async () => {
+  const lhm = read('lhm.plugin.json');
+  const { TOOLS } = await import('../src/tools.js');
+  assert.equal(lhm.version, pkg.version, 'lhm.plugin.json version (run npm run build:lobehub)');
+  assert.equal(lhm.identifier, 'tacps126-webdata-tools-mcp');
+  for (const f of ['identifier', 'name', 'version', 'description']) assert.ok(String(lhm[f] || '').trim(), `lhm.plugin.json ${f}`);
+  assert.deepEqual(lhm.tools.map((t) => t.name).sort(), TOOLS.map((t) => t.name).sort());
+});
