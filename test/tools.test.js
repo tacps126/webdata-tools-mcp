@@ -28,6 +28,7 @@ const SAMPLE = {
   search_tech_jobs: { query: 'data engineer', location: 'New York' },
   find_reddit_leads: { categories: ['CRM'], competitors: ['HubSpot'] },
   search_research: { queries: ['solid state battery'], posted_within_days: 30 },
+  search_gov_updates: { keywords: ['AI'], jurisdictions: ['uk'] },
   analyze_field: { fields: ['solid state battery'] },
   validate_idea: { ideas: ['a drone that plants trees'] },
   analyze_shopify_stores: { stores: ['allbirds.com'] },

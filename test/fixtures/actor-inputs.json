@@ -360,6 +360,25 @@
     "aiBaseUrl",
     "openalexApiKey"
   ],
+  "tacps126/gov-radar": [
+    "keywords",
+    "sectors",
+    "jurisdictions",
+    "sources",
+    "feedUrls",
+    "postedWithinDays",
+    "authorities",
+    "types",
+    "excludeKeywords",
+    "maxItemsPerSource",
+    "maxItems",
+    "onlyNew",
+    "monitorName",
+    "delivery",
+    "googleServiceAccountJson",
+    "tenantId",
+    "debug"
+  ],
   "tacps126/innovation-radar": [
     "mode",
     "fields",

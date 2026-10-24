@@ -383,6 +383,38 @@ export const TOOLS = [
     limit: (a) => a.max_items,
   },
   {
+    name: 'search_gov_updates',
+    actor: 'tacps126/gov-radar',
+    title: 'Search official government updates',
+    price: 'about $0.003 per update',
+    description:
+      'Official government updates in one list: US Federal Register rules, proposed rules (with comment deadlines) and notices, SEC press releases, GOV.UK news, guidance and consultations, European Commission press releases, RBI and SEBI circulars, plus any RSS feed you name. Filter by sector, keyword, authority and type; every update is tagged with its sectors.',
+    shape: {
+      keywords: strings('Words or phrases matched on title and summary, e.g. "AI", "stablecoin", "battery".').optional(),
+      sectors: z.array(z.enum(['banking', 'securities', 'insurance', 'tax', 'trade', 'health', 'food', 'energy', 'environment', 'tech', 'transport', 'employment', 'housing', 'procurement', 'defense', 'education'])).optional().describe('Only updates about these sectors.'),
+      jurisdictions: z.array(z.enum(['us', 'uk', 'eu', 'in'])).optional().describe('Countries / regions (default: all).'),
+      types: z.array(z.string()).optional().describe('Update types, e.g. rule, proposed-rule, notice, guidance, consultation, circular, press-release.'),
+      feed_urls: z.array(z.string().url()).optional().describe('Extra RSS/Atom feeds to read with the same filters.'),
+      posted_within_days: z.number().int().min(1).max(365).default(7).describe('Only updates from the last N days.'),
+      max_items: maxItems(30, 500),
+    },
+    check: (a) =>
+      !(a.keywords?.length || a.sectors?.length || a.jurisdictions?.length || a.feed_urls?.length)
+        ? 'Give keywords, sectors, jurisdictions or feed_urls so the search stays focused.'
+        : undefined,
+    map: (a) =>
+      clean({
+        keywords: a.keywords,
+        sectors: a.sectors,
+        jurisdictions: a.jurisdictions,
+        types: a.types,
+        feedUrls: a.feed_urls,
+        postedWithinDays: a.posted_within_days,
+        maxItems: a.max_items,
+      }),
+    limit: (a) => a.max_items,
+  },
+  {
     name: 'analyze_field',
     actor: 'tacps126/innovation-radar',
     title: 'Analyse a technology or research field',
