@@ -425,7 +425,8 @@ export const TOOLS = [
       'Official warnings in force from national services in one schema: US National Weather Service, MeteoAlarm (38 European countries), India NDMA (IMD, CWC, state disaster authorities), Brazil INMET, plus worldwide GDACS disasters and USGS earthquakes. Event, hazard type, severity, areas, start and expiry, instructions, issuing service. Most severe first.',
     shape: {
       countries: z.array(z.string()).optional().describe('ISO codes or names, e.g. ["IN"], ["US", "DE"], or "EU" for every MeteoAlarm country.'),
-      hazards: z.array(z.enum(['weather', 'flood', 'storm', 'heat', 'cold', 'fire', 'drought', 'earthquake', 'tsunami', 'volcano', 'landslide', 'health', 'environment', 'transport', 'infrastructure', 'security', 'other'])).optional().describe('Only these hazard types.'),
+      states: strings('States or provinces by name or ISO 3166-2 code, e.g. ["Kerala", "US-TX"].').optional(),
+      hazards: z.array(z.enum(['weather', 'rain', 'flood', 'storm', 'heat', 'cold', 'fire', 'drought', 'earthquake', 'tsunami', 'volcano', 'landslide', 'health', 'environment', 'transport', 'infrastructure', 'security', 'other'])).optional().describe('Only these hazard types.'),
       min_severity: z.enum(['minor', 'moderate', 'severe', 'extreme']).default('moderate').describe('Lowest CAP severity kept.'),
       areas: strings('Area names to match: a state, district, county or city, e.g. ["Kerala", "Texas"].').optional(),
       sent_within_hours: z.number().int().min(1).max(720).default(24).describe('Only alerts issued in the last N hours.'),
@@ -434,6 +435,7 @@ export const TOOLS = [
     map: (a) =>
       clean({
         countries: a.countries,
+        states: a.states,
         hazards: a.hazards,
         minSeverity: a.min_severity,
         areas: a.areas,
@@ -453,6 +455,7 @@ export const TOOLS = [
       keywords: strings('Words matched literally on title and description; add translations for non-English portals, e.g. ["software", "logiciel"].').optional(),
       sectors: z.array(z.enum(['banking', 'securities', 'insurance', 'tax', 'trade', 'health', 'food', 'energy', 'environment', 'tech', 'transport', 'employment', 'housing', 'defense', 'education'])).optional().describe('Sectors from CPV/UNSPSC/NAICS/PSC codes and multilingual terms (housing = construction and real estate).'),
       countries: z.array(z.string()).optional().describe('ISO codes, e.g. ["US", "GB", "FR", "CA"], or "EU" for every EU/EEA country.'),
+      states: strings('States or regions by name or ISO 3166-2 code, e.g. ["Texas", "IN-MH"]; where the work is or the buyer sits.').optional(),
       notice_types: z.array(z.enum(['tender', 'award', 'planning', 'amendment', 'cancellation'])).default(['tender']).describe('tender = open opportunities; award = who won and for how much.'),
       codes: z.array(z.string()).optional().describe('CPV, UNSPSC, NAICS or PSC code prefixes, e.g. ["72"] for IT services (CPV) or ["5415"] (US NAICS).'),
       min_value: z.number().optional().describe('Minimum estimated value in the notice currency.'),
@@ -468,6 +471,7 @@ export const TOOLS = [
         keywords: a.keywords,
         sectors: a.sectors,
         countries: a.countries,
+        states: a.states,
         noticeTypes: a.notice_types,
         codes: a.codes,
         minValue: a.min_value,
