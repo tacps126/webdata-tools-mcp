@@ -526,6 +526,8 @@
   ],
   "tacps126/tenders-radar": [
     "keywords",
+    "suppliers",
+    "awardedWithinDays",
     "sectors",
     "countries",
     "states",

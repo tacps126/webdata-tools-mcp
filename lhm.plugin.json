@@ -2551,6 +2551,113 @@
       }
     },
     {
+      "name": "get_supplier_contracts",
+      "title": "List the public contracts a company won",
+      "description": "Public contracts each company won: US federal (USAspending), every EU/EEA country (TED award notices) and the UK (Contracts Finder). First a summary per company (awards, total value per currency, top buyers, first and last award, legal names the portals used), then every award with buyer, value, date, codes and link. For competitor tracking, sales prospecting and supplier due diligence. Runs the Apify Actor tacps126/tenders-radar on your Apify account (about $0.004 per award (summaries free); spend per call is capped at $0.5).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "suppliers": {
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "Company names, e.g. [\"Accenture\", \"Palantir\"]."
+          },
+          "countries": {
+            "description": "Limit to \"US\", \"GB\", \"EU\" or EU/EEA ISO codes (default: all three portals).",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "awarded_within_days": {
+            "default": 730,
+            "description": "Awards from the last N days.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 3650
+          },
+          "max_items": {
+            "default": 50,
+            "description": "Maximum results to return (default 50, max 1000). Cost scales with this.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000
+          },
+          "extra_input": {
+            "description": "Advanced: extra Actor input fields, merged over the defaults.",
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          }
+        },
+        "required": [
+          "suppliers"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "tool": {
+            "type": "string",
+            "description": "Name of the tool that produced the result."
+          },
+          "count": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records the Actor returned."
+          },
+          "shown": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records included in `items` (can be lower than count when the result is long)."
+          },
+          "truncated": {
+            "type": "boolean",
+            "description": "True when records were left out to keep the result short; ask for fewer items."
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "propertyNames": {
+                "type": "string"
+              },
+              "additionalProperties": {}
+            },
+            "description": "The records. Long text fields are shortened to 600 characters."
+          }
+        },
+        "required": [
+          "tool",
+          "count",
+          "shown",
+          "truncated",
+          "items"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
+      },
+      "annotations": {
+        "title": "List the public contracts a company won",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
       "name": "search_tenders",
       "title": "Search public tenders and contract awards",
       "description": "Public procurement notices from official portals in one schema: US SAM.gov (federal), EU TED (every EU/EEA country), UK Find a Tender and Contracts Finder, France BOAMP, Spain PLACSP, Germany, Netherlands TenderNed, Canada CanadaBuys, Colombia SECOP II, Brazil PNCP, India GeM, Ukraine Prozorro, EU institutions (Funding & Tenders portal), US contract awards (USAspending), Australia AusTender (awards) and South Africa eTenders. Title, buyer, deadline, value and currency, CPV/UNSPSC/NAICS codes, sectors, buyer contacts, suppliers for awards, notice link. Open tenders by default. Runs the Apify Actor tacps126/tenders-radar on your Apify account (about $0.004 per notice; spend per call is capped at $0.5).",

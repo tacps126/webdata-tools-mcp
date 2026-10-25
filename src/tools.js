@@ -582,6 +582,28 @@ export const TOOLS = [
     limit: (a) => a.max_items,
   },
   {
+    name: 'get_supplier_contracts',
+    actor: 'tacps126/tenders-radar',
+    title: 'List the public contracts a company won',
+    price: 'about $0.004 per award (summaries free)',
+    description:
+      'Public contracts each company won: US federal (USAspending), every EU/EEA country (TED award notices) and the UK (Contracts Finder). First a summary per company (awards, total value per currency, top buyers, first and last award, legal names the portals used), then every award with buyer, value, date, codes and link. For competitor tracking, sales prospecting and supplier due diligence.',
+    shape: {
+      suppliers: strings('Company names, e.g. ["Accenture", "Palantir"].'),
+      countries: z.array(z.string()).optional().describe('Limit to "US", "GB", "EU" or EU/EEA ISO codes (default: all three portals).'),
+      awarded_within_days: z.number().int().min(1).max(3650).default(730).describe('Awards from the last N days.'),
+      max_items: maxItems(50, 1000),
+    },
+    map: (a) =>
+      clean({
+        suppliers: a.suppliers,
+        countries: a.countries,
+        awardedWithinDays: a.awarded_within_days,
+        maxItems: a.max_items,
+      }),
+    limit: (a) => a.max_items + a.suppliers.length,
+  },
+  {
     name: 'search_tenders',
     actor: 'tacps126/tenders-radar',
     title: 'Search public tenders and contract awards',

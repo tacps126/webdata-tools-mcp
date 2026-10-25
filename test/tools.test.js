@@ -34,6 +34,7 @@ const SAMPLE = {
   search_grants: { keywords: ['battery'], countries: ['EU'] },
   get_india_district_notices: { states: ['Bihar'], categories: ['tenders'] },
   search_legislation: { keywords: ['sanctions'], countries: ['EU'] },
+  get_supplier_contracts: { suppliers: ['Accenture'], countries: ['GB'] },
   screen_sanctions: { names: ['Rosneft'], date_of_birth: '1952' },
   search_recalls: { keywords: ['peanut'], categories: ['food'] },
   analyze_field: { fields: ['solid state battery'] },

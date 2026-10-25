@@ -126,6 +126,10 @@
       "description": "Product recalls and safety alerts from regulators in one schema: US FDA enforcement reports (food, drugs, medical devices), US CPSC consumer products, Health Canada / CFIA / Transport Canada, UK Food Standards Agency and OPSS, and the EU Safety Gate. Product, brands, company, hazard, class, date, distribution, remedy and official link. Newest first."
     },
     {
+      "name": "get_supplier_contracts",
+      "description": "Public contracts each company won: US federal (USAspending), every EU/EEA country (TED award notices) and the UK (Contracts Finder). First a summary per company (awards, total value per currency, top buyers, first and last award, legal names the portals used), then every award with buyer, value, date, codes and link. For competitor tracking, sales prospecting and supplier due diligence."
+    },
+    {
       "name": "search_tenders",
       "description": "Public procurement notices from official portals in one schema: US SAM.gov (federal), EU TED (every EU/EEA country), UK Find a Tender and Contracts Finder, France BOAMP, Spain PLACSP, Germany, Netherlands TenderNed, Canada CanadaBuys, Colombia SECOP II, Brazil PNCP, India GeM, Ukraine Prozorro, EU institutions (Funding & Tenders portal), US contract awards (USAspending), Australia AusTender (awards) and South Africa eTenders. Title, buyer, deadline, value and currency, CPV/UNSPSC/NAICS codes, sectors, buyer contacts, suppliers for awards, notice link. Open tenders by default."
     },
