@@ -512,7 +512,7 @@ export const TOOLS = [
       'New legislation from official publishers in one schema: EU regulations, directives and decisions (EUR-Lex), UK Acts and statutory instruments of all four nations (legislation.gov.uk), US public laws and bill texts with their stage (GovInfo), Australian Acts and legislative instruments (Federal Register of Legislation), Canadian regulations (Canada Gazette Part II). Number, title, date, sectors, official text and PDF links. Newest first.',
     shape: {
       keywords: strings('Whole words matched on titles, e.g. ["sanctions", "artificial intelligence"].').optional(),
-      countries: z.array(z.enum(['EU', 'GB', 'US'])).optional().describe('Jurisdictions (default: all).'),
+      countries: z.array(z.enum(['AU', 'CA', 'EU', 'GB', 'US'])).optional().describe('Jurisdictions (default: all).'),
       kinds: z.array(z.enum(['regulation', 'directive', 'decision', 'act', 'statutory-instrument', 'public-law', 'bill'])).optional().describe('Kinds of legislation.'),
       posted_within_days: z.number().int().min(1).max(365).default(7).describe('Only laws dated in the last N days.'),
       max_items: maxItems(30, 500),
@@ -522,6 +522,60 @@ export const TOOLS = [
         keywords: a.keywords,
         countries: a.countries,
         kinds: a.kinds,
+        postedWithinDays: a.posted_within_days,
+        maxItems: a.max_items,
+      }),
+    limit: (a) => a.max_items,
+  },
+  {
+    name: 'screen_sanctions',
+    actor: 'tacps126/sanctions-screener',
+    title: 'Screen names against official sanctions lists',
+    price: 'about $0.003 per name',
+    description:
+      'Screens people and organisations against the official sanctions lists read from each publisher: US OFAC SDN and consolidated (non-SDN), UN Security Council, EU consolidated financial sanctions, UK Sanctions List and Canada. Matching handles transliteration (Cyrillic, Arabic), word order, patronymics, initials and company forms. Returns a verdict per name (match, possible-match, no-match) with the matching entries: list, programmes, countries, birth dates, identifiers, listing date and link. A screening aid, not legal advice.',
+    shape: {
+      names: strings('People or organisations to screen, e.g. ["Rosneft", "Vladimir Putin"].'),
+      date_of_birth: z.string().optional().describe('For a single person: a date or year of birth, which lowers matches with a different birth year.'),
+      country: z.string().optional().describe('For a single subject: a nationality or country (name or ISO code).'),
+      entity_type: z.enum(['any', 'individual', 'entity']).default('any').describe('People only, organisations (with vessels and aircraft) only, or both.'),
+      lists: z.array(z.enum(['us-ofac-sdn', 'us-ofac-cons', 'un', 'eu', 'gb', 'ca'])).optional().describe('Lists to check (default: all).'),
+      min_score: z.number().int().min(50).max(100).default(85).describe('Name similarity from which an entry is reported.'),
+    },
+    map: (a) =>
+      clean({
+        mode: 'screen',
+        subjects:
+          a.date_of_birth || a.country
+            ? a.names.map((name) => clean({ name, dateOfBirth: a.date_of_birth, country: a.country }))
+            : undefined,
+        names: a.date_of_birth || a.country ? undefined : a.names,
+        entityType: a.entity_type,
+        lists: a.lists,
+        minScore: a.min_score,
+        maxItems: a.names.length,
+      }),
+    limit: (a) => a.names.length,
+  },
+  {
+    name: 'search_recalls',
+    actor: 'tacps126/recalls-radar',
+    title: 'Search product recalls and safety alerts',
+    price: 'about $0.002 per recall',
+    description:
+      'Product recalls and safety alerts from regulators in one schema: US FDA enforcement reports (food, drugs, medical devices), US CPSC consumer products, Health Canada / CFIA / Transport Canada, UK Food Standards Agency and OPSS, and the EU Safety Gate. Product, brands, company, hazard, class, date, distribution, remedy and official link. Newest first.',
+    shape: {
+      keywords: strings('Matched on title, product, brand, company and hazard, e.g. ["peanut", "lithium battery", "Acme"].').optional(),
+      categories: z.array(z.enum(['food', 'drug', 'device', 'vehicle', 'consumer-product', 'cosmetic'])).optional().describe('Recall categories (default: all).'),
+      countries: z.array(z.enum(['US', 'CA', 'GB', 'EU'])).optional().describe('Publishers by country (default: all).'),
+      posted_within_days: z.number().int().min(1).max(365).default(30).describe('Only recalls published in the last N days.'),
+      max_items: maxItems(30, 500),
+    },
+    map: (a) =>
+      clean({
+        keywords: a.keywords,
+        categories: a.categories,
+        countries: a.countries,
         postedWithinDays: a.posted_within_days,
         maxItems: a.max_items,
       }),

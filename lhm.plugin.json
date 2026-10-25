@@ -2175,7 +2175,7 @@
     {
       "name": "search_legislation",
       "title": "Search new laws, regulations and bills",
-      "description": "New legislation from official publishers in one schema: EU regulations, directives and decisions (EUR-Lex), UK Acts and statutory instruments of all four nations (legislation.gov.uk), US public laws and bill texts with their stage (GovInfo). Number, title, date, sectors, official text and PDF links. Newest first. Runs the Apify Actor tacps126/legislation-radar on your Apify account (about $0.003 per law; spend per call is capped at $0.5).",
+      "description": "New legislation from official publishers in one schema: EU regulations, directives and decisions (EUR-Lex), UK Acts and statutory instruments of all four nations (legislation.gov.uk), US public laws and bill texts with their stage (GovInfo), Australian Acts and legislative instruments (Federal Register of Legislation), Canadian regulations (Canada Gazette Part II). Number, title, date, sectors, official text and PDF links. Newest first. Runs the Apify Actor tacps126/legislation-radar on your Apify account (about $0.003 per law; spend per call is capped at $0.5).",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -2194,6 +2194,8 @@
             "items": {
               "type": "string",
               "enum": [
+                "AU",
+                "CA",
                 "EU",
                 "GB",
                 "US"
@@ -2298,9 +2300,260 @@
       }
     },
     {
+      "name": "screen_sanctions",
+      "title": "Screen names against official sanctions lists",
+      "description": "Screens people and organisations against the official sanctions lists read from each publisher: US OFAC SDN and consolidated (non-SDN), UN Security Council, EU consolidated financial sanctions, UK Sanctions List and Canada. Matching handles transliteration (Cyrillic, Arabic), word order, patronymics, initials and company forms. Returns a verdict per name (match, possible-match, no-match) with the matching entries: list, programmes, countries, birth dates, identifiers, listing date and link. A screening aid, not legal advice. Runs the Apify Actor tacps126/sanctions-screener on your Apify account (about $0.003 per name; spend per call is capped at $0.5).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "names": {
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "People or organisations to screen, e.g. [\"Rosneft\", \"Vladimir Putin\"]."
+          },
+          "date_of_birth": {
+            "description": "For a single person: a date or year of birth, which lowers matches with a different birth year.",
+            "type": "string"
+          },
+          "country": {
+            "description": "For a single subject: a nationality or country (name or ISO code).",
+            "type": "string"
+          },
+          "entity_type": {
+            "default": "any",
+            "description": "People only, organisations (with vessels and aircraft) only, or both.",
+            "type": "string",
+            "enum": [
+              "any",
+              "individual",
+              "entity"
+            ]
+          },
+          "lists": {
+            "description": "Lists to check (default: all).",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "us-ofac-sdn",
+                "us-ofac-cons",
+                "un",
+                "eu",
+                "gb",
+                "ca"
+              ]
+            }
+          },
+          "min_score": {
+            "default": 85,
+            "description": "Name similarity from which an entry is reported.",
+            "type": "integer",
+            "minimum": 50,
+            "maximum": 100
+          },
+          "extra_input": {
+            "description": "Advanced: extra Actor input fields, merged over the defaults.",
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          }
+        },
+        "required": [
+          "names"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "tool": {
+            "type": "string",
+            "description": "Name of the tool that produced the result."
+          },
+          "count": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records the Actor returned."
+          },
+          "shown": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records included in `items` (can be lower than count when the result is long)."
+          },
+          "truncated": {
+            "type": "boolean",
+            "description": "True when records were left out to keep the result short; ask for fewer items."
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "propertyNames": {
+                "type": "string"
+              },
+              "additionalProperties": {}
+            },
+            "description": "The records. Long text fields are shortened to 600 characters."
+          }
+        },
+        "required": [
+          "tool",
+          "count",
+          "shown",
+          "truncated",
+          "items"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
+      },
+      "annotations": {
+        "title": "Screen names against official sanctions lists",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "search_recalls",
+      "title": "Search product recalls and safety alerts",
+      "description": "Product recalls and safety alerts from regulators in one schema: US FDA enforcement reports (food, drugs, medical devices), US CPSC consumer products, Health Canada / CFIA / Transport Canada, UK Food Standards Agency and OPSS, and the EU Safety Gate. Product, brands, company, hazard, class, date, distribution, remedy and official link. Newest first. Runs the Apify Actor tacps126/recalls-radar on your Apify account (about $0.002 per recall; spend per call is capped at $0.5).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "keywords": {
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "Matched on title, product, brand, company and hazard, e.g. [\"peanut\", \"lithium battery\", \"Acme\"]."
+          },
+          "categories": {
+            "description": "Recall categories (default: all).",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "food",
+                "drug",
+                "device",
+                "vehicle",
+                "consumer-product",
+                "cosmetic"
+              ]
+            }
+          },
+          "countries": {
+            "description": "Publishers by country (default: all).",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "US",
+                "CA",
+                "GB",
+                "EU"
+              ]
+            }
+          },
+          "posted_within_days": {
+            "default": 30,
+            "description": "Only recalls published in the last N days.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 365
+          },
+          "max_items": {
+            "default": 30,
+            "description": "Maximum results to return (default 30, max 500). Cost scales with this.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 500
+          },
+          "extra_input": {
+            "description": "Advanced: extra Actor input fields, merged over the defaults.",
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          }
+        },
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "tool": {
+            "type": "string",
+            "description": "Name of the tool that produced the result."
+          },
+          "count": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records the Actor returned."
+          },
+          "shown": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records included in `items` (can be lower than count when the result is long)."
+          },
+          "truncated": {
+            "type": "boolean",
+            "description": "True when records were left out to keep the result short; ask for fewer items."
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "propertyNames": {
+                "type": "string"
+              },
+              "additionalProperties": {}
+            },
+            "description": "The records. Long text fields are shortened to 600 characters."
+          }
+        },
+        "required": [
+          "tool",
+          "count",
+          "shown",
+          "truncated",
+          "items"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
+      },
+      "annotations": {
+        "title": "Search product recalls and safety alerts",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
       "name": "search_tenders",
       "title": "Search public tenders and contract awards",
-      "description": "Public procurement notices from official portals in one schema: US SAM.gov (federal), EU TED (every EU/EEA country), UK Find a Tender and Contracts Finder, France BOAMP, Spain PLACSP, Germany, Netherlands TenderNed, Canada CanadaBuys, Colombia SECOP II, Ukraine Prozorro, EU institutions (Funding & Tenders portal), Australia AusTender (awards) and South Africa eTenders. Title, buyer, deadline, value and currency, CPV/UNSPSC/NAICS codes, sectors, buyer contacts, suppliers for awards, notice link. Open tenders by default. Runs the Apify Actor tacps126/tenders-radar on your Apify account (about $0.004 per notice; spend per call is capped at $0.5).",
+      "description": "Public procurement notices from official portals in one schema: US SAM.gov (federal), EU TED (every EU/EEA country), UK Find a Tender and Contracts Finder, France BOAMP, Spain PLACSP, Germany, Netherlands TenderNed, Canada CanadaBuys, Colombia SECOP II, Brazil PNCP, India GeM, Ukraine Prozorro, EU institutions (Funding & Tenders portal), US contract awards (USAspending), Australia AusTender (awards) and South Africa eTenders. Title, buyer, deadline, value and currency, CPV/UNSPSC/NAICS codes, sectors, buyer contacts, suppliers for awards, notice link. Open tenders by default. Runs the Apify Actor tacps126/tenders-radar on your Apify account (about $0.004 per notice; spend per call is capped at $0.5).",
       "inputSchema": {
         "type": "object",
         "properties": {
