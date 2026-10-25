@@ -40,6 +40,7 @@ anywhere except Apify.
 | `search_grants` | Open and forecast funding calls: US Grants.gov, EU Funding & Tenders (Horizon Europe…), UKRI; grant size, budget, deadline, eligibility | $3 / 1,000 calls | [grants-radar](https://apify.com/tacps126/grants-radar) |
 | `get_india_district_notices` | Tenders, recruitment and announcements from India's 748 district websites, by state and district | $3 / 1,000 notices | [india-district-notices](https://apify.com/tacps126/india-district-notices) |
 | `search_legislation` | New laws and bills: EU regulations and directives (EUR-Lex), UK Acts and SIs, US public laws and bills, Australian and Canadian regulations | $3 / 1,000 laws | [legislation-radar](https://apify.com/tacps126/legislation-radar) |
+| `find_companies` | New companies and insolvencies (France, Norway, Finland) and company search with officers, plus the LEI index | $2.50 / 1,000 companies | [company-registry](https://apify.com/tacps126/company-registry) |
 | `get_supplier_contracts` | Public contracts a company won (USAspending, TED, Contracts Finder) with a summary per company | $4 / 1,000 awards | [tenders-radar](https://apify.com/tacps126/tenders-radar) |
 | `screen_sanctions` | Screen names against official OFAC, UN, EU, UK and Canada sanctions lists (verdict per name) | $3 / 1,000 names | [sanctions-screener](https://apify.com/tacps126/sanctions-screener) |
 | `search_recalls` | Product recalls and safety alerts: FDA, CPSC, Health Canada, UK FSA/OPSS, EU Safety Gate | $2 / 1,000 recalls | [recalls-radar](https://apify.com/tacps126/recalls-radar) |

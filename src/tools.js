@@ -582,6 +582,37 @@ export const TOOLS = [
     limit: (a) => a.max_items,
   },
   {
+    name: 'find_companies',
+    actor: 'tacps126/company-registry',
+    title: 'Find companies and new registrations in official registers',
+    price: 'about $0.0025 per company',
+    description:
+      'Official company registers in one schema. mode "new": companies newly registered in France (BODACC), Norway (Brønnøysund) and Finland (PRH), and in France also insolvency judgments, deregistrations and business sales; filter by NACE/NAF industry code, city/region/postcode and keywords. mode "search": companies by name in France (with officers), Norway, Finland and, for other countries, the worldwide LEI index. Registry id, legal form, status, dates, industry, address, employees, capital, officers, register link.',
+    shape: {
+      mode: z.enum(['new', 'search']).default('new').describe('new = registrations and register events; search = look up by name.'),
+      names: strings('Company names to search (mode "search"), e.g. ["Nokia"].').optional(),
+      countries: z.array(z.string()).optional().describe('ISO codes: FR, NO, FI (national registers); others are searched in the LEI index.'),
+      events: z.array(z.enum(['registration', 'insolvency', 'deregistration', 'sale'])).optional().describe('France, mode "new" (default: registration).'),
+      industry_codes: strings('NACE/NAF code prefixes, e.g. ["56.10"] restaurants, ["62"] IT.').optional(),
+      locations: strings('Cities, regions or postcode prefixes, e.g. ["Oslo", "75"].').optional(),
+      registered_within_days: z.number().int().min(1).max(365).default(7).describe('mode "new": the last N days.'),
+      max_items: maxItems(50, 1000),
+    },
+    check: (a) => (a.mode === 'search' && !a.names?.length ? 'Give names to search.' : undefined),
+    map: (a) =>
+      clean({
+        mode: a.mode,
+        names: a.names,
+        countries: a.countries,
+        events: a.events,
+        industryCodes: a.industry_codes,
+        locations: a.locations,
+        registeredWithinDays: a.registered_within_days,
+        maxItems: a.max_items,
+      }),
+    limit: (a) => a.max_items,
+  },
+  {
     name: 'get_supplier_contracts',
     actor: 'tacps126/tenders-radar',
     title: 'List the public contracts a company won',

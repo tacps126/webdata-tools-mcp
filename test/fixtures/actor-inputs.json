@@ -524,6 +524,23 @@
     "aiBaseUrl",
     "debug"
   ],
+  "tacps126/company-registry": [
+    "mode",
+    "names",
+    "countries",
+    "events",
+    "registeredWithinDays",
+    "keywords",
+    "industryCodes",
+    "locations",
+    "includeOfficers",
+    "maxItemsPerSource",
+    "maxItems",
+    "onlyNew",
+    "monitorName",
+    "tenantId",
+    "debug"
+  ],
   "tacps126/tenders-radar": [
     "keywords",
     "suppliers",

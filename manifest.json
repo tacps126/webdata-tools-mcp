@@ -126,6 +126,10 @@
       "description": "Product recalls and safety alerts from regulators in one schema: US FDA enforcement reports (food, drugs, medical devices), US CPSC consumer products, Health Canada / CFIA / Transport Canada, UK Food Standards Agency and OPSS, and the EU Safety Gate. Product, brands, company, hazard, class, date, distribution, remedy and official link. Newest first."
     },
     {
+      "name": "find_companies",
+      "description": "Official company registers in one schema. mode \"new\": companies newly registered in France (BODACC), Norway (Brønnøysund) and Finland (PRH), and in France also insolvency judgments, deregistrations and business sales; filter by NACE/NAF industry code, city/region/postcode and keywords. mode \"search\": companies by name in France (with officers), Norway, Finland and, for other countries, the worldwide LEI index. Registry id, legal form, status, dates, industry, address, employees, capital, officers, register link."
+    },
+    {
       "name": "get_supplier_contracts",
       "description": "Public contracts each company won: US federal (USAspending), every EU/EEA country (TED award notices) and the UK (Contracts Finder). First a summary per company (awards, total value per currency, top buyers, first and last award, legal names the portals used), then every award with buyer, value, date, codes and link. For competitor tracking, sales prospecting and supplier due diligence."
     },

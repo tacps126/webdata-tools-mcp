@@ -2551,6 +2551,150 @@
       }
     },
     {
+      "name": "find_companies",
+      "title": "Find companies and new registrations in official registers",
+      "description": "Official company registers in one schema. mode \"new\": companies newly registered in France (BODACC), Norway (Brønnøysund) and Finland (PRH), and in France also insolvency judgments, deregistrations and business sales; filter by NACE/NAF industry code, city/region/postcode and keywords. mode \"search\": companies by name in France (with officers), Norway, Finland and, for other countries, the worldwide LEI index. Registry id, legal form, status, dates, industry, address, employees, capital, officers, register link. Runs the Apify Actor tacps126/company-registry on your Apify account (about $0.0025 per company; spend per call is capped at $0.5).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "mode": {
+            "default": "new",
+            "description": "new = registrations and register events; search = look up by name.",
+            "type": "string",
+            "enum": [
+              "new",
+              "search"
+            ]
+          },
+          "names": {
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "Company names to search (mode \"search\"), e.g. [\"Nokia\"]."
+          },
+          "countries": {
+            "description": "ISO codes: FR, NO, FI (national registers); others are searched in the LEI index.",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "events": {
+            "description": "France, mode \"new\" (default: registration).",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "registration",
+                "insolvency",
+                "deregistration",
+                "sale"
+              ]
+            }
+          },
+          "industry_codes": {
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "NACE/NAF code prefixes, e.g. [\"56.10\"] restaurants, [\"62\"] IT."
+          },
+          "locations": {
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "Cities, regions or postcode prefixes, e.g. [\"Oslo\", \"75\"]."
+          },
+          "registered_within_days": {
+            "default": 7,
+            "description": "mode \"new\": the last N days.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 365
+          },
+          "max_items": {
+            "default": 50,
+            "description": "Maximum results to return (default 50, max 1000). Cost scales with this.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000
+          },
+          "extra_input": {
+            "description": "Advanced: extra Actor input fields, merged over the defaults.",
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          }
+        },
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "tool": {
+            "type": "string",
+            "description": "Name of the tool that produced the result."
+          },
+          "count": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records the Actor returned."
+          },
+          "shown": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records included in `items` (can be lower than count when the result is long)."
+          },
+          "truncated": {
+            "type": "boolean",
+            "description": "True when records were left out to keep the result short; ask for fewer items."
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "propertyNames": {
+                "type": "string"
+              },
+              "additionalProperties": {}
+            },
+            "description": "The records. Long text fields are shortened to 600 characters."
+          }
+        },
+        "required": [
+          "tool",
+          "count",
+          "shown",
+          "truncated",
+          "items"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
+      },
+      "annotations": {
+        "title": "Find companies and new registrations in official registers",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
       "name": "get_supplier_contracts",
       "title": "List the public contracts a company won",
       "description": "Public contracts each company won: US federal (USAspending), every EU/EEA country (TED award notices) and the UK (Contracts Finder). First a summary per company (awards, total value per currency, top buyers, first and last award, legal names the portals used), then every award with buyer, value, date, codes and link. For competitor tracking, sales prospecting and supplier due diligence. Runs the Apify Actor tacps126/tenders-radar on your Apify account (about $0.004 per award (summaries free); spend per call is capped at $0.5).",
