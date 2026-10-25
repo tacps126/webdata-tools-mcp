@@ -509,7 +509,7 @@ export const TOOLS = [
     title: 'Search new laws, regulations and bills',
     price: 'about $0.003 per law',
     description:
-      'New legislation from official publishers in one schema: EU regulations, directives and decisions (EUR-Lex), UK Acts and statutory instruments of all four nations (legislation.gov.uk), US public laws and bill texts with their stage (GovInfo). Number, title, date, sectors, official text and PDF links. Newest first.',
+      'New legislation from official publishers in one schema: EU regulations, directives and decisions (EUR-Lex), UK Acts and statutory instruments of all four nations (legislation.gov.uk), US public laws and bill texts with their stage (GovInfo), Australian Acts and legislative instruments (Federal Register of Legislation), Canadian regulations (Canada Gazette Part II). Number, title, date, sectors, official text and PDF links. Newest first.',
     shape: {
       keywords: strings('Whole words matched on titles, e.g. ["sanctions", "artificial intelligence"].').optional(),
       countries: z.array(z.enum(['EU', 'GB', 'US'])).optional().describe('Jurisdictions (default: all).'),
