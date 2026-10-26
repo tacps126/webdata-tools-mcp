@@ -8,10 +8,10 @@
 [![Smithery](https://img.shields.io/badge/Smithery-tacps126%2Fwebdata--tools--mcp-ff5601)](https://smithery.ai/servers/tacps126/webdata-tools-mcp)
 [![webdata-tools-mcp MCP server](https://glama.ai/mcp/servers/tacps126/webdata-tools-mcp/badges/score.svg)](https://glama.ai/mcp/servers/tacps126/webdata-tools-mcp)
 
-An [MCP](https://modelcontextprotocol.io) server that gives AI agents twenty-seven web-data tools: job
-postings (company career sites, remote jobs, startups on Wellfound, US tech jobs on Dice, Indeed,
-Naukri), hiring signals, Google News, official government updates (US, UK, EU, India), public tenders and contract awards (US, EU, UK, France, Spain, Canada, Australia and more), official weather and disaster warnings (US, Europe, India, Brazil, worldwide), public funding calls (US Grants.gov, EU Horizon Europe and more, UKRI, Australia), notices from all 748 Indian district websites, new laws and bills (EU, UK, US), research papers and patents, field trends and idea validation, Trustpilot and app-store reviews, Reddit mentions and
-buying-intent leads, website contacts, German and Austrian property listings, Shopify products and
+An [MCP](https://modelcontextprotocol.io) server that gives AI agents twenty-nine web-data tools: job
+postings (company career sites, remote jobs, US tech jobs on Dice, Indeed,
+Naukri), hiring signals, Google News, official government updates (US, UK, EU, India), public tenders and contract awards (US, EU, UK, France, Spain, Canada, Australia and more), official weather and disaster warnings (US, Europe, India, Brazil, worldwide), public funding calls (US Grants.gov, EU Horizon Europe and more, UKRI, Australia), notices from all 748 Indian district websites, sanctions screening, product recalls, company registers (Europe and US states), research papers and patents, field trends and idea validation, Trustpilot and app-store reviews, Reddit mentions, YouTube
+transcripts, website contacts, German and Austrian property listings, Shopify products and
 store analysis, trade-show exhibitor lists and upcoming events. Two ready-made prompts turn the research
 tools into an innovation analyst that works the same with any model.
 
@@ -27,24 +27,22 @@ anywhere except Apify.
 | `find_hiring_companies` | Which companies are hiring for given roles (buying-intent signal) | 1¢ per company with a signal | [hiring-signals](https://apify.com/tacps126/hiring-signals) |
 | `get_company_jobs` | All open jobs from career pages or company names (13 job-board systems: Greenhouse, Lever, Ashby, Workday, Rippling, …) | $1 / 1,000 jobs | [jobs-harvester](https://apify.com/tacps126/jobs-harvester) |
 | `find_remote_jobs` | Remote jobs from company job boards plus the Remote OK, Jobicy, Working Nomads and Himalayas feeds | $2 / 1,000 jobs | [remote-jobs-scraper](https://apify.com/tacps126/remote-jobs-scraper) |
-| `search_startup_jobs` | Startup jobs on Wellfound by role and city: salary and equity, startup size and pitch | $2 / 1,000 jobs | [wellfound-jobs-scraper](https://apify.com/tacps126/wellfound-jobs-scraper) |
 | `search_tech_jobs` | US tech jobs on Dice: salary, employer type, Easy Apply, remote flag | $0.55 / 1,000 jobs | [dice-jobs-scraper](https://apify.com/tacps126/dice-jobs-scraper) |
 | `search_indeed_jobs` | Indeed listings in 9 countries | $3 / 1,000 jobs | [indeed-jobs](https://apify.com/tacps126/indeed-jobs) |
 | `search_naukri_jobs` | Naukri.com jobs (India): full description, salary in rupees, experience, rating | $1.50 / 1,000 jobs | [naukri-jobs-scraper](https://apify.com/tacps126/naukri-jobs-scraper) |
 | `get_trustpilot_reviews` | Reviews, TrustScore and company profile | $0.50 / 1,000 reviews | [trustpilot-reviews](https://apify.com/tacps126/trustpilot-reviews) |
 | `get_app_reviews` | App Store and Google Play reviews | $0.20 / 1,000 reviews | [app-reviews](https://apify.com/tacps126/app-reviews) |
 | `search_reddit` | Reddit posts and comments by keyword or subreddit, tagged with buying intent | $1 / 1,000 items | [reddit-monitor](https://apify.com/tacps126/reddit-monitor) |
-| `find_reddit_leads` | Reddit posts asking for a tool like yours, seeking a competitor alternative, comparing or complaining | $2 / 1,000 leads + $0.10 / 1,000 posts read | [reddit-lead-finder](https://apify.com/tacps126/reddit-lead-finder) |
 | `search_gov_updates` | Official government updates: Federal Register rules and notices, GOV.UK, European Commission, SEC, RBI and SEBI circulars, any RSS feed; sector and keyword filters | $3 / 1,000 updates | [gov-radar](https://apify.com/tacps126/gov-radar) |
 | `get_alerts` | Official weather and disaster warnings: US NWS, MeteoAlarm (38 countries), India NDMA, Brazil INMET, GDACS, USGS; hazard, severity, area filters | $2 / 1,000 alerts | [alerts-radar](https://apify.com/tacps126/alerts-radar) |
 | `search_grants` | Open and forecast funding calls: US Grants.gov, EU Funding & Tenders (Horizon Europe…), UKRI; grant size, budget, deadline, eligibility | $3 / 1,000 calls | [grants-radar](https://apify.com/tacps126/grants-radar) |
 | `get_india_district_notices` | Tenders, recruitment and announcements from India's 748 district websites, by state and district | $3 / 1,000 notices | [india-district-notices](https://apify.com/tacps126/india-district-notices) |
-| `search_legislation` | New laws and bills: EU regulations and directives (EUR-Lex), UK Acts and SIs, US public laws and bills, Australian and Canadian regulations | $3 / 1,000 laws | [legislation-radar](https://apify.com/tacps126/legislation-radar) |
-| `find_companies` | New companies and insolvencies (France, Norway, Finland) and company search with officers, plus the LEI index | $2.50 / 1,000 companies | [company-registry](https://apify.com/tacps126/company-registry) |
+| `find_companies` | New companies and insolvencies (France, Norway, Finland, Estonia, US: New York, Colorado, Connecticut, Oregon) and company search with officers, plus the LEI index | $2.50 / 1,000 companies | [company-registry](https://apify.com/tacps126/company-registry) |
 | `get_supplier_contracts` | Public contracts a company won (USAspending, TED, Contracts Finder) with a summary per company | $4 / 1,000 awards | [tenders-radar](https://apify.com/tacps126/tenders-radar) |
 | `screen_sanctions` | Screen names against official OFAC, UN, EU, UK, Canada and Switzerland sanctions lists (verdict per name) | $3 / 1,000 names | [sanctions-screener](https://apify.com/tacps126/sanctions-screener) |
 | `search_recalls` | Product recalls and safety alerts: FDA, CPSC, Health Canada, UK FSA/OPSS, EU Safety Gate | $2 / 1,000 recalls | [recalls-radar](https://apify.com/tacps126/recalls-radar) |
 | `search_tenders` | Public tenders and contract awards: US SAM.gov, EU TED, UK, France, Spain, Germany, Netherlands, Canada, Colombia, Australia, South Africa; sector, CPV/UNSPSC, value filters | $4 / 1,000 notices | [tenders-radar](https://apify.com/tacps126/tenders-radar) |
+| `get_youtube_transcripts` | Full transcripts of videos, playlists, channels or searches, with timed captions and video details | $2.50 / 1,000 transcripts | [youtube-transcripts](https://apify.com/tacps126/youtube-transcripts) |
 | `search_research` | Papers, preprints and patents from OpenAlex, arXiv, PubMed and Europe PMC, merged; newest or most influential first, with field-normalized impact | $3 / 1,000 results | [research-radar](https://apify.com/tacps126/research-radar) |
 | `analyze_field` | A technology field's opportunity score with reasons, growth and momentum, industry participation and top companies, leading countries, institutions and funders, rising topics; several fields ranked | $0.03 / field | [innovation-radar](https://apify.com/tacps126/innovation-radar) |
 | `validate_idea` | How new or crowded an idea is, who is working on it, and the closest prior work | $0.03 / idea | [innovation-radar](https://apify.com/tacps126/innovation-radar) |

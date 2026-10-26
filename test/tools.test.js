@@ -24,17 +24,15 @@ const SAMPLE = {
   find_events: { searches: ['AI'], location: 'London', urls: ['https://luma.com/ai'], max_items: 10 },
   search_naukri_jobs: { query: 'python developer', location: 'Bangalore', max_items: 5 },
   find_remote_jobs: { title_includes: ['engineer'], countries: ['US'] },
-  search_startup_jobs: { role: 'software engineer', city: 'San Francisco' },
   search_tech_jobs: { query: 'data engineer', location: 'New York' },
-  find_reddit_leads: { categories: ['CRM'], competitors: ['HubSpot'] },
   search_research: { queries: ['solid state battery'], posted_within_days: 30 },
   search_gov_updates: { keywords: ['AI'], jurisdictions: ['uk'] },
   search_tenders: { sectors: ['tech'], countries: ['GB'] },
   get_alerts: { countries: ['IN'], hazards: ['flood'] },
   search_grants: { keywords: ['battery'], countries: ['EU'] },
   get_india_district_notices: { states: ['Bihar'], categories: ['tenders'] },
-  search_legislation: { keywords: ['sanctions'], countries: ['EU'] },
   find_companies: { countries: ['FR'], industry_codes: ['56.10'] },
+  get_youtube_transcripts: { videos: ['https://www.youtube.com/watch?v=dQw4w9WgXcQ'], max_items: 1 },
   get_supplier_contracts: { suppliers: ['Accenture'], countries: ['GB'] },
   screen_sanctions: { names: ['Rosneft'], date_of_birth: '1952' },
   search_recalls: { keywords: ['peanut'], categories: ['food'] },
@@ -74,8 +72,8 @@ test('tools that need a source reject calls without one', () => {
   assert.match(reddit.check({}), /keywords or subreddits/);
   const jobs = TOOLS.find((x) => x.name === 'get_company_jobs');
   assert.match(jobs.check({}), /career_page_urls or company_names/);
-  const leads = TOOLS.find((x) => x.name === 'find_reddit_leads');
-  assert.match(leads.check({}), /categories or competitors/);
+  const yt = TOOLS.find((x) => x.name === 'get_youtube_transcripts');
+  assert.match(yt.check({}), /videos .* or searches/);
 });
 
 test('runActorSync sends token, limit and spend cap; parses items', async () => {

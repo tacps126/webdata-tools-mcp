@@ -152,28 +152,6 @@ export const TOOLS = [
     limit: (a) => a.max_items,
   },
   {
-    name: 'search_startup_jobs',
-    actor: 'tacps126/wellfound-jobs-scraper',
-    title: 'Search startup jobs on Wellfound (AngelList Talent)',
-    price: 'about $0.002 per job',
-    description:
-      'Startup jobs from Wellfound by role and city, or remote: title, startup name, size and pitch, salary and equity range, years of experience, remote or on-site, apply link.',
-    shape: {
-      role: z.string().min(1).describe('The role, e.g. "software engineer", "product manager", "designer".'),
-      city: z.string().optional().describe('Optional city, e.g. "San Francisco", "New York", "London".'),
-      remote: z.boolean().default(false).describe('Only remote jobs (ignores city).'),
-      max_items: maxItems(50),
-    },
-    map: (a) =>
-      clean({
-        query: a.role,
-        location: a.remote ? undefined : a.city,
-        remote: a.remote || undefined,
-        maxItems: a.max_items,
-      }),
-    limit: (a) => a.max_items,
-  },
-  {
     name: 'search_tech_jobs',
     actor: 'tacps126/dice-jobs-scraper',
     title: 'Search US tech jobs on Dice',
@@ -327,31 +305,31 @@ export const TOOLS = [
     limit: (a) => a.max_items,
   },
   {
-    name: 'find_reddit_leads',
-    actor: 'tacps126/reddit-lead-finder',
-    title: 'Find buying-intent posts on Reddit',
-    price: 'about $0.002 per lead plus $0.0001 per post read',
+    name: 'get_youtube_transcripts',
+    actor: 'tacps126/youtube-transcripts',
+    title: 'Get YouTube video transcripts',
+    price: 'about $0.0025 per transcript (videos without captions are free)',
     description:
-      'Reddit posts and comments where people ask for a tool like yours, look for an alternative to a competitor, compare options or complain. Each lead is tagged with its intent (recommendation_request, alternative_seeking, comparison, pain_point) and the phrase that showed it.',
+      'Full transcripts of YouTube videos, and of every video in a playlist, a channel (newest first) or a YouTube search, as clean text plus timed caption lines, with title, channel, publish date, length, views, description and keywords. Picks the caption language you prefer (a written transcript over an auto-generated one) and can translate (best effort). Use for summaries, RAG, research and content repurposing.',
     shape: {
-      categories: z.array(z.string()).optional().describe('What you sell, as buyers say it, e.g. ["CRM", "invoice software"].'),
-      competitors: z.array(z.string()).optional().describe('Products whose users you want, e.g. ["HubSpot"].'),
-      subreddits: z.array(z.string()).optional().describe('Only search these subreddits, e.g. ["smallbusiness", "SaaS"].'),
-      time: z.enum(['day', 'week', 'month', 'year']).default('month').describe('How far back to look.'),
-      max_items: maxItems(30, 300),
+      videos: z.array(z.string().min(1)).optional().describe('Video links or ids, playlist links, channel @handles or channel links.'),
+      searches: z.array(z.string().min(1)).optional().describe('YouTube searches whose top videos to read, e.g. ["rust async tutorial"].'),
+      max_videos_per_source: z.number().int().min(1).max(500).default(20).describe('Videos taken from each playlist, channel or search.'),
+      languages: z.array(z.string().min(2)).optional().describe('Caption languages in order of preference, e.g. ["en", "de"] (default en).'),
+      translate_to: z.string().optional().describe('Language code to translate the captions into (best effort).'),
+      include_segments: z.boolean().default(true).describe('Add every caption line with its start time. Off = plain text only.'),
+      max_items: maxItems(20, 500),
     },
-    check: (a) =>
-      (a.categories?.length || a.competitors?.length)
-        ? null
-        : 'Provide at least one of: categories or competitors.',
+    check: (a) => (!a.videos?.length && !a.searches?.length ? 'Give videos (links, ids, playlists, channels) or searches.' : undefined),
     map: (a) =>
       clean({
-        keywords: a.categories,
-        competitors: a.competitors,
-        subreddits: a.subreddits,
-        time: a.time,
+        videos: a.videos,
+        searchQueries: a.searches,
+        maxVideosPerSource: a.max_videos_per_source,
+        languages: a.languages,
+        translateTo: a.translate_to,
+        includeSegments: a.include_segments,
         maxItems: a.max_items,
-        maxPostsPerSource: 50,
       }),
     limit: (a) => a.max_items,
   },
@@ -504,42 +482,18 @@ export const TOOLS = [
     limit: (a) => a.max_items,
   },
   {
-    name: 'search_legislation',
-    actor: 'tacps126/legislation-radar',
-    title: 'Search new laws, regulations and bills',
-    price: 'about $0.003 per law',
-    description:
-      'New legislation from official publishers in one schema: EU regulations, directives and decisions (EUR-Lex), UK Acts and statutory instruments of all four nations (legislation.gov.uk), US public laws and bill texts with their stage (GovInfo), Australian Acts and legislative instruments (Federal Register of Legislation), Canadian regulations (Canada Gazette Part II). Number, title, date, sectors, official text and PDF links. Newest first.',
-    shape: {
-      keywords: strings('Whole words matched on titles, e.g. ["sanctions", "artificial intelligence"].').optional(),
-      countries: z.array(z.enum(['AU', 'CA', 'EU', 'GB', 'US'])).optional().describe('Jurisdictions (default: all).'),
-      kinds: z.array(z.enum(['regulation', 'directive', 'decision', 'act', 'statutory-instrument', 'public-law', 'bill'])).optional().describe('Kinds of legislation.'),
-      posted_within_days: z.number().int().min(1).max(365).default(7).describe('Only laws dated in the last N days.'),
-      max_items: maxItems(30, 500),
-    },
-    map: (a) =>
-      clean({
-        keywords: a.keywords,
-        countries: a.countries,
-        kinds: a.kinds,
-        postedWithinDays: a.posted_within_days,
-        maxItems: a.max_items,
-      }),
-    limit: (a) => a.max_items,
-  },
-  {
     name: 'screen_sanctions',
     actor: 'tacps126/sanctions-screener',
     title: 'Screen names against official sanctions lists',
     price: 'about $0.003 per name',
     description:
-      'Screens people and organisations against the official sanctions lists read from each publisher: US OFAC SDN and consolidated (non-SDN), UN Security Council, EU consolidated financial sanctions, UK Sanctions List and Canada. Matching handles transliteration (Cyrillic, Arabic), word order, patronymics, initials and company forms. Returns a verdict per name (match, possible-match, no-match) with the matching entries: list, programmes, countries, birth dates, identifiers, listing date and link. A screening aid, not legal advice.',
+      'Screens people and organisations against the official sanctions lists read from each publisher: US OFAC SDN and consolidated (non-SDN), UN Security Council, EU consolidated financial sanctions, UK Sanctions List, Canada and Switzerland (SECO). Matching handles transliteration (Cyrillic, Arabic), word order, patronymics, initials and company forms. Returns a verdict per name (match, possible-match, no-match) with the matching entries: list, programmes, countries, birth dates, identifiers, listing date and link. A screening aid, not legal advice.',
     shape: {
       names: strings('People or organisations to screen, e.g. ["Rosneft", "Vladimir Putin"].'),
       date_of_birth: z.string().optional().describe('For a single person: a date or year of birth, which lowers matches with a different birth year.'),
       country: z.string().optional().describe('For a single subject: a nationality or country (name or ISO code).'),
       entity_type: z.enum(['any', 'individual', 'entity']).default('any').describe('People only, organisations (with vessels and aircraft) only, or both.'),
-      lists: z.array(z.enum(['us-ofac-sdn', 'us-ofac-cons', 'un', 'eu', 'gb', 'ca'])).optional().describe('Lists to check (default: all).'),
+      lists: z.array(z.enum(['us-ofac-sdn', 'us-ofac-cons', 'un', 'eu', 'gb', 'ca', 'ch'])).optional().describe('Lists to check (default: all).'),
       min_score: z.number().int().min(50).max(100).default(85).describe('Name similarity from which an entry is reported.'),
     },
     map: (a) =>
@@ -587,13 +541,13 @@ export const TOOLS = [
     title: 'Find companies and new registrations in official registers',
     price: 'about $0.0025 per company',
     description:
-      'Official company registers in one schema. mode "new": companies newly registered in France (BODACC), Norway (Brønnøysund) and Finland (PRH), and in France also insolvency judgments, deregistrations and business sales; filter by NACE/NAF industry code, city/region/postcode and keywords. mode "search": companies by name in France (with officers), Norway, Finland and, for other countries, the worldwide LEI index. Registry id, legal form, status, dates, industry, address, employees, capital, officers, register link.',
+      'Official company registers in one schema. mode "new": companies newly registered in France (BODACC), Norway (Brønnøysund), Finland (PRH), Estonia and the US states New York, Colorado, Connecticut and Oregon, and in France also insolvency judgments, deregistrations and business sales; filter by NACE/NAF industry code, city/region/postcode and keywords. mode "search": companies by name in France (with officers), Norway, Finland, Estonia, Czechia, the four US states and, for other countries, the worldwide LEI index. Registry id, legal form, status, dates, industry, address, employees, capital, officers or registered agents, business email where published (Connecticut), register link.',
     shape: {
       mode: z.enum(['new', 'search']).default('new').describe('new = registrations and register events; search = look up by name.'),
       names: strings('Company names to search (mode "search"), e.g. ["Nokia"].').optional(),
-      countries: z.array(z.string()).optional().describe('ISO codes: FR, NO, FI (national registers); others are searched in the LEI index.'),
+      countries: z.array(z.string()).optional().describe('ISO codes: FR, NO, FI, EE, CZ; US (all four states) or one state: US-NY, US-CO, US-CT, US-OR; others are searched in the LEI index.'),
       events: z.array(z.enum(['registration', 'insolvency', 'deregistration', 'sale'])).optional().describe('France, mode "new" (default: registration).'),
-      industry_codes: strings('NACE/NAF code prefixes, e.g. ["56.10"] restaurants, ["62"] IT.').optional(),
+      industry_codes: strings('NACE/NAF code prefixes, e.g. ["56.10"] restaurants, ["62"] IT; NAICS for Connecticut.').optional(),
       locations: strings('Cities, regions or postcode prefixes, e.g. ["Oslo", "75"].').optional(),
       registered_within_days: z.number().int().min(1).max(365).default(7).describe('mode "new": the last N days.'),
       max_items: maxItems(50, 1000),
