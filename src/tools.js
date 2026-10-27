@@ -152,6 +152,28 @@ export const TOOLS = [
     limit: (a) => a.max_items,
   },
   {
+    name: 'search_startup_jobs',
+    actor: 'tacps126/wellfound-jobs-scraper',
+    title: 'Search startup jobs on Wellfound (AngelList Talent)',
+    price: 'about $0.002 per job',
+    description:
+      'Startup jobs from Wellfound by role and city, or remote: title, startup name, size and pitch, salary and equity range, years of experience, remote or on-site, apply link.',
+    shape: {
+      role: z.string().min(1).describe('The role, e.g. "software engineer", "product manager", "designer".'),
+      city: z.string().optional().describe('Optional city, e.g. "San Francisco", "New York", "London".'),
+      remote: z.boolean().default(false).describe('Only remote jobs (ignores city).'),
+      max_items: maxItems(50),
+    },
+    map: (a) =>
+      clean({
+        query: a.role,
+        location: a.remote ? undefined : a.city,
+        remote: a.remote || undefined,
+        maxItems: a.max_items,
+      }),
+    limit: (a) => a.max_items,
+  },
+  {
     name: 'search_tech_jobs',
     actor: 'tacps126/dice-jobs-scraper',
     title: 'Search US tech jobs on Dice',
@@ -305,6 +327,35 @@ export const TOOLS = [
     limit: (a) => a.max_items,
   },
   {
+    name: 'find_reddit_leads',
+    actor: 'tacps126/reddit-lead-finder',
+    title: 'Find buying-intent posts on Reddit',
+    price: 'about $0.002 per lead plus $0.0001 per post read',
+    description:
+      'Reddit posts and comments where people ask for a tool like yours, look for an alternative to a competitor, compare options or complain. Each lead is tagged with its intent (recommendation_request, alternative_seeking, comparison, pain_point) and the phrase that showed it.',
+    shape: {
+      categories: z.array(z.string()).optional().describe('What you sell, as buyers say it, e.g. ["CRM", "invoice software"].'),
+      competitors: z.array(z.string()).optional().describe('Products whose users you want, e.g. ["HubSpot"].'),
+      subreddits: z.array(z.string()).optional().describe('Only search these subreddits, e.g. ["smallbusiness", "SaaS"].'),
+      time: z.enum(['day', 'week', 'month', 'year']).default('month').describe('How far back to look.'),
+      max_items: maxItems(30, 300),
+    },
+    check: (a) =>
+      (a.categories?.length || a.competitors?.length)
+        ? null
+        : 'Provide at least one of: categories or competitors.',
+    map: (a) =>
+      clean({
+        keywords: a.categories,
+        competitors: a.competitors,
+        subreddits: a.subreddits,
+        time: a.time,
+        maxItems: a.max_items,
+        maxPostsPerSource: 50,
+      }),
+    limit: (a) => a.max_items,
+  },
+  {
     name: 'get_youtube_transcripts',
     actor: 'tacps126/youtube-transcripts',
     title: 'Get YouTube video transcripts',
@@ -339,7 +390,7 @@ export const TOOLS = [
     title: 'Search papers, preprints and patents',
     price: 'about $0.003 per result',
     description:
-      'Papers, preprints and patents from OpenAlex, arXiv, PubMed and Europe PMC in one deduplicated list, newest first or most influential first: title, abstract, authors and affiliations, venue, DOI, PDF link, citations, citations per year, field-normalized impact (top 1% / 10%), open-access status, and for patents the number, applicants and IPC/CPC classes. Retracted papers are left out.',
+      'Papers, preprints and patents from OpenAlex, arXiv, PubMed, Europe PMC and the European Patent Office (worldwide patents: EP, WO, US, CN, JP, KR…) in one deduplicated list, newest first or most influential first: title, abstract, authors and affiliations, venue, DOI, PDF link, citations, citations per year, field-normalized impact (top 1% / 10%), open-access status, and for patents the number, applicants, inventors, IPC classes and family id. Retracted papers are left out.',
     shape: {
       queries: strings('Topics, keywords or phrases, e.g. "solid state battery".'),
       sources: z.array(z.enum(['openalex', 'arxiv', 'pubmed', 'europepmc', 'patents', 'crossref'])).optional().describe('Which sources to search. Default: openalex, arxiv, pubmed, europepmc, patents.'),
@@ -476,6 +527,30 @@ export const TOOLS = [
         districts: a.districts,
         categories: a.categories,
         keywords: a.keywords,
+        postedWithinDays: a.posted_within_days,
+        maxItems: a.max_items,
+      }),
+    limit: (a) => a.max_items,
+  },
+  {
+    name: 'search_legislation',
+    actor: 'tacps126/legislation-radar',
+    title: 'Search new laws, regulations and bills',
+    price: 'about $0.003 per law',
+    description:
+      'New legislation from official publishers in one schema: EU regulations, directives and decisions (EUR-Lex), UK Acts and statutory instruments of all four nations (legislation.gov.uk), US public laws and bill texts with their stage (GovInfo), Australian Acts and legislative instruments (Federal Register of Legislation), Canadian regulations (Canada Gazette Part II). Number, title, date, sectors, official text and PDF links. Newest first.',
+    shape: {
+      keywords: strings('Whole words matched on titles, e.g. ["sanctions", "artificial intelligence"].').optional(),
+      countries: z.array(z.enum(['AU', 'CA', 'EU', 'GB', 'US'])).optional().describe('Jurisdictions (default: all).'),
+      kinds: z.array(z.enum(['regulation', 'directive', 'decision', 'act', 'statutory-instrument', 'public-law', 'bill'])).optional().describe('Kinds of legislation.'),
+      posted_within_days: z.number().int().min(1).max(365).default(7).describe('Only laws dated in the last N days.'),
+      max_items: maxItems(30, 500),
+    },
+    map: (a) =>
+      clean({
+        keywords: a.keywords,
+        countries: a.countries,
+        kinds: a.kinds,
         postedWithinDays: a.posted_within_days,
         maxItems: a.max_items,
       }),
@@ -630,7 +705,7 @@ export const TOOLS = [
     title: 'Analyse a technology or research field',
     price: 'about $0.03 per field',
     description:
-      'A landscape of a technology or research field from open research data: an opportunity score (0-100) with its reasons, momentum, lab-to-market gap and geographic concentration; works per year and growth stage; industry participation and the top companies; key researchers, institutions, countries and funders; rising sub-topics, standout recent work and related patents. Several fields come back ranked. For written opportunities, use the field-opportunity-analysis prompt.',
+      'A landscape of a technology or research field from open research data: an opportunity score (0-100) with its reasons, momentum, lab-to-market gap and geographic concentration; works per year and growth stage; industry participation and the top companies; key researchers, institutions, countries and funders; rising sub-topics, standout recent work, related patents, the worldwide patent filing trend and older European patents that look free to use (expired or lapsed, with legal status). Several fields come back ranked. For written opportunities, use the field-opportunity-analysis prompt.',
     shape: {
       fields: strings('Fields or technologies, e.g. "solid state battery", "CRISPR base editing".'),
       years: z.number().int().min(2).max(40).default(10).describe('Years of history for the trend.'),
@@ -644,7 +719,7 @@ export const TOOLS = [
     title: 'Check how new or crowded an idea is',
     price: 'about $0.03 per idea',
     description:
-      'How much research already covers a product or research idea: matching works, works in the last two years, crowdedness (open, early, active, crowded), growth, who is working on it (researchers, institutions, companies), the closest prior work and related patents. For a written assessment, use the idea-validation prompt.',
+      'How much research already covers a product or research idea: matching works, works in the last two years, crowdedness (open, early, active, crowded), growth, who is working on it (researchers, institutions, companies), the closest prior work, related patents, the patent trend and possibly free-to-use patents. For a written assessment, use the idea-validation prompt.',
     shape: {
       ideas: strings('Ideas in plain words, e.g. "a window that generates solar power with perovskite tandem cells".'),
     },

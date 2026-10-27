@@ -1,7 +1,7 @@
 {
   "author": "tacps126",
   "authorUrl": "https://github.com/tacps126",
-  "description": "MCP server for AI agents: job postings (career sites, remote, US tech, Indeed, Naukri), hiring signals, Google News, official government updates, public tenders and contract awards, weather and disaster alerts, grants and funding calls, research papers and patents, technology-field trends and idea validation (with analyst prompts), Trustpilot and app reviews, Reddit mentions, YouTube transcripts, sanctions screening, product recalls, company registers, website contacts, German real estate, Shopify products and store analysis, trade-show exhibitors and upcoming events. Runs ready-made Apify Actors with your own Apify token.",
+  "description": "MCP server for AI agents: job postings (career sites, remote, startups, US tech, Indeed, Naukri), hiring signals, Google News, official government updates, public tenders and contract awards, weather and disaster alerts, grants and funding calls, research papers and patents, technology-field trends and idea validation (with analyst prompts), Trustpilot and app reviews, Reddit mentions and buying-intent leads, YouTube transcripts, new laws and bills, sanctions screening, product recalls, company registers, website contacts, German real estate, Shopify products and store analysis, trade-show exhibitors and upcoming events. Runs ready-made Apify Actors with your own Apify token.",
   "homepage": "https://github.com/tacps126/webdata-tools-mcp",
   "icon": "https://raw.githubusercontent.com/tacps126/webdata-tools-mcp/main/icon.png",
   "identifier": "tacps126-webdata-tools-mcp",
@@ -528,6 +528,104 @@
       },
       "annotations": {
         "title": "Find remote jobs from company career sites and remote-job feeds",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "search_startup_jobs",
+      "title": "Search startup jobs on Wellfound (AngelList Talent)",
+      "description": "Startup jobs from Wellfound by role and city, or remote: title, startup name, size and pitch, salary and equity range, years of experience, remote or on-site, apply link. Runs the Apify Actor tacps126/wellfound-jobs-scraper on your Apify account (about $0.002 per job; spend per call is capped at $0.5).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "role": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The role, e.g. \"software engineer\", \"product manager\", \"designer\"."
+          },
+          "city": {
+            "description": "Optional city, e.g. \"San Francisco\", \"New York\", \"London\".",
+            "type": "string"
+          },
+          "remote": {
+            "default": false,
+            "description": "Only remote jobs (ignores city).",
+            "type": "boolean"
+          },
+          "max_items": {
+            "default": 50,
+            "description": "Maximum results to return (default 50, max 500). Cost scales with this.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 500
+          },
+          "extra_input": {
+            "description": "Advanced: extra Actor input fields, merged over the defaults.",
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          }
+        },
+        "required": [
+          "role"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "tool": {
+            "type": "string",
+            "description": "Name of the tool that produced the result."
+          },
+          "count": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records the Actor returned."
+          },
+          "shown": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records included in `items` (can be lower than count when the result is long)."
+          },
+          "truncated": {
+            "type": "boolean",
+            "description": "True when records were left out to keep the result short; ask for fewer items."
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "propertyNames": {
+                "type": "string"
+              },
+              "additionalProperties": {}
+            },
+            "description": "The records. Long text fields are shortened to 600 characters."
+          }
+        },
+        "required": [
+          "tool",
+          "count",
+          "shown",
+          "truncated",
+          "items"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
+      },
+      "annotations": {
+        "title": "Search startup jobs on Wellfound (AngelList Talent)",
         "readOnlyHint": true,
         "destructiveHint": false,
         "idempotentHint": true,
@@ -1252,6 +1350,119 @@
       }
     },
     {
+      "name": "find_reddit_leads",
+      "title": "Find buying-intent posts on Reddit",
+      "description": "Reddit posts and comments where people ask for a tool like yours, look for an alternative to a competitor, compare options or complain. Each lead is tagged with its intent (recommendation_request, alternative_seeking, comparison, pain_point) and the phrase that showed it. Runs the Apify Actor tacps126/reddit-lead-finder on your Apify account (about $0.002 per lead plus $0.0001 per post read; spend per call is capped at $0.5).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "categories": {
+            "description": "What you sell, as buyers say it, e.g. [\"CRM\", \"invoice software\"].",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "competitors": {
+            "description": "Products whose users you want, e.g. [\"HubSpot\"].",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "subreddits": {
+            "description": "Only search these subreddits, e.g. [\"smallbusiness\", \"SaaS\"].",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "time": {
+            "default": "month",
+            "description": "How far back to look.",
+            "type": "string",
+            "enum": [
+              "day",
+              "week",
+              "month",
+              "year"
+            ]
+          },
+          "max_items": {
+            "default": 30,
+            "description": "Maximum results to return (default 30, max 300). Cost scales with this.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 300
+          },
+          "extra_input": {
+            "description": "Advanced: extra Actor input fields, merged over the defaults.",
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          }
+        },
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "tool": {
+            "type": "string",
+            "description": "Name of the tool that produced the result."
+          },
+          "count": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records the Actor returned."
+          },
+          "shown": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records included in `items` (can be lower than count when the result is long)."
+          },
+          "truncated": {
+            "type": "boolean",
+            "description": "True when records were left out to keep the result short; ask for fewer items."
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "propertyNames": {
+                "type": "string"
+              },
+              "additionalProperties": {}
+            },
+            "description": "The records. Long text fields are shortened to 600 characters."
+          }
+        },
+        "required": [
+          "tool",
+          "count",
+          "shown",
+          "truncated",
+          "items"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
+      },
+      "annotations": {
+        "title": "Find buying-intent posts on Reddit",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
       "name": "get_youtube_transcripts",
       "title": "Get YouTube video transcripts",
       "description": "Full transcripts of YouTube videos, and of every video in a playlist, a channel (newest first) or a YouTube search, as clean text plus timed caption lines, with title, channel, publish date, length, views, description and keywords. Picks the caption language you prefer (a written transcript over an auto-generated one) and can translate (best effort). Use for summaries, RAG, research and content repurposing. Runs the Apify Actor tacps126/youtube-transcripts on your Apify account (about $0.0025 per transcript (videos without captions are free); spend per call is capped at $0.5).",
@@ -1375,7 +1586,7 @@
     {
       "name": "search_research",
       "title": "Search papers, preprints and patents",
-      "description": "Papers, preprints and patents from OpenAlex, arXiv, PubMed and Europe PMC in one deduplicated list, newest first or most influential first: title, abstract, authors and affiliations, venue, DOI, PDF link, citations, citations per year, field-normalized impact (top 1% / 10%), open-access status, and for patents the number, applicants and IPC/CPC classes. Retracted papers are left out. Runs the Apify Actor tacps126/research-radar on your Apify account (about $0.003 per result; spend per call is capped at $0.5).",
+      "description": "Papers, preprints and patents from OpenAlex, arXiv, PubMed, Europe PMC and the European Patent Office (worldwide patents: EP, WO, US, CN, JP, KR…) in one deduplicated list, newest first or most influential first: title, abstract, authors and affiliations, venue, DOI, PDF link, citations, citations per year, field-normalized impact (top 1% / 10%), open-access status, and for patents the number, applicants, inventors, IPC classes and family id. Retracted papers are left out. Runs the Apify Actor tacps126/research-radar on your Apify account (about $0.003 per result; spend per call is capped at $0.5).",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -2083,6 +2294,133 @@
       }
     },
     {
+      "name": "search_legislation",
+      "title": "Search new laws, regulations and bills",
+      "description": "New legislation from official publishers in one schema: EU regulations, directives and decisions (EUR-Lex), UK Acts and statutory instruments of all four nations (legislation.gov.uk), US public laws and bill texts with their stage (GovInfo), Australian Acts and legislative instruments (Federal Register of Legislation), Canadian regulations (Canada Gazette Part II). Number, title, date, sectors, official text and PDF links. Newest first. Runs the Apify Actor tacps126/legislation-radar on your Apify account (about $0.003 per law; spend per call is capped at $0.5).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "keywords": {
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "Whole words matched on titles, e.g. [\"sanctions\", \"artificial intelligence\"]."
+          },
+          "countries": {
+            "description": "Jurisdictions (default: all).",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "AU",
+                "CA",
+                "EU",
+                "GB",
+                "US"
+              ]
+            }
+          },
+          "kinds": {
+            "description": "Kinds of legislation.",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "regulation",
+                "directive",
+                "decision",
+                "act",
+                "statutory-instrument",
+                "public-law",
+                "bill"
+              ]
+            }
+          },
+          "posted_within_days": {
+            "default": 7,
+            "description": "Only laws dated in the last N days.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 365
+          },
+          "max_items": {
+            "default": 30,
+            "description": "Maximum results to return (default 30, max 500). Cost scales with this.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 500
+          },
+          "extra_input": {
+            "description": "Advanced: extra Actor input fields, merged over the defaults.",
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          }
+        },
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "tool": {
+            "type": "string",
+            "description": "Name of the tool that produced the result."
+          },
+          "count": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records the Actor returned."
+          },
+          "shown": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records included in `items` (can be lower than count when the result is long)."
+          },
+          "truncated": {
+            "type": "boolean",
+            "description": "True when records were left out to keep the result short; ask for fewer items."
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "propertyNames": {
+                "type": "string"
+              },
+              "additionalProperties": {}
+            },
+            "description": "The records. Long text fields are shortened to 600 characters."
+          }
+        },
+        "required": [
+          "tool",
+          "count",
+          "shown",
+          "truncated",
+          "items"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
+      },
+      "annotations": {
+        "title": "Search new laws, regulations and bills",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
       "name": "screen_sanctions",
       "title": "Screen names against official sanctions lists",
       "description": "Screens people and organisations against the official sanctions lists read from each publisher: US OFAC SDN and consolidated (non-SDN), UN Security Council, EU consolidated financial sanctions, UK Sanctions List, Canada and Switzerland (SECO). Matching handles transliteration (Cyrillic, Arabic), word order, patronymics, initials and company forms. Returns a verdict per name (match, possible-match, no-match) with the matching entries: list, programmes, countries, birth dates, identifiers, listing date and link. A screening aid, not legal advice. Runs the Apify Actor tacps126/sanctions-screener on your Apify account (about $0.003 per name; spend per call is capped at $0.5).",
@@ -2753,7 +3091,7 @@
     {
       "name": "analyze_field",
       "title": "Analyse a technology or research field",
-      "description": "A landscape of a technology or research field from open research data: an opportunity score (0-100) with its reasons, momentum, lab-to-market gap and geographic concentration; works per year and growth stage; industry participation and the top companies; key researchers, institutions, countries and funders; rising sub-topics, standout recent work and related patents. Several fields come back ranked. For written opportunities, use the field-opportunity-analysis prompt. Runs the Apify Actor tacps126/innovation-radar on your Apify account (about $0.03 per field; spend per call is capped at $0.5).",
+      "description": "A landscape of a technology or research field from open research data: an opportunity score (0-100) with its reasons, momentum, lab-to-market gap and geographic concentration; works per year and growth stage; industry participation and the top companies; key researchers, institutions, countries and funders; rising sub-topics, standout recent work, related patents, the worldwide patent filing trend and older European patents that look free to use (expired or lapsed, with legal status). Several fields come back ranked. For written opportunities, use the field-opportunity-analysis prompt. Runs the Apify Actor tacps126/innovation-radar on your Apify account (about $0.03 per field; spend per call is capped at $0.5).",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -2846,7 +3184,7 @@
     {
       "name": "validate_idea",
       "title": "Check how new or crowded an idea is",
-      "description": "How much research already covers a product or research idea: matching works, works in the last two years, crowdedness (open, early, active, crowded), growth, who is working on it (researchers, institutions, companies), the closest prior work and related patents. For a written assessment, use the idea-validation prompt. Runs the Apify Actor tacps126/innovation-radar on your Apify account (about $0.03 per idea; spend per call is capped at $0.5).",
+      "description": "How much research already covers a product or research idea: matching works, works in the last two years, crowdedness (open, early, active, crowded), growth, who is working on it (researchers, institutions, companies), the closest prior work, related patents, the patent trend and possibly free-to-use patents. For a written assessment, use the idea-validation prompt. Runs the Apify Actor tacps126/innovation-radar on your Apify account (about $0.03 per idea; spend per call is capped at $0.5).",
       "inputSchema": {
         "type": "object",
         "properties": {

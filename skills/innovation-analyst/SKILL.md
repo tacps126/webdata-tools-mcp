@@ -27,7 +27,9 @@ Each field or idea costs about $0.03 on the user's Apify account. Don't call the
 - `risingTopics`: sub-topics whose share grew most. `standoutRecentWorks`: the most cited recent papers.
 - `topCompanies`, `keyResearchers`, `topInstitutions`, `topFunders`: partners, hires, licensors, competitors.
 - `reviewShare`: many review papers means the field is consolidating.
-- `relatedPatents[].likelyExpiredByTerm`: filed over 20 years ago — possibly free to use (not legal advice).
+- `relatedPatents`: the newest patents on the subject (`likelyExpiredByTerm` = filed 20+ years ago).
+- `freeToUsePatents`: older European patents that look free to use: expired, withdrawn/refused/revoked everywhere, or lapsed in some countries (`legalStatus.lapsedIn`; `feesPaidIn` = still maintained there). Never legal advice.
+- `patentTrend`: worldwide patent publications, last two full years vs the two before. Patents rising faster than papers = commercialisation; papers rising without patents = still in the lab.
 - `growth.stage` says when counts are small: percentages are noisy then; say so.
 - Validation: `crowdedness` (open, early, active, crowded), `matchingWorks`, `worksLastTwoYears`, `closestWorks`, `whoIsWorkingOnIt`.
 - `broaderSpace` / `position`: the biggest neighbouring space with one term left out. "Open niche in a crowded field" means the application is new but the base technology is busy: proof it works, and competition for talent and suppliers.

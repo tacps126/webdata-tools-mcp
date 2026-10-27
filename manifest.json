@@ -62,10 +62,6 @@
       "description": "Remote jobs straight from employers: hundreds of company job boards plus the Remote OK, Jobicy, Working Nomads and Himalayas feeds, keeping only roles the posting marks as remote. Normalized title, company, country, seniority, salary and skills; each job links to its source."
     },
     {
-      "name": "search_startup_jobs",
-      "description": "Startup jobs from Wellfound by role and city, or remote: title, startup name, size and pitch, salary and equity range, years of experience, remote or on-site, apply link."
-    },
-    {
       "name": "search_tech_jobs",
       "description": "US tech jobs from Dice by keyword and city: title, company, location, salary text, employer type (direct hire or recruiter), Easy Apply, remote / on-site / hybrid, posted and updated dates."
     },
@@ -90,8 +86,8 @@
       "description": "Reddit posts (and optionally comments) by keyword, subreddit or user: title, text, author, subreddit, score, links and dates. Good for brand and topic monitoring."
     },
     {
-      "name": "find_reddit_leads",
-      "description": "Reddit posts and comments where people ask for a tool like yours, look for an alternative to a competitor, compare options or complain. Each lead is tagged with its intent (recommendation_request, alternative_seeking, comparison, pain_point) and the phrase that showed it."
+      "name": "get_youtube_transcripts",
+      "description": "Full transcripts of YouTube videos, and of every video in a playlist, a channel (newest first) or a YouTube search, as clean text plus timed caption lines, with title, channel, publish date, length, views, description and keywords. Picks the caption language you prefer (a written transcript over an auto-generated one) and can translate (best effort). Use for summaries, RAG, research and content repurposing."
     },
     {
       "name": "search_research",
@@ -114,12 +110,8 @@
       "description": "Tenders, recruitment and announcements from the official websites of India's 748 districts (collector offices), by state and district: title (often Hindi or the state language), date, district, state, official PDF link. Newest first."
     },
     {
-      "name": "search_legislation",
-      "description": "New legislation from official publishers in one schema: EU regulations, directives and decisions (EUR-Lex), UK Acts and statutory instruments of all four nations (legislation.gov.uk), US public laws and bill texts with their stage (GovInfo), Australian Acts and legislative instruments (Federal Register of Legislation), Canadian regulations (Canada Gazette Part II). Number, title, date, sectors, official text and PDF links. Newest first."
-    },
-    {
       "name": "screen_sanctions",
-      "description": "Screens people and organisations against the official sanctions lists read from each publisher: US OFAC SDN and consolidated (non-SDN), UN Security Council, EU consolidated financial sanctions, UK Sanctions List and Canada. Matching handles transliteration (Cyrillic, Arabic), word order, patronymics, initials and company forms. Returns a verdict per name (match, possible-match, no-match) with the matching entries: list, programmes, countries, birth dates, identifiers, listing date and link. A screening aid, not legal advice."
+      "description": "Screens people and organisations against the official sanctions lists read from each publisher: US OFAC SDN and consolidated (non-SDN), UN Security Council, EU consolidated financial sanctions, UK Sanctions List, Canada and Switzerland (SECO). Matching handles transliteration (Cyrillic, Arabic), word order, patronymics, initials and company forms. Returns a verdict per name (match, possible-match, no-match) with the matching entries: list, programmes, countries, birth dates, identifiers, listing date and link. A screening aid, not legal advice."
     },
     {
       "name": "search_recalls",
@@ -127,7 +119,7 @@
     },
     {
       "name": "find_companies",
-      "description": "Official company registers in one schema. mode \"new\": companies newly registered in France (BODACC), Norway (Brønnøysund) and Finland (PRH), and in France also insolvency judgments, deregistrations and business sales; filter by NACE/NAF industry code, city/region/postcode and keywords. mode \"search\": companies by name in France (with officers), Norway, Finland and, for other countries, the worldwide LEI index. Registry id, legal form, status, dates, industry, address, employees, capital, officers, register link."
+      "description": "Official company registers in one schema. mode \"new\": companies newly registered in France (BODACC), Norway (Brønnøysund), Finland (PRH), Estonia and the US states New York, Colorado, Connecticut and Oregon, and in France also insolvency judgments, deregistrations and business sales; filter by NACE/NAF industry code, city/region/postcode and keywords. mode \"search\": companies by name in France (with officers), Norway, Finland, Estonia, Czechia, the four US states and, for other countries, the worldwide LEI index. Registry id, legal form, status, dates, industry, address, employees, capital, officers or registered agents, business email where published (Connecticut), register link."
     },
     {
       "name": "get_supplier_contracts",
