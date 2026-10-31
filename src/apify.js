@@ -39,7 +39,7 @@ export async function runActorSync({
 }) {
   if (!token) {
     throw new ApifyError(
-      'APIFY_TOKEN is not set. Create a free Apify account, copy your API token from ' +
+      'APIFY_TOKEN is not set. Create a free Apify account at https://console.apify.com/sign-up, copy your API token from ' +
         'Console > Settings > API & Integrations, and pass it to this server as the ' +
         'APIFY_TOKEN environment variable.',
       401,

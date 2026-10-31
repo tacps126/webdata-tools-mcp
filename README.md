@@ -75,7 +75,7 @@ For agents that load skills (Claude Code, Codex and others), copy [`skills/innov
 
 ## Setup
 
-1. Create a free [Apify account](https://apify.com) and copy your API token from
+1. Create a free [Apify account](https://console.apify.com/sign-up) and copy your API token from
    **Console → Settings → API & Integrations**.
 2. Add the server to your client. The token goes in `APIFY_TOKEN`.
 
