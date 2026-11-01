@@ -1,7 +1,7 @@
 {
   "author": "tacps126",
   "authorUrl": "https://github.com/tacps126",
-  "description": "MCP server for AI agents: job postings (career sites, remote, startups, US tech, Indeed, Naukri), hiring signals, Google News, official government updates, public tenders and contract awards, weather and disaster alerts, grants and funding calls, research papers and patents, technology-field trends and idea validation (with analyst prompts), Trustpilot and app reviews, Reddit mentions and buying-intent leads, YouTube transcripts, new laws and bills, sanctions screening, product recalls, company registers, website contacts, German real estate, Shopify products and store analysis, trade-show exhibitors and upcoming events. Runs ready-made Apify Actors with your own Apify token.",
+  "description": "MCP server for AI agents: job postings (career sites, remote, startups, US tech, Indeed, Naukri), hiring signals, Google News, official government updates, public tenders and contract awards, weather and disaster alerts, grants and funding calls, research papers and patents, technology-field trends and idea validation (with analyst prompts), Trustpilot and app reviews, Reddit mentions and buying-intent leads, YouTube transcripts, new laws and bills, sanctions screening, product recalls, company registers, website contacts, German real estate, Shopify products and store analysis, trade-show exhibitors and upcoming events, prediction markets, sports data and betting lines, lottery results. Runs ready-made Apify Actors with your own Apify token.",
   "homepage": "https://github.com/tacps126/webdata-tools-mcp",
   "icon": "https://raw.githubusercontent.com/tacps126/webdata-tools-mcp/main/icon.png",
   "identifier": "tacps126-webdata-tools-mcp",
@@ -65,7 +65,9 @@
     "alerts",
     "weather",
     "grants",
-    "funding"
+    "funding",
+    "sports-data",
+    "prediction-markets"
   ],
   "tools": [
     {
@@ -3952,7 +3954,499 @@
       "execution": {
         "taskSupport": "forbidden"
       }
+    },
+    {
+      "name": "get_prediction_markets",
+      "title": "Get prediction market odds (Kalshi, Polymarket, Manifold, PredictIt)",
+      "description": "Prediction markets from Kalshi, Polymarket, Manifold and PredictIt in one table: the market-implied probability, every outcome price, bid and ask, 24-hour and 7-day change, volume, liquidity, open interest, close date, status and, once settled, the result. Search by keyword or category, or pass market links or tickers; optional daily price history. Use for event forecasting, news context and research. Runs the Apify Actor tacps126/prediction-markets on your Apify account (about $0.003 per market; spend per call is capped at $0.5).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "search": {
+            "description": "Keywords, e.g. \"fed rate\", \"bitcoin\", \"election\". Empty = the busiest markets.",
+            "type": "string"
+          },
+          "platforms": {
+            "description": "Which platforms (default kalshi and polymarket).",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "kalshi",
+                "polymarket",
+                "manifold",
+                "predictit"
+              ]
+            }
+          },
+          "categories": {
+            "description": "Only markets in these categories.",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "politics",
+                "elections",
+                "economics",
+                "finance",
+                "crypto",
+                "sports",
+                "tech-science",
+                "ai",
+                "climate-weather",
+                "culture",
+                "world",
+                "companies",
+                "health",
+                "mentions"
+              ]
+            }
+          },
+          "markets": {
+            "description": "Market or event links, Kalshi tickers or Polymarket slugs.",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "status": {
+            "default": "open",
+            "description": "open, closed (settled, with result) or all.",
+            "type": "string",
+            "enum": [
+              "open",
+              "closed",
+              "all"
+            ]
+          },
+          "sort_by": {
+            "default": "volume24h",
+            "description": "Order of results.",
+            "type": "string",
+            "enum": [
+              "volume24h",
+              "volume",
+              "liquidity",
+              "closingSoon",
+              "newest",
+              "move24h"
+            ]
+          },
+          "min_volume_24h": {
+            "description": "Minimum 24-hour volume (dollars on Polymarket, contracts on Kalshi).",
+            "type": "number",
+            "minimum": 0
+          },
+          "closes_within_days": {
+            "description": "Only markets that close within this many days.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991
+          },
+          "history_days": {
+            "default": 0,
+            "description": "Add a daily price history of this many days (Kalshi and Polymarket). 0 = none.",
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 365
+          },
+          "max_items": {
+            "default": 30,
+            "description": "Maximum results to return (default 30, max 1000). Cost scales with this.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000
+          },
+          "extra_input": {
+            "description": "Advanced: extra Actor input fields, merged over the defaults.",
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          }
+        },
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "tool": {
+            "type": "string",
+            "description": "Name of the tool that produced the result."
+          },
+          "count": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records the Actor returned."
+          },
+          "shown": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records included in `items` (can be lower than count when the result is long)."
+          },
+          "truncated": {
+            "type": "boolean",
+            "description": "True when records were left out to keep the result short; ask for fewer items."
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "propertyNames": {
+                "type": "string"
+              },
+              "additionalProperties": {}
+            },
+            "description": "The records. Long text fields are shortened to 600 characters."
+          }
+        },
+        "required": [
+          "tool",
+          "count",
+          "shown",
+          "truncated",
+          "items"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
+      },
+      "annotations": {
+        "title": "Get prediction market odds (Kalshi, Polymarket, Manifold, PredictIt)",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "get_sports_data",
+      "title": "Get sports scores, box scores, odds and standings",
+      "description": "Scores and schedules, player box scores, betting odds (opening vs current or closing moneyline, spread and total, line movement, no-vig probability, and how each line settled), standings and rosters for 24 leagues: NFL, NBA, WNBA, MLB, NHL, college football and basketball, Premier League, LaLiga, Bundesliga, Serie A, Ligue 1, Champions League and more, MLS, Liga MX, Formula 1, ATP and WTA tennis (with rankings), PGA golf and UFC. Filter by date, status and team or player. Runs the Apify Actor tacps126/sports-data on your Apify account (about $0.003 per game, odds row, standings row or player; $0.001 per box-score player line; spend per call is capped at $0.5).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "leagues": {
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "nfl",
+                "ncaaf",
+                "nba",
+                "wnba",
+                "ncaab",
+                "mlb",
+                "nhl",
+                "premier-league",
+                "championship",
+                "la-liga",
+                "bundesliga",
+                "serie-a",
+                "ligue-1",
+                "eredivisie",
+                "primeira-liga",
+                "champions-league",
+                "europa-league",
+                "mls",
+                "liga-mx",
+                "f1",
+                "atp",
+                "wta",
+                "pga",
+                "ufc"
+              ]
+            },
+            "description": "One or more leagues."
+          },
+          "data_type": {
+            "default": "games",
+            "description": "games, boxScores (one row per player per game), odds (one row per game per sportsbook), standings (tennis: rankings), teams or rosters. Box scores, teams and rosters cover team sports.",
+            "type": "string",
+            "enum": [
+              "games",
+              "boxScores",
+              "odds",
+              "standings",
+              "teams",
+              "rosters"
+            ]
+          },
+          "days_back": {
+            "default": 1,
+            "description": "Days back from today; 1 = yesterday and today.",
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 400
+          },
+          "days_ahead": {
+            "default": 0,
+            "description": "Days ahead for schedules and upcoming lines.",
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 60
+          },
+          "date_from": {
+            "description": "YYYY-MM-DD; replaces days_back.",
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+          },
+          "date_to": {
+            "description": "YYYY-MM-DD; replaces days_ahead.",
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+          },
+          "game_status": {
+            "default": "any",
+            "description": "final for results and closing lines, scheduled for fixtures.",
+            "type": "string",
+            "enum": [
+              "any",
+              "final",
+              "live",
+              "scheduled"
+            ]
+          },
+          "teams": {
+            "description": "Team or player names or abbreviations, e.g. [\"Lakers\", \"KC\", \"Sinner\"].",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "match_type": {
+            "default": "any",
+            "description": "Tennis only.",
+            "type": "string",
+            "enum": [
+              "any",
+              "singles",
+              "doubles"
+            ]
+          },
+          "season": {
+            "description": "Season year for standings, e.g. 2026; empty = current.",
+            "type": "integer",
+            "minimum": 1990,
+            "maximum": 9007199254740991
+          },
+          "max_items": {
+            "default": 100,
+            "description": "Maximum results to return (default 100, max 5000). Cost scales with this.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5000
+          },
+          "extra_input": {
+            "description": "Advanced: extra Actor input fields, merged over the defaults.",
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          }
+        },
+        "required": [
+          "leagues"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "tool": {
+            "type": "string",
+            "description": "Name of the tool that produced the result."
+          },
+          "count": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records the Actor returned."
+          },
+          "shown": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records included in `items` (can be lower than count when the result is long)."
+          },
+          "truncated": {
+            "type": "boolean",
+            "description": "True when records were left out to keep the result short; ask for fewer items."
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "propertyNames": {
+                "type": "string"
+              },
+              "additionalProperties": {}
+            },
+            "description": "The records. Long text fields are shortened to 600 characters."
+          }
+        },
+        "required": [
+          "tool",
+          "count",
+          "shown",
+          "truncated",
+          "items"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
+      },
+      "annotations": {
+        "title": "Get sports scores, box scores, odds and standings",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "get_lottery_results",
+      "title": "Get lottery results and number frequency",
+      "description": "Winning numbers for Powerball (with Double Play), Mega Millions, Millionaire for Life, Cash4Life, NY Lotto, Take 5, Pick 10, Numbers, Win 4, Quick Draw, Lotto Texas, Texas Two Step and Cash Five, with the estimated jackpot and jackpot winners where published; history back to 1980. Or number frequency (hot and cold numbers) for any date range, with what pure chance would give. Runs the Apify Actor tacps126/lottery-results on your Apify account (about $0.003 per draw or number row; spend per call is capped at $0.5).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "games": {
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "powerball",
+                "mega-millions",
+                "millionaire-for-life",
+                "cash4life",
+                "ny-lotto",
+                "take-5",
+                "pick-10",
+                "ny-numbers",
+                "ny-win-4",
+                "quick-draw",
+                "lotto-texas",
+                "texas-two-step",
+                "cash-five"
+              ]
+            },
+            "description": "Which games."
+          },
+          "data_type": {
+            "default": "draws",
+            "description": "draws (one row per draw) or stats (how often and how recently each number was drawn).",
+            "type": "string",
+            "enum": [
+              "draws",
+              "stats"
+            ]
+          },
+          "days_back": {
+            "description": "Default 30 for draws, 365 for stats.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20000
+          },
+          "date_from": {
+            "description": "YYYY-MM-DD; replaces days_back.",
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+          },
+          "date_to": {
+            "description": "YYYY-MM-DD (default today).",
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+          },
+          "max_items": {
+            "default": 100,
+            "description": "Maximum results to return (default 100, max 5000). Cost scales with this.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5000
+          },
+          "extra_input": {
+            "description": "Advanced: extra Actor input fields, merged over the defaults.",
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          }
+        },
+        "required": [
+          "games"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "tool": {
+            "type": "string",
+            "description": "Name of the tool that produced the result."
+          },
+          "count": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records the Actor returned."
+          },
+          "shown": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records included in `items` (can be lower than count when the result is long)."
+          },
+          "truncated": {
+            "type": "boolean",
+            "description": "True when records were left out to keep the result short; ask for fewer items."
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "propertyNames": {
+                "type": "string"
+              },
+              "additionalProperties": {}
+            },
+            "description": "The records. Long text fields are shortened to 600 characters."
+          }
+        },
+        "required": [
+          "tool",
+          "count",
+          "shown",
+          "truncated",
+          "items"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
+      },
+      "annotations": {
+        "title": "Get lottery results and number frequency",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
     }
   ],
-  "version": "0.12.0"
+  "version": "0.13.0"
 }

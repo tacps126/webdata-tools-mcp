@@ -888,6 +888,102 @@ export const TOOLS = [
       a.max_items *
       Math.max(1, (a.searches?.length ?? 0) * (a.sources?.length ?? 3) + (a.urls?.length ?? 0)),
   },
+  {
+    name: 'get_prediction_markets',
+    actor: 'tacps126/prediction-markets',
+    title: 'Get prediction market odds (Kalshi, Polymarket, Manifold, PredictIt)',
+    price: 'about $0.003 per market',
+    description:
+      'Prediction markets from Kalshi, Polymarket, Manifold and PredictIt in one table: the market-implied probability, every outcome price, bid and ask, 24-hour and 7-day change, volume, liquidity, open interest, close date, status and, once settled, the result. Search by keyword or category, or pass market links or tickers; optional daily price history. Use for event forecasting, news context and research.',
+    shape: {
+      search: z.string().optional().describe('Keywords, e.g. "fed rate", "bitcoin", "election". Empty = the busiest markets.'),
+      platforms: z.array(z.enum(['kalshi', 'polymarket', 'manifold', 'predictit'])).optional().describe('Which platforms (default kalshi and polymarket).'),
+      categories: z.array(z.enum(["politics", "elections", "economics", "finance", "crypto", "sports", "tech-science", "ai", "climate-weather", "culture", "world", "companies", "health", "mentions"])).optional().describe('Only markets in these categories.'),
+      markets: z.array(z.string().min(1)).optional().describe('Market or event links, Kalshi tickers or Polymarket slugs.'),
+      status: z.enum(['open', 'closed', 'all']).default('open').describe('open, closed (settled, with result) or all.'),
+      sort_by: z.enum(['volume24h', 'volume', 'liquidity', 'closingSoon', 'newest', 'move24h']).default('volume24h').describe('Order of results.'),
+      min_volume_24h: z.number().min(0).optional().describe('Minimum 24-hour volume (dollars on Polymarket, contracts on Kalshi).'),
+      closes_within_days: z.number().int().min(1).optional().describe('Only markets that close within this many days.'),
+      history_days: z.number().int().min(0).max(365).default(0).describe('Add a daily price history of this many days (Kalshi and Polymarket). 0 = none.'),
+      max_items: maxItems(30, 1000),
+    },
+    map: (a) =>
+      clean({
+        search: a.search,
+        platforms: a.platforms,
+        categories: a.categories,
+        markets: a.markets,
+        status: a.status,
+        sortBy: a.sort_by,
+        minVolume24h: a.min_volume_24h,
+        closesWithinDays: a.closes_within_days,
+        historyDays: a.history_days || undefined,
+        maxItems: a.max_items,
+      }),
+    limit: (a) => a.max_items,
+  },
+  {
+    name: 'get_sports_data',
+    actor: 'tacps126/sports-data',
+    title: 'Get sports scores, box scores, odds and standings',
+    price: 'about $0.003 per game, odds row, standings row or player; $0.001 per box-score player line',
+    description:
+      'Scores and schedules, player box scores, betting odds (opening vs current or closing moneyline, spread and total, line movement, no-vig probability, and how each line settled), standings and rosters for 24 leagues: NFL, NBA, WNBA, MLB, NHL, college football and basketball, Premier League, LaLiga, Bundesliga, Serie A, Ligue 1, Champions League and more, MLS, Liga MX, Formula 1, ATP and WTA tennis (with rankings), PGA golf and UFC. Filter by date, status and team or player.',
+    shape: {
+      leagues: z.array(z.enum(["nfl", "ncaaf", "nba", "wnba", "ncaab", "mlb", "nhl", "premier-league", "championship", "la-liga", "bundesliga", "serie-a", "ligue-1", "eredivisie", "primeira-liga", "champions-league", "europa-league", "mls", "liga-mx", "f1", "atp", "wta", "pga", "ufc"])).min(1).describe('One or more leagues.'),
+      data_type: z.enum(['games', 'boxScores', 'odds', 'standings', 'teams', 'rosters']).default('games').describe('games, boxScores (one row per player per game), odds (one row per game per sportsbook), standings (tennis: rankings), teams or rosters. Box scores, teams and rosters cover team sports.'),
+      days_back: z.number().int().min(0).max(400).default(1).describe('Days back from today; 1 = yesterday and today.'),
+      days_ahead: z.number().int().min(0).max(60).default(0).describe('Days ahead for schedules and upcoming lines.'),
+      date_from: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional().describe('YYYY-MM-DD; replaces days_back.'),
+      date_to: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional().describe('YYYY-MM-DD; replaces days_ahead.'),
+      game_status: z.enum(['any', 'final', 'live', 'scheduled']).default('any').describe('final for results and closing lines, scheduled for fixtures.'),
+      teams: z.array(z.string().min(1)).optional().describe('Team or player names or abbreviations, e.g. ["Lakers", "KC", "Sinner"].'),
+      match_type: z.enum(['any', 'singles', 'doubles']).default('any').describe('Tennis only.'),
+      season: z.number().int().min(1990).optional().describe('Season year for standings, e.g. 2026; empty = current.'),
+      max_items: maxItems(100, 5000),
+    },
+    map: (a) =>
+      clean({
+        leagues: a.leagues,
+        dataType: a.data_type,
+        daysBack: a.days_back,
+        daysAhead: a.days_ahead,
+        dateFrom: a.date_from,
+        dateTo: a.date_to,
+        gameStatus: a.game_status,
+        teams: a.teams,
+        matchType: a.match_type === 'any' ? undefined : a.match_type,
+        season: a.season,
+        maxItems: a.max_items,
+      }),
+    limit: (a) => a.max_items,
+  },
+  {
+    name: 'get_lottery_results',
+    actor: 'tacps126/lottery-results',
+    title: 'Get lottery results and number frequency',
+    price: 'about $0.003 per draw or number row',
+    description:
+      'Winning numbers for Powerball (with Double Play), Mega Millions, Millionaire for Life, Cash4Life, NY Lotto, Take 5, Pick 10, Numbers, Win 4, Quick Draw, Lotto Texas, Texas Two Step and Cash Five, with the estimated jackpot and jackpot winners where published; history back to 1980. Or number frequency (hot and cold numbers) for any date range, with what pure chance would give.',
+    shape: {
+      games: z.array(z.enum(["powerball", "mega-millions", "millionaire-for-life", "cash4life", "ny-lotto", "take-5", "pick-10", "ny-numbers", "ny-win-4", "quick-draw", "lotto-texas", "texas-two-step", "cash-five"])).min(1).describe('Which games.'),
+      data_type: z.enum(['draws', 'stats']).default('draws').describe('draws (one row per draw) or stats (how often and how recently each number was drawn).'),
+      days_back: z.number().int().min(1).max(20000).optional().describe('Default 30 for draws, 365 for stats.'),
+      date_from: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional().describe('YYYY-MM-DD; replaces days_back.'),
+      date_to: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional().describe('YYYY-MM-DD (default today).'),
+      max_items: maxItems(100, 5000),
+    },
+    map: (a) =>
+      clean({
+        games: a.games,
+        dataType: a.data_type,
+        daysBack: a.days_back,
+        dateFrom: a.date_from,
+        dateTo: a.date_to,
+        maxItems: a.max_items,
+      }),
+    limit: (a) => a.max_items,
+  },
 ];
 
 export const ACTORS = [...new Set(TOOLS.map((t) => t.actor))];
