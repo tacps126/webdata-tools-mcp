@@ -45,6 +45,9 @@ const SAMPLE = {
   get_prediction_markets: { search: 'fed rate', platforms: ['kalshi'], history_days: 30 },
   get_sports_data: { leagues: ['nfl'], data_type: 'odds', days_back: 7, game_status: 'final', match_type: 'singles' },
   get_lottery_results: { games: ['powerball'], data_type: 'stats' },
+  search_podcasts: { chart_genres: ['Technology'], include_episodes: true, with_email_only: true },
+  search_startup_funding: { states: ['CA'], industries: ['Biotechnology'], min_amount_raised: 1000000 },
+  find_property_auctions: { countries: ['IT'], location: 'Milano', radius_km: 25, budget_max: 250000, profile: 'bargainHunter' },
 };
 
 test('every tool has a sample and a published Actor to map onto', () => {

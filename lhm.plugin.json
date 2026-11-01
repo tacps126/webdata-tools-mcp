@@ -1,7 +1,7 @@
 {
   "author": "tacps126",
   "authorUrl": "https://github.com/tacps126",
-  "description": "MCP server for AI agents: job postings (career sites, remote, startups, US tech, Indeed, Naukri), hiring signals, Google News, official government updates, public tenders and contract awards, weather and disaster alerts, grants and funding calls, research papers and patents, technology-field trends and idea validation (with analyst prompts), Trustpilot and app reviews, Reddit mentions and buying-intent leads, YouTube transcripts, new laws and bills, sanctions screening, product recalls, company registers, website contacts, German real estate, Shopify products and store analysis, trade-show exhibitors and upcoming events, prediction markets, sports data and betting lines, lottery results. Runs ready-made Apify Actors with your own Apify token.",
+  "description": "MCP server for AI agents: job postings (career sites, remote, startups, US tech, Indeed, Naukri), hiring signals, Google News, official government updates, public tenders and contract awards, weather and disaster alerts, grants and funding calls, research papers and patents, technology-field trends and idea validation (with analyst prompts), Trustpilot and app reviews, Reddit mentions and buying-intent leads, YouTube transcripts, new laws and bills, sanctions screening, product recalls, company registers, website contacts, German real estate, Shopify products and store analysis, trade-show exhibitors and upcoming events, prediction markets, sports data and betting lines, lottery results, podcasts, startup funding rounds, property auctions. Runs ready-made Apify Actors with your own Apify token.",
   "homepage": "https://github.com/tacps126/webdata-tools-mcp",
   "icon": "https://raw.githubusercontent.com/tacps126/webdata-tools-mcp/main/icon.png",
   "identifier": "tacps126-webdata-tools-mcp",
@@ -67,7 +67,9 @@
     "grants",
     "funding",
     "sports-data",
-    "prediction-markets"
+    "prediction-markets",
+    "podcasts",
+    "auctions"
   ],
   "tools": [
     {
@@ -4446,7 +4448,506 @@
       "execution": {
         "taskSupport": "forbidden"
       }
+    },
+    {
+      "name": "search_podcasts",
+      "title": "Search podcasts and charts (Apple Podcasts)",
+      "description": "Podcasts from Apple Podcasts search, top charts (any country and genre) or links, enriched from each show's RSS feed: owner name and contact email, website, language, categories, episode count, how often it posts and the last episode date; optionally the latest episodes with audio and transcript links. Use for guest booking, sponsorship outreach and podcast research. Runs the Apify Actor tacps126/podcasts on your Apify account (about $0.004 per podcast; $0.001 per episode; spend per call is capped at $0.5).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "search_terms": {
+            "description": "Words to search, e.g. [\"startup marketing\"].",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "chart_genres": {
+            "description": "Top-chart genres (All = the overall chart).",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "All",
+                "Arts",
+                "Business",
+                "Comedy",
+                "Education",
+                "Fiction",
+                "Government",
+                "Health & Fitness",
+                "History",
+                "Kids & Family",
+                "Leisure",
+                "Music",
+                "News",
+                "Religion & Spirituality",
+                "Science",
+                "Society & Culture",
+                "Sports",
+                "Technology",
+                "True Crime",
+                "TV & Film"
+              ]
+            }
+          },
+          "podcasts": {
+            "description": "Apple Podcasts links or ids, or RSS feed links.",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "country": {
+            "default": "us",
+            "description": "Store country for search and charts, e.g. us, gb, in.",
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 2
+          },
+          "include_episodes": {
+            "default": false,
+            "description": "Add the latest episodes of each podcast.",
+            "type": "boolean"
+          },
+          "active_within_days": {
+            "description": "Only shows with an episode in the last N days.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991
+          },
+          "with_email_only": {
+            "default": false,
+            "description": "Only shows whose feed lists an owner email.",
+            "type": "boolean"
+          },
+          "languages": {
+            "description": "Feed language codes, e.g. [\"en\"].",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 2
+            }
+          },
+          "max_items": {
+            "default": 50,
+            "description": "Maximum results to return (default 50, max 1000). Cost scales with this.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000
+          },
+          "extra_input": {
+            "description": "Advanced: extra Actor input fields, merged over the defaults.",
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          }
+        },
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "tool": {
+            "type": "string",
+            "description": "Name of the tool that produced the result."
+          },
+          "count": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records the Actor returned."
+          },
+          "shown": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records included in `items` (can be lower than count when the result is long)."
+          },
+          "truncated": {
+            "type": "boolean",
+            "description": "True when records were left out to keep the result short; ask for fewer items."
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "propertyNames": {
+                "type": "string"
+              },
+              "additionalProperties": {}
+            },
+            "description": "The records. Long text fields are shortened to 600 characters."
+          }
+        },
+        "required": [
+          "tool",
+          "count",
+          "shown",
+          "truncated",
+          "items"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
+      },
+      "annotations": {
+        "title": "Search podcasts and charts (Apple Podcasts)",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "search_startup_funding",
+      "title": "Search new startup funding rounds (SEC Form D)",
+      "description": "New private fundraises from SEC Form D filings: company, address, phone, industry, amount raised and offered, number of investors, securities, first sale date and the founders, executives and directors named in each filing. Filter by state, industry, amount and company age; pooled investment funds and amendments left out by default. Use for sales prospecting, investor research and deal flow. Runs the Apify Actor tacps126/startup-funding on your Apify account (about $0.005 per filing; spend per call is capped at $0.5).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "posted_within_days": {
+            "default": 7,
+            "description": "Filings in the last N days (about 300-500 per weekday).",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 365
+          },
+          "states": {
+            "description": "Company's state, e.g. [\"CA\", \"NY\"].",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 2
+            }
+          },
+          "query": {
+            "description": "Words in the filing, e.g. a company name.",
+            "type": "string"
+          },
+          "industries": {
+            "description": "Form D industry groups.",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "Agriculture",
+                "Airlines and Airports",
+                "Biotechnology",
+                "Business Services",
+                "Coal Mining",
+                "Commercial",
+                "Commercial Banking",
+                "Computers",
+                "Construction",
+                "Electric Utilities",
+                "Energy Conservation",
+                "Environmental Services",
+                "Health Insurance",
+                "Hospitals and Physicians",
+                "Insurance",
+                "Investing",
+                "Investment Banking",
+                "Lodging and Conventions",
+                "Manufacturing",
+                "Oil and Gas",
+                "Other",
+                "Other Banking and Financial Services",
+                "Other Energy",
+                "Other Health Care",
+                "Other Real Estate",
+                "Other Technology",
+                "Other Travel",
+                "Pharmaceuticals",
+                "Pooled Investment Fund",
+                "REITS and Finance",
+                "Residential",
+                "Restaurants",
+                "Retailing",
+                "Telecommunications",
+                "Tourism and Travel Services"
+              ]
+            }
+          },
+          "min_amount_raised": {
+            "description": "Only raises that sold at least this many dollars.",
+            "type": "number",
+            "minimum": 0
+          },
+          "incorporated_within_five_years": {
+            "default": false,
+            "description": "Only young companies.",
+            "type": "boolean"
+          },
+          "max_items": {
+            "default": 50,
+            "description": "Maximum results to return (default 50, max 1000). Cost scales with this.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000
+          },
+          "extra_input": {
+            "description": "Advanced: extra Actor input fields, merged over the defaults.",
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          }
+        },
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "tool": {
+            "type": "string",
+            "description": "Name of the tool that produced the result."
+          },
+          "count": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records the Actor returned."
+          },
+          "shown": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records included in `items` (can be lower than count when the result is long)."
+          },
+          "truncated": {
+            "type": "boolean",
+            "description": "True when records were left out to keep the result short; ask for fewer items."
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "propertyNames": {
+                "type": "string"
+              },
+              "additionalProperties": {}
+            },
+            "description": "The records. Long text fields are shortened to 600 characters."
+          }
+        },
+        "required": [
+          "tool",
+          "count",
+          "shown",
+          "truncated",
+          "items"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
+      },
+      "annotations": {
+        "title": "Search new startup funding rounds (SEC Form D)",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "find_property_auctions",
+      "title": "Find court, bank and government auctions, scored",
+      "description": "Foreclosure, court, tax and bank auctions from Germany, Spain, Italy and India in one format: price, valuation, debts that stay with the property, total cost, area, price per m2, possession (vacant or occupied), auction dates, deposit, seller, case number, documents and photos. Every lot is scored 0 to 100 against similar lots nearby and against the budget, place and dates given, with strengths, watch-outs and its rank among peers. Use for finding below-market property, screening distressed assets and auction alerts. Runs the Apify Actor tacps126/auctions-radar on your Apify account (about $0.015 per lot; spend per call is capped at $0.5).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "countries": {
+            "description": "Countries to read (default all four).",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "DE",
+                "ES",
+                "IT",
+                "IN"
+              ]
+            }
+          },
+          "asset_types": {
+            "description": "Kinds of asset (default property and vehicles).",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "apartment",
+                "house",
+                "commercial",
+                "industrial",
+                "land",
+                "agricultural",
+                "parking",
+                "vehicle",
+                "other"
+              ]
+            }
+          },
+          "regions": {
+            "description": "States, provinces or regions, e.g. [\"Bayern\"], [\"Madrid\"], [\"Kerala\"], [\"Lombardia\"].",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 2
+            }
+          },
+          "location": {
+            "description": "A town, postcode or address to measure distance from.",
+            "type": "string",
+            "minLength": 2
+          },
+          "radius_km": {
+            "description": "Only lots within this distance of location.",
+            "type": "number",
+            "minimum": 0.5,
+            "maximum": 1000
+          },
+          "budget_min": {
+            "description": "Lowest price wanted, in budget_currency.",
+            "type": "number",
+            "minimum": 0
+          },
+          "budget_max": {
+            "description": "Highest price wanted, in budget_currency.",
+            "type": "number",
+            "minimum": 0
+          },
+          "budget_currency": {
+            "default": "EUR",
+            "description": "EUR or INR, or any currency with a daily reference rate.",
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 3
+          },
+          "min_area_sqm": {
+            "description": "Smallest area in m2.",
+            "type": "number",
+            "minimum": 0
+          },
+          "auction_within_days": {
+            "description": "Only auctions in the next N days.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991
+          },
+          "vacant_only": {
+            "default": false,
+            "description": "Only lots stated as vacant.",
+            "type": "boolean"
+          },
+          "profile": {
+            "default": "balanced",
+            "description": "What the score favours.",
+            "type": "string",
+            "enum": [
+              "balanced",
+              "bargainHunter",
+              "lowRisk",
+              "quickDeal"
+            ]
+          },
+          "sort_by": {
+            "default": "score",
+            "description": "Order of results.",
+            "type": "string",
+            "enum": [
+              "score",
+              "auctionDate",
+              "price",
+              "pricePerSqm",
+              "discount"
+            ]
+          },
+          "max_items": {
+            "default": 50,
+            "description": "Maximum results to return (default 50, max 1000). Cost scales with this.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000
+          },
+          "extra_input": {
+            "description": "Advanced: extra Actor input fields, merged over the defaults.",
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          }
+        },
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "tool": {
+            "type": "string",
+            "description": "Name of the tool that produced the result."
+          },
+          "count": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records the Actor returned."
+          },
+          "shown": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records included in `items` (can be lower than count when the result is long)."
+          },
+          "truncated": {
+            "type": "boolean",
+            "description": "True when records were left out to keep the result short; ask for fewer items."
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "propertyNames": {
+                "type": "string"
+              },
+              "additionalProperties": {}
+            },
+            "description": "The records. Long text fields are shortened to 600 characters."
+          }
+        },
+        "required": [
+          "tool",
+          "count",
+          "shown",
+          "truncated",
+          "items"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
+      },
+      "annotations": {
+        "title": "Find court, bank and government auctions, scored",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
     }
   ],
-  "version": "0.13.0"
+  "version": "0.14.0"
 }

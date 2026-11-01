@@ -8,12 +8,12 @@
 [![Smithery](https://img.shields.io/badge/Smithery-tacps126%2Fwebdata--tools--mcp-ff5601)](https://smithery.ai/servers/tacps126/webdata-tools-mcp)
 [![webdata-tools-mcp MCP server](https://glama.ai/mcp/servers/tacps126/webdata-tools-mcp/badges/score.svg)](https://glama.ai/mcp/servers/tacps126/webdata-tools-mcp)
 
-An [MCP](https://modelcontextprotocol.io) server that gives AI agents thirty-five web-data tools: job
+An [MCP](https://modelcontextprotocol.io) server that gives AI agents thirty-eight web-data tools: job
 postings (company career sites, remote jobs, startups on Wellfound, US tech jobs on Dice, Indeed,
 Naukri), hiring signals, Google News, official government updates (US, UK, EU, India), public tenders and contract awards (US, EU, UK, France, Spain, Canada, Australia and more), official weather and disaster warnings (US, Europe, India, Brazil, worldwide), public funding calls (US Grants.gov, EU Horizon Europe and more, UKRI, Australia), notices from all 748 Indian district websites, new laws and bills (EU, UK, US, Australia, Canada), sanctions screening, product recalls, company registers (Europe and US states), research papers and patents, field trends and idea validation, Trustpilot and app-store reviews, Reddit mentions and
 buying-intent leads, YouTube transcripts, website contacts, German and Austrian property listings, Shopify products and
 store analysis, trade-show exhibitor lists and upcoming events, prediction-market odds,
-sports scores, box scores and betting lines, and lottery results. Two ready-made prompts turn the research
+sports scores, box scores and betting lines, lottery results, podcasts with owner contacts, new startup funding rounds, and court, bank and government property auctions scored against similar lots. Two ready-made prompts turn the research
 tools into an innovation analyst that works the same with any model.
 
 Each tool runs a ready-made [Apify](https://apify.com/tacps126) Actor and returns clean JSON. You
@@ -130,6 +130,9 @@ Releases are tagged and published by CI from `main` (`.github/workflows/release.
 | `get_prediction_markets` | Kalshi, Polymarket, Manifold and PredictIt markets: probability, bid/ask, 24h and 7d change, volume, result, daily history | $3 / 1,000 markets | [prediction-markets](https://apify.com/tacps126/prediction-markets) |
 | `get_sports_data` | Scores, box scores, betting odds (open, close, settled), standings and rosters for 24 leagues incl. NFL, NBA, MLB, NHL, top football leagues, F1, ATP/WTA | $3 / 1,000 rows, $1 / 1,000 player lines | [sports-data](https://apify.com/tacps126/sports-data) |
 | `get_lottery_results` | Powerball, Mega Millions and 11 state games: winning numbers, jackpots, winners; hot and cold numbers | $3 / 1,000 rows | [lottery-results](https://apify.com/tacps126/lottery-results) |
+| `search_podcasts` | Apple Podcasts search and charts with owner email, website, activity and latest episodes | $4 / 1,000 podcasts | [podcasts](https://apify.com/tacps126/podcasts) |
+| `search_startup_funding` | New startup raises from SEC Form D: amounts, industry, founders and executives | $5 / 1,000 filings | [startup-funding](https://apify.com/tacps126/startup-funding) |
+| `find_property_auctions` | Court, bank and government auctions in Germany, Spain, Italy and India: price, valuation, debts, area, possession, dates; scored against similar lots and your budget | $15 / 1,000 lots | [auctions-radar](https://apify.com/tacps126/auctions-radar) |
 
 ## Cost safety
 
