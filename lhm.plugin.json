@@ -1588,7 +1588,7 @@
     {
       "name": "search_research",
       "title": "Search papers, preprints and patents",
-      "description": "Papers, preprints and patents from OpenAlex, arXiv, PubMed, Europe PMC and the European Patent Office (worldwide patents: EP, WO, US, CN, JP, KR…) in one deduplicated list, newest first or most influential first: title, abstract, authors and affiliations, venue, DOI, PDF link, citations, citations per year, field-normalized impact (top 1% / 10%), open-access status, and for patents the number, applicants, inventors, IPC classes and family id. Retracted papers are left out. Runs the Apify Actor tacps126/research-radar on your Apify account (about $0.003 per result; spend per call is capped at $0.5).",
+      "description": "Papers, preprints and patents from OpenAlex, arXiv, PubMed, Europe PMC and the European Patent Office (worldwide patents: EP, WO, US, CN, JP, KR...) in one deduplicated list, newest first or most influential first: title, abstract, authors and affiliations, venue, DOI, PDF link, citations, citations per year, field-normalized impact (top 1% / 10%), open-access status, and for patents the number, applicants, inventors, IPC classes and family id. Retracted papers are left out. Runs the Apify Actor tacps126/research-radar on your Apify account (about $0.003 per result; spend per call is capped at $0.5).",
       "inputSchema": {
         "type": "object",
         "properties": {

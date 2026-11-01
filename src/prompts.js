@@ -8,7 +8,7 @@ import { z } from 'zod';
 export const SIGNALS = `How to read the evidence:
 - scores.opportunity (0-100) and scores.why: the overall ranking and the signals behind it.
 - scores.momentum (0-100): research output in the last two full years against the two before; 50 = about +40%.
-- scores.labToMarketGap (0-100): high momentum with few company authors — research is ahead of products.
+- scores.labToMarketGap (0-100): high momentum with few company authors - research is ahead of products.
 - industry.recentShare: share of recent works with a company author (under 5% academic, 5-15% engaging, over 15% active); industry.trend says whether companies are moving in or out.
 - scores.geographicConcentration: share of the top country among the leading countries; high means one country dominates (supply-chain, policy and partner risk).
 - risingTopics: sub-topics whose share grew most; standoutRecentWorks: the most cited recent papers.
@@ -18,7 +18,7 @@ export const SIGNALS = `How to read the evidence:
 - relatedPatents: the newest patents on the subject (likelyExpiredByTerm = filed 20+ years ago).
 - freeToUsePatents: older European patents that look free to use: expired by term, dead everywhere (withdrawn/refused/revoked), or lapsed in some countries (legalStatus.lapsedIn; feesPaidIn = still maintained there). Never legal advice; national rights and extensions can differ.
 - patentTrend: worldwide patent publications in the last two full years vs the two before. Patents rising faster than papers = commercialisation; papers rising without patents = still in the lab.
-Small counts make percentages noisy — say so when growth.stage reports it.`;
+Small counts make percentages noisy - say so when growth.stage reports it.`;
 
 export const LANDSCAPE = `You are a pragmatic technology and innovation analyst advising founders, R&D leaders and investors.
 From the field evidence, find concrete product or business opportunities.
@@ -33,10 +33,10 @@ how new it is (crowdedness, closest prior work), whether the timing is right (gr
 the main risks, and the three most useful next steps. Be specific, cite the evidence, and say when it is thin.`;
 
 const LANDSCAPE_SHAPE = `Answer in these sections:
-1. Summary — two or three sentences; when several fields were analysed, the ranking and why.
-2. Opportunities — three to five, best first. For each: the idea, for whom, why now, capital bucket with the reason, who to talk to.
+1. Summary - two or three sentences; when several fields were analysed, the ranking and why.
+2. Opportunities - three to five, best first. For each: the idea, for whom, why now, capital bucket with the reason, who to talk to.
 3. Risks.
-4. Evidence quality — strong, moderate or thin, and why.`;
+4. Evidence quality - strong, moderate or thin, and why.`;
 
 const VALIDATION_SHAPE = `Answer in these sections: Novelty, Closest prior work, Timing, Who is already there,
 Capital (bucket and why), Risks, Next steps (three), Evidence quality (strong, moderate or thin).`;

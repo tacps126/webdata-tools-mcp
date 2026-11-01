@@ -1,6 +1,6 @@
 ---
 name: innovation-analyst
-description: Analyse technology fields and validate product or research ideas from open research data (OpenAlex, Europe PMC patents) with the webdata-tools MCP server, then write evidence-backed opportunities — what to build, for whom, why now, capital needed, who to talk to. Use when someone asks what to build in a field, whether an idea is new or crowded, how fast a technology is growing, who leads it (companies, labs, countries), or to compare several technologies.
+description: Analyse technology fields and validate product or research ideas from open research data (OpenAlex, Europe PMC patents) with the webdata-tools MCP server, then write evidence-backed opportunities - what to build, for whom, why now, capital needed, who to talk to. Use when someone asks what to build in a field, whether an idea is new or crowded, how fast a technology is growing, who leads it (companies, labs, countries), or to compare several technologies.
 ---
 
 # Innovation analyst
@@ -19,10 +19,10 @@ Each field or idea costs about $0.03 on the user's Apify account. Don't call the
 
 ## How to read the evidence
 
-- `scores.opportunity` (0–100) and `scores.why`: the overall ranking and the signals behind it.
-- `scores.momentum` (0–100): output in the last two full years against the two before; 50 ≈ +40%.
-- `scores.labToMarketGap` (0–100): high momentum with few company authors — research is ahead of products.
-- `industry.recentShare`: share of recent works with a company author (under 5% academic, 5–15% engaging, over 15% active); `industry.trend`: companies moving in or out.
+- `scores.opportunity` (0-100) and `scores.why`: the overall ranking and the signals behind it.
+- `scores.momentum` (0-100): output in the last two full years against the two before; 50 ≈ +40%.
+- `scores.labToMarketGap` (0-100): high momentum with few company authors - research is ahead of products.
+- `industry.recentShare`: share of recent works with a company author (under 5% academic, 5-15% engaging, over 15% active); `industry.trend`: companies moving in or out.
 - `scores.geographicConcentration`: share of the top country among the leaders; high means supply-chain, policy and partner risk.
 - `risingTopics`: sub-topics whose share grew most. `standoutRecentWorks`: the most cited recent papers.
 - `topCompanies`, `keyResearchers`, `topInstitutions`, `topFunders`: partners, hires, licensors, competitors.
@@ -36,17 +36,17 @@ Each field or idea costs about $0.03 on the user's Apify account. Don't call the
 
 ## Write the analysis
 
-Capital buckets: **under $50k** (software or a service), **$50k–$1M** (hardware or regulated software), **over $1M** (deep tech, manufacturing, clinical).
+Capital buckets: **under $50k** (software or a service), **$50k-$1M** (hardware or regulated software), **over $1M** (deep tech, manufacturing, clinical).
 
-**Field landscape** — sections:
+**Field landscape** - sections:
 1. Summary: two or three sentences; with several fields, the ranking and why.
 2. Opportunities, three to five, best first: the idea, for whom, why now (name the signal), capital bucket with the reason, who to talk to (from the evidence).
 3. Risks.
 4. Evidence quality: strong, moderate or thin, and why.
 
-**Idea validation** — sections: Novelty, Closest prior work, Timing, Who is already there, Capital (bucket and why), Risks, Next steps (three), Evidence quality.
+**Idea validation** - sections: Novelty, Closest prior work, Timing, Who is already there, Capital (bucket and why), Risks, Next steps (three), Evidence quality.
 
-Rules: cite the numbers you rely on; name real organisations only when they appear in the evidence; no generic advice ("do market research"); say when the evidence is thin. Research leads products by years — treat trends as early signals, not market size.
+Rules: cite the numbers you rely on; name real organisations only when they appear in the evidence; no generic advice ("do market research"); say when the evidence is thin. Research leads products by years - treat trends as early signals, not market size.
 
 ## Without the MCP server
 

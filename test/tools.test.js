@@ -120,7 +120,7 @@ test('runActorSync turns API failures into readable errors', async () => {
 });
 
 test('shrink and formatResult bound the output size', () => {
-  assert.equal(shrink('x'.repeat(2000)).length, 601);
+  assert.equal(shrink('x'.repeat(2000)).length, 603);
   const items = Array.from({ length: 400 }, (_, i) => ({ i, text: 'y'.repeat(500) }));
   const out = formatResult({ title: 'T' }, items);
   assert.ok(out.length < 61_000);
@@ -167,7 +167,7 @@ test('a successful call returns text plus validated structured content', async (
   assert.equal(res.structuredContent.tool, 'search_google_news');
   assert.equal(res.structuredContent.count, 2);
   assert.equal(res.structuredContent.truncated, false);
-  assert.equal(res.structuredContent.items[0].text.length, 601, 'long text is shortened');
+  assert.equal(res.structuredContent.items[0].text.length, 603, 'long text is shortened');
   assert.match(res.content[0].text, /2 result/);
   await client.close();
 });

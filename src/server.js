@@ -17,7 +17,7 @@ const MAX_FIELD_CHARS = 600;
 /** Truncate very long string fields (job descriptions, review bodies) so results stay readable. */
 export function shrink(value) {
   if (typeof value === 'string') {
-    return value.length > MAX_FIELD_CHARS ? `${value.slice(0, MAX_FIELD_CHARS)}…` : value;
+    return value.length > MAX_FIELD_CHARS ? `${value.slice(0, MAX_FIELD_CHARS)}...` : value;
   }
   if (Array.isArray(value)) return value.map(shrink);
   if (value && typeof value === 'object') {

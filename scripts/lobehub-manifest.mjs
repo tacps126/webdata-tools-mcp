@@ -1,5 +1,5 @@
 // Writes lhm.plugin.json, the manifest LobeHub's marketplace CLI (`lhm plugin publish|update`)
-// reads. It mirrors what `lhm plugin init --stdio …` would generate, but from the server in
+// reads. It mirrors what `lhm plugin init --stdio ...` would generate, but from the server in
 // memory, so it needs no Apify token and stays in step with every release.
 //   node scripts/lobehub-manifest.mjs
 import { readFileSync, writeFileSync } from 'node:fs';

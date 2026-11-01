@@ -390,7 +390,7 @@ export const TOOLS = [
     title: 'Search papers, preprints and patents',
     price: 'about $0.003 per result',
     description:
-      'Papers, preprints and patents from OpenAlex, arXiv, PubMed, Europe PMC and the European Patent Office (worldwide patents: EP, WO, US, CN, JP, KR…) in one deduplicated list, newest first or most influential first: title, abstract, authors and affiliations, venue, DOI, PDF link, citations, citations per year, field-normalized impact (top 1% / 10%), open-access status, and for patents the number, applicants, inventors, IPC classes and family id. Retracted papers are left out.',
+      'Papers, preprints and patents from OpenAlex, arXiv, PubMed, Europe PMC and the European Patent Office (worldwide patents: EP, WO, US, CN, JP, KR...) in one deduplicated list, newest first or most influential first: title, abstract, authors and affiliations, venue, DOI, PDF link, citations, citations per year, field-normalized impact (top 1% / 10%), open-access status, and for patents the number, applicants, inventors, IPC classes and family id. Retracted papers are left out.',
     shape: {
       queries: strings('Topics, keywords or phrases, e.g. "solid state battery".'),
       sources: z.array(z.enum(['openalex', 'arxiv', 'pubmed', 'europepmc', 'patents', 'crossref'])).optional().describe('Which sources to search. Default: openalex, arxiv, pubmed, europepmc, patents.'),

@@ -17,7 +17,7 @@ sports scores, box scores and betting lines, and lottery results. Two ready-made
 tools into an innovation analyst that works the same with any model.
 
 Each tool runs a ready-made [Apify](https://apify.com/tacps126) Actor and returns clean JSON. You
-pay Apify per result (about $1–3 per 1,000 results); there is no subscription and nothing is sent
+pay Apify per result (about $1-3 per 1,000 results); there is no subscription and nothing is sent
 anywhere except Apify.
 
 ## Tools
@@ -26,7 +26,7 @@ anywhere except Apify.
 |------|-----------------|----------------|-------|
 | `search_google_news` | News articles with the publisher's real URL, date, related coverage | $2 / 1,000 articles | [google-news](https://apify.com/tacps126/google-news) |
 | `find_hiring_companies` | Which companies are hiring for given roles (buying-intent signal) | 1¢ per company with a signal | [hiring-signals](https://apify.com/tacps126/hiring-signals) |
-| `get_company_jobs` | All open jobs from career pages or company names (13 job-board systems: Greenhouse, Lever, Ashby, Workday, Rippling, …) | $1 / 1,000 jobs | [jobs-harvester](https://apify.com/tacps126/jobs-harvester) |
+| `get_company_jobs` | All open jobs from career pages or company names (13 job-board systems: Greenhouse, Lever, Ashby, Workday, Rippling, ...) | $1 / 1,000 jobs | [jobs-harvester](https://apify.com/tacps126/jobs-harvester) |
 | `find_remote_jobs` | Remote jobs from company job boards plus the Remote OK, Jobicy, Working Nomads and Himalayas feeds | $2 / 1,000 jobs | [remote-jobs-scraper](https://apify.com/tacps126/remote-jobs-scraper) |
 | `search_startup_jobs` | Startup jobs on Wellfound by role and city: salary and equity, startup size and pitch | $2 / 1,000 jobs | [wellfound-jobs-scraper](https://apify.com/tacps126/wellfound-jobs-scraper) |
 | `search_tech_jobs` | US tech jobs on Dice: salary, employer type, Easy Apply, remote flag | $0.55 / 1,000 jobs | [dice-jobs-scraper](https://apify.com/tacps126/dice-jobs-scraper) |
@@ -38,7 +38,7 @@ anywhere except Apify.
 | `find_reddit_leads` | Reddit posts asking for a tool like yours, seeking a competitor alternative, comparing or complaining | $2 / 1,000 leads + $0.10 / 1,000 posts read | [reddit-lead-finder](https://apify.com/tacps126/reddit-lead-finder) |
 | `search_gov_updates` | Official government updates: Federal Register rules and notices, GOV.UK, European Commission, SEC, RBI and SEBI circulars, any RSS feed; sector and keyword filters | $3 / 1,000 updates | [gov-radar](https://apify.com/tacps126/gov-radar) |
 | `get_alerts` | Official weather and disaster warnings: US NWS, MeteoAlarm (38 countries), India NDMA, Brazil INMET, GDACS, USGS; hazard, severity, area filters | $2 / 1,000 alerts | [alerts-radar](https://apify.com/tacps126/alerts-radar) |
-| `search_grants` | Open and forecast funding calls: US Grants.gov, EU Funding & Tenders (Horizon Europe…), UKRI; grant size, budget, deadline, eligibility | $3 / 1,000 calls | [grants-radar](https://apify.com/tacps126/grants-radar) |
+| `search_grants` | Open and forecast funding calls: US Grants.gov, EU Funding & Tenders (Horizon Europe...), UKRI; grant size, budget, deadline, eligibility | $3 / 1,000 calls | [grants-radar](https://apify.com/tacps126/grants-radar) |
 | `get_india_district_notices` | Tenders, recruitment and announcements from India's 748 district websites, by state and district | $3 / 1,000 notices | [india-district-notices](https://apify.com/tacps126/india-district-notices) |
 | `search_legislation` | New laws and bills: EU regulations and directives (EUR-Lex), UK Acts and SIs, US public laws and bills, Australian and Canadian regulations | $3 / 1,000 laws | [legislation-radar](https://apify.com/tacps126/legislation-radar) |
 | `find_companies` | New companies and insolvencies (France, Norway, Finland, Estonia, US: New York, Colorado, Connecticut, Oregon) and company search with officers, plus the LEI index | $2.50 / 1,000 companies | [company-registry](https://apify.com/tacps126/company-registry) |
@@ -77,7 +77,7 @@ For agents that load skills (Claude Code, Codex and others), copy [`skills/innov
 ## Setup
 
 1. Create a free [Apify account](https://console.apify.com/sign-up) and copy your API token from
-   **Console → Settings → API & Integrations**.
+   **Console > Settings > API & Integrations**.
 2. Add the server to your client. The token goes in `APIFY_TOKEN`.
 
 **Claude Desktop, one click:** download `webdata-tools-mcp-<version>.mcpb` from the
@@ -135,7 +135,7 @@ Releases are tagged and published by CI from `main` (`.github/workflows/release.
 
 - Every call is capped at **$0.50** of Apify spend (`WEBDATA_MAX_CHARGE_USD` changes it). Apify stops
   the run when the cap is reached.
-- `max_items` defaults to small numbers (20–100) and has a hard maximum per tool.
+- `max_items` defaults to small numbers (20-100) and has a hard maximum per tool.
 - Long text fields are shortened to 600 characters, and one result is limited to about 60,000
   characters, so a call cannot flood the agent's context.
 
