@@ -749,6 +749,36 @@ export const TOOLS = [
     limit: (a) => a.max_items,
   },
   {
+    name: 'find_local_businesses',
+    actor: 'tacps126/contact-details',
+    title: 'Find local businesses by category and city, with their contacts',
+    price: 'about $0.00125 per business, plus $0.00175 when contacts are found on its website',
+    description:
+      'Lead lists without a list of websites: every business of the given kinds in a city or area (open map data: name, category, address, phone, listed email, website, coordinates), each website then checked for emails, phones and social profiles. Says whether the email was found on the business site and whether the site still works. Use only for lawful business outreach (GDPR / CAN-SPAM).',
+    shape: {
+      city: z.string().min(2).describe('Town or city, e.g. "Pune", "Austin", "Manchester".'),
+      country_code: z.string().length(2).describe('Two-letter country code of the city, e.g. "IN", "US", "GB".'),
+      categories: z.array(z.string().min(2)).optional().describe('Kinds of business in everyday words, e.g. ["dentist"], ["plumber","electrician"], ["indian restaurant"]. Empty = all businesses.'),
+      radius_km: z.number().min(0.5).max(50).default(10).describe('Distance from the city centre.'),
+      require_email: z.boolean().default(false).describe('Only businesses with an email.'),
+      require_website: z.boolean().default(false).describe('Only businesses that list their own website.'),
+      exclude_chains: z.boolean().default(false).describe('Leave out branches of chains and brands.'),
+      max_items: maxItems(50, 1000),
+    },
+    map: (a) =>
+      clean({
+        city: a.city,
+        countryCode: a.country_code,
+        categories: a.categories,
+        radiusKm: a.radius_km,
+        requireEmail: a.require_email,
+        requireWebsite: a.require_website,
+        excludeChains: a.exclude_chains,
+        maxItems: a.max_items,
+      }),
+    limit: (a) => a.max_items,
+  },
+  {
     name: 'search_german_property_listings',
     actor: 'tacps126/immobilienscout24-scraper',
     title: 'Search German and Austrian property listings (ImmoScout24)',

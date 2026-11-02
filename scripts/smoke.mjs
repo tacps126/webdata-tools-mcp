@@ -19,6 +19,7 @@ const calls = [
   ['search_google_news', { query: 'rust programming language', max_items: 3, timeframe: '7d' }],
   ['get_trustpilot_reviews', { companies: ['apify.com'], max_reviews: 3 }],
   ['find_website_contacts', { websites: ['apify.com'], max_items: 1 }],
+  ['find_local_businesses', { city: 'Pune', country_code: 'IN', categories: ['dentist'], max_items: 1 }],
 ];
 let failed = 0;
 for (const [name, args] of calls) {

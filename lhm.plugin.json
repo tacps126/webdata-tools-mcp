@@ -1,7 +1,7 @@
 {
   "author": "tacps126",
   "authorUrl": "https://github.com/tacps126",
-  "description": "MCP server for AI agents: job postings (career sites, remote, startups, US tech, Indeed, Naukri), hiring signals, Google News, official government updates, public tenders and contract awards, weather and disaster alerts, grants and funding calls, research papers and patents, technology-field trends and idea validation (with analyst prompts), Trustpilot and app reviews, Reddit mentions and buying-intent leads, YouTube transcripts, new laws and bills, sanctions screening, product recalls, company registers, website contacts, German real estate, Shopify products and store analysis, trade-show exhibitors and upcoming events, prediction markets, sports data and betting lines, lottery results, podcasts, startup funding rounds, property auctions. Runs ready-made Apify Actors with your own Apify token.",
+  "description": "MCP server for AI agents: job postings (career sites, remote, startups, US tech, Indeed, Naukri), hiring signals, Google News, official government updates, public tenders and contract awards, weather and disaster alerts, grants and funding calls, research papers and patents, technology-field trends and idea validation (with analyst prompts), Trustpilot and app reviews, Reddit mentions and buying-intent leads, YouTube transcripts, new laws and bills, sanctions screening, product recalls, company registers, website contacts, German real estate, Shopify products and store analysis, trade-show exhibitors and upcoming events, prediction markets, sports data and betting lines, lottery results, podcasts, startup funding rounds, property auctions, local businesses by category and city. Runs ready-made Apify Actors with your own Apify token.",
   "homepage": "https://github.com/tacps126/webdata-tools-mcp",
   "icon": "https://raw.githubusercontent.com/tacps126/webdata-tools-mcp/main/icon.png",
   "identifier": "tacps126-webdata-tools-mcp",
@@ -3377,6 +3377,132 @@
       }
     },
     {
+      "name": "find_local_businesses",
+      "title": "Find local businesses by category and city, with their contacts",
+      "description": "Lead lists without a list of websites: every business of the given kinds in a city or area (open map data: name, category, address, phone, listed email, website, coordinates), each website then checked for emails, phones and social profiles. Says whether the email was found on the business site and whether the site still works. Use only for lawful business outreach (GDPR / CAN-SPAM). Runs the Apify Actor tacps126/contact-details on your Apify account (about $0.00125 per business, plus $0.00175 when contacts are found on its website; spend per call is capped at $0.5).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "city": {
+            "type": "string",
+            "minLength": 2,
+            "description": "Town or city, e.g. \"Pune\", \"Austin\", \"Manchester\"."
+          },
+          "country_code": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 2,
+            "description": "Two-letter country code of the city, e.g. \"IN\", \"US\", \"GB\"."
+          },
+          "categories": {
+            "description": "Kinds of business in everyday words, e.g. [\"dentist\"], [\"plumber\",\"electrician\"], [\"indian restaurant\"]. Empty = all businesses.",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 2
+            }
+          },
+          "radius_km": {
+            "default": 10,
+            "description": "Distance from the city centre.",
+            "type": "number",
+            "minimum": 0.5,
+            "maximum": 50
+          },
+          "require_email": {
+            "default": false,
+            "description": "Only businesses with an email.",
+            "type": "boolean"
+          },
+          "require_website": {
+            "default": false,
+            "description": "Only businesses that list their own website.",
+            "type": "boolean"
+          },
+          "exclude_chains": {
+            "default": false,
+            "description": "Leave out branches of chains and brands.",
+            "type": "boolean"
+          },
+          "max_items": {
+            "default": 50,
+            "description": "Maximum results to return (default 50, max 1000). Cost scales with this.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000
+          },
+          "extra_input": {
+            "description": "Advanced: extra Actor input fields, merged over the defaults.",
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          }
+        },
+        "required": [
+          "city",
+          "country_code"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "tool": {
+            "type": "string",
+            "description": "Name of the tool that produced the result."
+          },
+          "count": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records the Actor returned."
+          },
+          "shown": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records included in `items` (can be lower than count when the result is long)."
+          },
+          "truncated": {
+            "type": "boolean",
+            "description": "True when records were left out to keep the result short; ask for fewer items."
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "propertyNames": {
+                "type": "string"
+              },
+              "additionalProperties": {}
+            },
+            "description": "The records. Long text fields are shortened to 600 characters."
+          }
+        },
+        "required": [
+          "tool",
+          "count",
+          "shown",
+          "truncated",
+          "items"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
+      },
+      "annotations": {
+        "title": "Find local businesses by category and city, with their contacts",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
       "name": "search_german_property_listings",
       "title": "Search German and Austrian property listings (ImmoScout24)",
       "description": "Apartments and houses for rent or sale in Germany or Austria: price, rent, area, rooms, address with coordinates, energy class, features, agent, photos and dates. Not Switzerland. Runs the Apify Actor tacps126/immobilienscout24-scraper on your Apify account (about $0.001 per listing; spend per call is capped at $0.5).",
@@ -4949,5 +5075,5 @@
       }
     }
   ],
-  "version": "0.14.0"
+  "version": "0.15.0"
 }

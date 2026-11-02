@@ -8,12 +8,12 @@
 [![Smithery](https://img.shields.io/badge/Smithery-tacps126%2Fwebdata--tools--mcp-ff5601)](https://smithery.ai/servers/tacps126/webdata-tools-mcp)
 [![webdata-tools-mcp MCP server](https://glama.ai/mcp/servers/tacps126/webdata-tools-mcp/badges/score.svg)](https://glama.ai/mcp/servers/tacps126/webdata-tools-mcp)
 
-An [MCP](https://modelcontextprotocol.io) server that gives AI agents thirty-eight web-data tools: job
+An [MCP](https://modelcontextprotocol.io) server that gives AI agents thirty-nine web-data tools: job
 postings (company career sites, remote jobs, startups on Wellfound, US tech jobs on Dice, Indeed,
 Naukri), hiring signals, Google News, official government updates (US, UK, EU, India), public tenders and contract awards (US, EU, UK, France, Spain, Canada, Australia and more), official weather and disaster warnings (US, Europe, India, Brazil, worldwide), public funding calls (US Grants.gov, EU Horizon Europe and more, UKRI, Australia), notices from all 748 Indian district websites, new laws and bills (EU, UK, US, Australia, Canada), sanctions screening, product recalls, company registers (Europe and US states), research papers and patents, field trends and idea validation, Trustpilot and app-store reviews, Reddit mentions and
 buying-intent leads, YouTube transcripts, website contacts, German and Austrian property listings, Shopify products and
 store analysis, trade-show exhibitor lists and upcoming events, prediction-market odds,
-sports scores, box scores and betting lines, lottery results, podcasts with owner contacts, new startup funding rounds, and court, bank and government property auctions scored against similar lots. Two ready-made prompts turn the research
+sports scores, box scores and betting lines, lottery results, podcasts with owner contacts, new startup funding rounds, and court, bank and government property auctions scored against similar lots, and local businesses by category and city with their contacts. Two ready-made prompts turn the research
 tools into an innovation analyst that works the same with any model.
 
 Each tool runs a ready-made [Apify](https://apify.com/tacps126) Actor and returns clean JSON. You
@@ -51,6 +51,7 @@ anywhere except Apify.
 | `analyze_field` | A technology field's opportunity score with reasons, growth and momentum, industry participation and top companies, leading countries, institutions and funders, rising topics, patent trend and possibly free-to-use patents; several fields ranked | $0.03 / field | [innovation-radar](https://apify.com/tacps126/innovation-radar) |
 | `validate_idea` | How new or crowded an idea is, who is working on it, and the closest prior work | $0.03 / idea | [innovation-radar](https://apify.com/tacps126/innovation-radar) |
 | `find_website_contacts` | Emails, phones, socials from websites | $2 / 1,000 sites with contacts | [contact-details](https://apify.com/tacps126/contact-details) |
+| `find_local_businesses` | Local businesses by category and city (open map data) with the contacts found on their websites | $1.25 / 1,000 businesses + $1.75 / 1,000 with site contacts | [contact-details](https://apify.com/tacps126/contact-details) |
 | `search_german_property_listings` | Rent/buy listings in Germany and Austria (ImmoScout24) | $1 / 1,000 listings | [immobilienscout24-scraper](https://apify.com/tacps126/immobilienscout24-scraper) |
 | `get_shopify_products` | Prices, discounts, stock, variants from Shopify stores | $1 / 1,000 products | [shopify-products](https://apify.com/tacps126/shopify-products) |
 | `analyze_shopify_stores` | Store location, currency, catalog size and snapshot, e-mails, phones, socials | $4 / 1,000 stores | [shopify-store-analyzer](https://apify.com/tacps126/shopify-store-analyzer) |

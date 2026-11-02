@@ -18,6 +18,7 @@ const SAMPLE = {
   get_app_reviews: { apps: ['com.spotify.music'] },
   search_reddit: { keywords: ['apify'] },
   find_website_contacts: { websites: ['apify.com'] },
+  find_local_businesses: { city: 'Pune', country_code: 'IN', categories: ['dentist'], max_items: 5 },
   search_german_property_listings: { locations: ['Berlin'], min_rooms: 2 },
   get_shopify_products: { stores: ['allbirds.com'], only_on_sale: true },
   get_trade_show_exhibitors: { shows: ['medica'], urls: ['https://ish.messefrankfurt.com/frankfurt/en/exhibitor-search.html'], max_items: 20 },
