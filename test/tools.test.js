@@ -49,6 +49,11 @@ const SAMPLE = {
   search_podcasts: { chart_genres: ['Technology'], include_episodes: true, with_email_only: true },
   search_startup_funding: { states: ['CA'], industries: ['Biotechnology'], min_amount_raised: 1000000 },
   find_property_auctions: { countries: ['IT'], location: 'Milano', radius_km: 25, budget_max: 250000, profile: 'bargainHunter' },
+  search_clinical_trials: { condition: 'obesity', phases: ['PHASE3'], statuses: ['RECRUITING'] },
+  search_vulnerabilities: { vendors: ['microsoft'], severities: ['CRITICAL'], known_exploited_only: true },
+  search_fda_device_clearances: { applicant: 'Medtronic', specialties: ['Cardiovascular'] },
+  search_healthcare_providers: { specialties: ['Dentist'], cities: ['Austin'], states: ['TX'], with_phone_only: true },
+  search_import_records: { companies: ['Allbirds'], find_lookalikes: true, include_shipments: true },
 };
 
 test('every tool has a sample and a published Actor to map onto', () => {

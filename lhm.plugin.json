@@ -1,7 +1,7 @@
 {
   "author": "tacps126",
   "authorUrl": "https://github.com/tacps126",
-  "description": "MCP server for AI agents: job postings (career sites, remote, startups, US tech, Indeed, Naukri), hiring signals, Google News, official government updates, public tenders and contract awards, weather and disaster alerts, grants and funding calls, research papers and patents, technology-field trends and idea validation (with analyst prompts), Trustpilot and app reviews, Reddit mentions and buying-intent leads, YouTube transcripts, new laws and bills, sanctions screening, product recalls, company registers, website contacts, German real estate, Shopify products and store analysis, trade-show exhibitors and upcoming events, prediction markets, sports data and betting lines, lottery results, podcasts, startup funding rounds, property auctions, local businesses by category and city. Runs ready-made Apify Actors with your own Apify token.",
+  "description": "MCP server for AI agents: job postings (career sites, remote, startups, US tech, Indeed, Naukri), hiring signals, Google News, official government updates, public tenders and contract awards, weather and disaster alerts, grants and funding calls, research papers and patents, technology-field trends and idea validation (with analyst prompts), Trustpilot and app reviews, Reddit mentions and buying-intent leads, YouTube transcripts, new laws and bills, sanctions screening, product recalls, company registers, website contacts, German real estate, Shopify products and store analysis, trade-show exhibitors and upcoming events, prediction markets, sports data and betting lines, lottery results, podcasts, startup funding rounds, property auctions, local businesses by category and city, clinical trials, CVE vulnerabilities, FDA device clearances, US healthcare providers, US import records. Runs ready-made Apify Actors with your own Apify token.",
   "homepage": "https://github.com/tacps126/webdata-tools-mcp",
   "icon": "https://raw.githubusercontent.com/tacps126/webdata-tools-mcp/main/icon.png",
   "identifier": "tacps126-webdata-tools-mcp",
@@ -5073,7 +5073,757 @@
       "execution": {
         "taskSupport": "forbidden"
       }
+    },
+    {
+      "name": "search_clinical_trials",
+      "title": "Search clinical trials (ClinicalTrials.gov)",
+      "description": "Clinical trials from ClinicalTrials.gov by condition, drug or device, sponsor, site location, status, phase and sponsor type: dates, enrollment, design, interventions, eligibility, outcomes, central contacts (name, phone, email) and study sites. Use for trial landscapes, site and patient recruitment, competitive intelligence and new-study alerts. Runs the Apify Actor tacps126/clinical-trials on your Apify account (about $0.003 per study; spend per call is capped at $0.5).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "condition": {
+            "description": "Disease or condition, e.g. \"obesity\", \"breast cancer\".",
+            "type": "string"
+          },
+          "intervention": {
+            "description": "Drug, device or procedure, e.g. \"semaglutide\".",
+            "type": "string"
+          },
+          "sponsor": {
+            "description": "Sponsor, e.g. \"Pfizer\".",
+            "type": "string"
+          },
+          "keywords": {
+            "description": "Words anywhere in the study record.",
+            "type": "string"
+          },
+          "location": {
+            "description": "Country, state or city of a site, e.g. \"India\", \"Boston\".",
+            "type": "string"
+          },
+          "statuses": {
+            "description": "Empty = any status.",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "RECRUITING",
+                "NOT_YET_RECRUITING",
+                "ENROLLING_BY_INVITATION",
+                "ACTIVE_NOT_RECRUITING",
+                "COMPLETED",
+                "SUSPENDED",
+                "TERMINATED",
+                "WITHDRAWN",
+                "UNKNOWN"
+              ]
+            }
+          },
+          "phases": {
+            "description": "Empty = any phase.",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "EARLY_PHASE1",
+                "PHASE1",
+                "PHASE2",
+                "PHASE3",
+                "PHASE4",
+                "NA"
+              ]
+            }
+          },
+          "sponsor_types": {
+            "description": "Empty = any sponsor.",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "INDUSTRY",
+                "NIH",
+                "FED",
+                "OTHER_GOV",
+                "NETWORK",
+                "OTHER"
+              ]
+            }
+          },
+          "first_posted_within_days": {
+            "description": "Only studies first posted in the last N days.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991
+          },
+          "max_items": {
+            "default": 50,
+            "description": "Maximum results to return (default 50, max 1000). Cost scales with this.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000
+          },
+          "extra_input": {
+            "description": "Advanced: extra Actor input fields, merged over the defaults.",
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          }
+        },
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "tool": {
+            "type": "string",
+            "description": "Name of the tool that produced the result."
+          },
+          "count": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records the Actor returned."
+          },
+          "shown": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records included in `items` (can be lower than count when the result is long)."
+          },
+          "truncated": {
+            "type": "boolean",
+            "description": "True when records were left out to keep the result short; ask for fewer items."
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "propertyNames": {
+                "type": "string"
+              },
+              "additionalProperties": {}
+            },
+            "description": "The records. Long text fields are shortened to 600 characters."
+          }
+        },
+        "required": [
+          "tool",
+          "count",
+          "shown",
+          "truncated",
+          "items"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
+      },
+      "annotations": {
+        "title": "Search clinical trials (ClinicalTrials.gov)",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "search_vulnerabilities",
+      "title": "Search CVE vulnerabilities (NVD, CISA KEV, EPSS)",
+      "description": "New and updated vulnerabilities from the NVD with CVSS score and severity, CWE, affected vendors and products, references, CISA known-exploited status (date added, due date, ransomware use) and the EPSS exploit likelihood. Filter by vendor, product, keyword, severity, CVSS or EPSS, or look up CVE ids. Use for patch triage and security alerts. Runs the Apify Actor tacps126/cve-feed on your Apify account (about $0.003 per CVE; spend per call is capped at $0.5).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "source": {
+            "default": "nvd",
+            "description": "nvd: CVEs published or modified in the window; kev: CVEs CISA added to its known-exploited catalog.",
+            "type": "string",
+            "enum": [
+              "nvd",
+              "kev"
+            ]
+          },
+          "within_days": {
+            "default": 2,
+            "description": "Look-back window in days (about 600-900 CVEs a day on NVD).",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 120
+          },
+          "keywords": {
+            "description": "Words in the description, e.g. \"remote code execution\".",
+            "type": "string"
+          },
+          "vendors": {
+            "description": "Affected vendors, e.g. [\"microsoft\", \"cisco\"].",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "products": {
+            "description": "Affected products, e.g. [\"exchange server\"].",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "severities": {
+            "description": "Empty = all.",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "CRITICAL",
+                "HIGH",
+                "MEDIUM",
+                "LOW"
+              ]
+            }
+          },
+          "min_cvss": {
+            "description": "Minimum CVSS base score.",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 10
+          },
+          "known_exploited_only": {
+            "default": false,
+            "description": "Only CVEs in the CISA known-exploited catalog.",
+            "type": "boolean"
+          },
+          "min_epss": {
+            "description": "Minimum probability of exploitation in the next 30 days (0-1).",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "cve_ids": {
+            "description": "Look up these CVEs instead, e.g. [\"CVE-2024-3400\"].",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^CVE-\\d{4}-\\d+$"
+            }
+          },
+          "max_items": {
+            "default": 100,
+            "description": "Maximum results to return (default 100, max 2000). Cost scales with this.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 2000
+          },
+          "extra_input": {
+            "description": "Advanced: extra Actor input fields, merged over the defaults.",
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          }
+        },
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "tool": {
+            "type": "string",
+            "description": "Name of the tool that produced the result."
+          },
+          "count": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records the Actor returned."
+          },
+          "shown": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records included in `items` (can be lower than count when the result is long)."
+          },
+          "truncated": {
+            "type": "boolean",
+            "description": "True when records were left out to keep the result short; ask for fewer items."
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "propertyNames": {
+                "type": "string"
+              },
+              "additionalProperties": {}
+            },
+            "description": "The records. Long text fields are shortened to 600 characters."
+          }
+        },
+        "required": [
+          "tool",
+          "count",
+          "shown",
+          "truncated",
+          "items"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
+      },
+      "annotations": {
+        "title": "Search CVE vulnerabilities (NVD, CISA KEV, EPSS)",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "search_fda_device_clearances",
+      "title": "Search FDA medical device clearances (510(k), PMA)",
+      "description": "FDA medical device 510(k) clearances and PMA approvals: applicant, contact person, address, device and generic name, product code, specialty panel, device class, dates received and decided, review days, decision and links. Filter by date, company, device words, product code, specialty and class. Use for medtech competitive intelligence and sales prospecting. Runs the Apify Actor tacps126/fda-device-clearances on your Apify account (about $0.004 per decision; spend per call is capped at $0.5).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "types": {
+            "description": "Default both.",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "510k",
+                "pma"
+              ]
+            }
+          },
+          "decided_within_days": {
+            "default": 30,
+            "description": "Decisions in the last N days.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 3650
+          },
+          "applicant": {
+            "description": "Applicant name, e.g. \"Medtronic\".",
+            "type": "string"
+          },
+          "device_name": {
+            "description": "Words in the device or trade name, e.g. \"catheter\".",
+            "type": "string"
+          },
+          "product_codes": {
+            "description": "FDA three-letter product codes, e.g. [\"QAS\"].",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 3,
+              "maxLength": 3
+            }
+          },
+          "specialties": {
+            "description": "FDA review panels.",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "Anesthesiology",
+                "Cardiovascular",
+                "Clinical Chemistry",
+                "Dental",
+                "Ear, Nose, & Throat",
+                "Gastroenterology, Urology",
+                "General Hospital",
+                "Hematology",
+                "Immunology",
+                "Microbiology",
+                "Neurology",
+                "Obstetrics/Gynecology",
+                "Ophthalmic",
+                "Orthopedic",
+                "Pathology",
+                "Physical Medicine",
+                "Radiology",
+                "General, Plastic Surgery",
+                "Toxicology",
+                "Clinical Toxicology"
+              ]
+            }
+          },
+          "device_classes": {
+            "description": "Empty = all.",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "1",
+                "2",
+                "3"
+              ]
+            }
+          },
+          "max_items": {
+            "default": 50,
+            "description": "Maximum results to return (default 50, max 1000). Cost scales with this.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000
+          },
+          "extra_input": {
+            "description": "Advanced: extra Actor input fields, merged over the defaults.",
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          }
+        },
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "tool": {
+            "type": "string",
+            "description": "Name of the tool that produced the result."
+          },
+          "count": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records the Actor returned."
+          },
+          "shown": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records included in `items` (can be lower than count when the result is long)."
+          },
+          "truncated": {
+            "type": "boolean",
+            "description": "True when records were left out to keep the result short; ask for fewer items."
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "propertyNames": {
+                "type": "string"
+              },
+              "additionalProperties": {}
+            },
+            "description": "The records. Long text fields are shortened to 600 characters."
+          }
+        },
+        "required": [
+          "tool",
+          "count",
+          "shown",
+          "truncated",
+          "items"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
+      },
+      "annotations": {
+        "title": "Search FDA medical device clearances (510(k), PMA)",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "search_healthcare_providers",
+      "title": "Search US healthcare providers (NPI Registry)",
+      "description": "US doctors, dentists, therapists, clinics and hospitals from the official NPI Registry: name, specialty (taxonomy), license, practice address, phone, fax, enumeration date and, for organizations, the authorized official. Search by specialty, state, city, ZIP, name or NPI; can keep only new practices (recently issued NPIs) or providers with a phone. Runs the Apify Actor tacps126/npi-providers on your Apify account (about $0.003 per provider; spend per call is capped at $0.5).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "specialties": {
+            "description": "Registry specialty names, e.g. [\"Dentist\", \"Chiropractor\"].",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "states": {
+            "description": "Two-letter state codes, e.g. [\"TX\"].",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 2
+            }
+          },
+          "cities": {
+            "description": "Practice cities.",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "postal_codes": {
+            "description": "Five-digit ZIP codes.",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^\\d{5}$"
+            }
+          },
+          "provider_type": {
+            "default": "any",
+            "description": "Individuals, organizations or both.",
+            "type": "string",
+            "enum": [
+              "any",
+              "individual",
+              "organization"
+            ]
+          },
+          "last_name": {
+            "description": "Individual last name.",
+            "type": "string"
+          },
+          "organization_name": {
+            "description": "Organization name; * for a prefix, e.g. \"smile*\".",
+            "type": "string"
+          },
+          "npi_numbers": {
+            "description": "Look up these NPIs.",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^\\d{10}$"
+            }
+          },
+          "enumerated_within_days": {
+            "description": "Only NPIs issued in the last N days (new practices).",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991
+          },
+          "with_phone_only": {
+            "default": false,
+            "description": "Only providers with a practice phone.",
+            "type": "boolean"
+          },
+          "max_items": {
+            "default": 100,
+            "description": "Maximum results to return (default 100, max 5000). Cost scales with this.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5000
+          },
+          "extra_input": {
+            "description": "Advanced: extra Actor input fields, merged over the defaults.",
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          }
+        },
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "tool": {
+            "type": "string",
+            "description": "Name of the tool that produced the result."
+          },
+          "count": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records the Actor returned."
+          },
+          "shown": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records included in `items` (can be lower than count when the result is long)."
+          },
+          "truncated": {
+            "type": "boolean",
+            "description": "True when records were left out to keep the result short; ask for fewer items."
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "propertyNames": {
+                "type": "string"
+              },
+              "additionalProperties": {}
+            },
+            "description": "The records. Long text fields are shortened to 600 characters."
+          }
+        },
+        "required": [
+          "tool",
+          "count",
+          "shown",
+          "truncated",
+          "items"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
+      },
+      "annotations": {
+        "title": "Search US healthcare providers (NPI Registry)",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "search_import_records",
+      "title": "Look up US import records (importers, suppliers, bills of lading)",
+      "description": "US customs sea import records for a US importer or an overseas supplier: total and last-12-month shipments with the trend, its suppliers (or a supplier's US customers) with shipments, weight and HS codes, products, source countries, ports and carriers, recent bills of lading, and lookalike importers that buy from the same factories. Use for sourcing, supplier discovery, importer prospecting and supply-chain research. Runs the Apify Actor tacps126/us-import-records on your Apify account (about $0.004 per company profile, $0.001 per supplier or customer; spend per call is capped at $0.5).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "companies": {
+            "description": "US importers by name or importyeti.com link, e.g. [\"Allbirds\"].",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 2
+            }
+          },
+          "suppliers": {
+            "description": "Overseas suppliers (factories) by name or link, to see their US customers.",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 2
+            }
+          },
+          "include_partners": {
+            "default": true,
+            "description": "Add one row per supplier (or customer).",
+            "type": "boolean"
+          },
+          "max_partners_per_company": {
+            "default": 25,
+            "description": "Most suppliers or customers per company.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 500
+          },
+          "include_shipments": {
+            "default": false,
+            "description": "Add the most recent bills of lading.",
+            "type": "boolean"
+          },
+          "shipped_within_days": {
+            "description": "Only shipments in the last N days.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991
+          },
+          "find_lookalikes": {
+            "default": false,
+            "description": "Add other US importers that use the same suppliers.",
+            "type": "boolean"
+          },
+          "max_lookalikes_per_company": {
+            "default": 25,
+            "description": "Most lookalike importers per company.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 200
+          },
+          "max_items": {
+            "default": 100,
+            "description": "Maximum results to return (default 100, max 5000). Cost scales with this.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5000
+          },
+          "extra_input": {
+            "description": "Advanced: extra Actor input fields, merged over the defaults.",
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          }
+        },
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "tool": {
+            "type": "string",
+            "description": "Name of the tool that produced the result."
+          },
+          "count": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records the Actor returned."
+          },
+          "shown": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records included in `items` (can be lower than count when the result is long)."
+          },
+          "truncated": {
+            "type": "boolean",
+            "description": "True when records were left out to keep the result short; ask for fewer items."
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "propertyNames": {
+                "type": "string"
+              },
+              "additionalProperties": {}
+            },
+            "description": "The records. Long text fields are shortened to 600 characters."
+          }
+        },
+        "required": [
+          "tool",
+          "count",
+          "shown",
+          "truncated",
+          "items"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
+      },
+      "annotations": {
+        "title": "Look up US import records (importers, suppliers, bills of lading)",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
     }
   ],
-  "version": "0.15.0"
+  "version": "0.16.0"
 }

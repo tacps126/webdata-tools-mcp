@@ -20,6 +20,11 @@ const calls = [
   ['get_trustpilot_reviews', { companies: ['apify.com'], max_reviews: 3 }],
   ['find_website_contacts', { websites: ['apify.com'], max_items: 1 }],
   ['find_local_businesses', { city: 'Pune', country_code: 'IN', categories: ['dentist'], max_items: 1 }],
+  ['search_clinical_trials', { condition: 'obesity', max_items: 1 }],
+  ['search_vulnerabilities', { vendors: ['microsoft'], max_items: 1 }],
+  ['search_fda_device_clearances', { applicant: 'Medtronic', decided_within_days: 365, max_items: 1 }],
+  ['search_healthcare_providers', { specialties: ['Dentist'], cities: ['Austin'], states: ['TX'], max_items: 1 }],
+  ['search_import_records', { companies: ['Allbirds'], include_partners: false, max_items: 1 }],
 ];
 let failed = 0;
 for (const [name, args] of calls) {
