@@ -32,7 +32,7 @@ export const TOOLS = [
     name: 'search_google_news',
     actor: 'tacps126/google-news',
     title: 'Search Google News',
-    price: 'about $0.002 per article',
+    price: 'about $0.003 per article',
     description:
       'Search Google News (any language and country) and return articles with the publisher\'s real article URL, publisher, date and related coverage. Supports Google operators ("exact phrase", -exclude, OR, intitle:) and site filters.',
     shape: {
@@ -97,7 +97,7 @@ export const TOOLS = [
     name: 'get_company_jobs',
     actor: 'tacps126/jobs-harvester',
     title: 'Get all open jobs from company career pages',
-    price: 'about $0.001 per job',
+    price: 'about $0.0016 per job',
     description:
       'All open jobs from companies in one normalized format (title, company, location with country code, remote/hybrid, seniority, salary, skills, apply URL, posted date). Give career-page URLs (the company\'s own careers page or its job board) or just company names; 13 job-board systems are supported (Greenhouse, Lever, Ashby, Workday, SmartRecruiters, Workable, Rippling, BambooHR, Pinpoint, Breezy, Recruitee, Personio, Teamtailor) and found automatically.',
     shape: {
@@ -199,7 +199,7 @@ export const TOOLS = [
     name: 'search_indeed_jobs',
     actor: 'tacps126/indeed-jobs',
     title: 'Search Indeed jobs',
-    price: 'about $0.003 per job',
+    price: 'about $0.0015 per job (back to $0.003 on 6 Dec 2026)',
     description:
       'Search Indeed job listings by keyword and location in 9 countries (us, uk, ca, au, ie, de, fr, nl, sg): title, company, location, salary, job type, benefits, skills, apply link and (with details) the full job description.',
     shape: {
@@ -251,7 +251,7 @@ export const TOOLS = [
     name: 'get_trustpilot_reviews',
     actor: 'tacps126/trustpilot-reviews',
     title: 'Get Trustpilot reviews and company rating',
-    price: 'about $0.0005 per review; company profile free',
+    price: 'about $0.00055 per review; company profile free',
     description:
       'Trustpilot reviews for one or more companies (rating, title, text, reviewer, country, date, company reply) plus the company\'s TrustScore and review counts. Filter by stars, language, verified and date period.',
     shape: {
@@ -277,7 +277,7 @@ export const TOOLS = [
     name: 'get_app_reviews',
     actor: 'tacps126/app-reviews',
     title: 'Get App Store and Google Play reviews',
-    price: 'about $0.0002 per review',
+    price: 'about $0.0004 per review',
     description:
       'Reviews from the Apple App Store and Google Play in one dataset: rating, text, author, date, app version, developer reply, sentiment. Mix both stores and several countries.',
     shape: {
@@ -730,7 +730,7 @@ export const TOOLS = [
     name: 'find_website_contacts',
     actor: 'tacps126/contact-details',
     title: 'Find emails, phones and social profiles on websites',
-    price: 'about $0.002 per website with contacts found; nothing found, no charge',
+    price: 'about $0.00175 per website with contacts found; nothing found, no charge',
     description:
       'Finds business emails, phone numbers, addresses and social profiles (LinkedIn, X, Facebook, Instagram, YouTube) on any list of websites; it visits the contact and about pages itself. Use only for lawful business outreach (GDPR / CAN-SPAM).',
     shape: {
@@ -782,7 +782,7 @@ export const TOOLS = [
     name: 'search_german_property_listings',
     actor: 'tacps126/immobilienscout24-scraper',
     title: 'Search German and Austrian property listings (ImmoScout24)',
-    price: 'about $0.001 per listing',
+    price: 'about $0.00095 per listing',
     description:
       'Apartments and houses for rent or sale in Germany or Austria: price, rent, area, rooms, address with coordinates, energy class, features, agent, photos and dates. Not Switzerland.',
     shape: {
@@ -819,7 +819,7 @@ export const TOOLS = [
     name: 'get_shopify_products',
     actor: 'tacps126/shopify-products',
     title: 'Get products from Shopify stores',
-    price: 'about $0.001 per product',
+    price: 'about $0.00125 per product',
     description:
       'Products from any Shopify store: prices, sale prices, discounts, stock, variants, SKUs, images and descriptions. Whole stores, collections or single products. Useful for price and stock monitoring.',
     shape: {
@@ -865,7 +865,7 @@ export const TOOLS = [
     name: 'get_trade_show_exhibitors',
     actor: 'tacps126/exhibition-scraper',
     title: 'Get trade show exhibitor lists (booths and contacts)',
-    price: 'about $0.002 per exhibitor',
+    price: 'about $0.003 per exhibitor',
     description:
       "Exhibitor lists of trade shows as B2B leads: company, booth and hall, email, phone, website, address, socials and categories. 91 built-in shows (e.g. medica, sema-show, nab-show, fabtech, ish, automechanika, wtm-london, orgatec, eurotier, wine-paris, biofach) or any exhibitor-list link or show homepage on Messe Frankfurt, Messe Düsseldorf, Koelnmesse, NürnbergMesse, Newfront/ExpoPlatform, RX, Map Your Show, a2z / A2Z Connect, Swapcard or Corussoft; the link's own show and year are used. Contact coverage depends on what the organiser publishes.",
     shape: {
