@@ -821,12 +821,19 @@ export const TOOLS = [
     title: 'Get products from Shopify stores',
     price: 'about $0.00125 per product',
     description:
-      'Products from any Shopify store: prices, sale prices, discounts, stock, variants, SKUs, images and descriptions. Whole stores, collections or single products. Useful for price and stock monitoring.',
+      'Products from any Shopify store: prices, sale prices, discounts, stock, variants, SKUs, images and descriptions. Whole stores, collections or single products. Filter by sale, discount and price and sort across stores (best deals first). Useful for price and stock monitoring.',
     shape: {
       stores: strings('Store domains, collection links or product links, e.g. "allbirds.com".'),
       keywords: z.array(z.string()).optional().describe('Only products matching any of these words.'),
       only_on_sale: z.boolean().default(false).describe('Only products with a sale price.'),
       only_available: z.boolean().default(false).describe('Only products that are in stock.'),
+      min_discount_percent: z.number().min(0).max(100).optional().describe('Only products discounted at least this much (%).'),
+      min_price: z.number().min(0).optional().describe('Lowest price to keep, in the store currency.'),
+      max_price: z.number().min(0).optional().describe('Highest price to keep, in the store currency.'),
+      sort_by: z
+        .enum(['default', 'cheapest', 'priciest', 'biggest_discount', 'newest', 'recently_updated', 'title'])
+        .default('default')
+        .describe('Order across all stores before the limit applies, e.g. "biggest_discount" for the best deals.'),
       max_items: maxItems(100, 1000),
     },
     map: (a) =>
@@ -835,6 +842,18 @@ export const TOOLS = [
         keywords: a.keywords,
         onlyOnSale: a.only_on_sale || undefined,
         onlyAvailable: a.only_available || undefined,
+        minDiscountPercent: a.min_discount_percent,
+        minPrice: a.min_price,
+        maxPrice: a.max_price,
+        sortBy:
+          {
+            cheapest: 'priceLow',
+            priciest: 'priceHigh',
+            biggest_discount: 'discountHigh',
+            newest: 'newest',
+            recently_updated: 'recentlyUpdated',
+            title: 'title',
+          }[a.sort_by] || undefined,
         maxItems: a.max_items,
       }),
     limit: (a) => a.max_items,
@@ -845,11 +864,19 @@ export const TOOLS = [
     title: 'Analyze Shopify stores (location, catalog, contacts)',
     price: 'about $0.004 per store',
     description:
-      'For each Shopify store: name, city and country, currency, product and collection counts, a catalog snapshot (price range and median, share on sale and in stock, top brands and product types, newest product) and its e-mails, phones and social profiles. Non-Shopify sites are skipped for free.',
+      'For each Shopify store: name, city and country, currency, product and collection counts, a catalog snapshot (price range and median, share on sale and in stock, top brands and product types, newest product) and its e-mails, phones and social profiles. Filter by size, price, activity and e-mail; sort by size or newest product. Non-Shopify sites are skipped for free.',
     shape: {
       stores: strings('Store websites or domains, e.g. ["allbirds.com", "gymshark.com"].'),
       include_contacts: z.boolean().default(true).describe('Also read the store\'s contact pages for e-mails, phones and socials.'),
       countries: z.array(z.string()).optional().describe('Keep only stores based in these countries (ISO codes or names).'),
+      min_products: z.number().int().min(0).optional().describe('Only stores with at least this many products.'),
+      max_products: z.number().int().min(0).optional().describe('Only stores with at most this many products (small stores).'),
+      active_within_days: z.number().int().min(1).optional().describe('Only stores that published a product in the last N days.'),
+      require_email: z.boolean().default(false).describe('Only stores where an e-mail address was found.'),
+      sort_by: z
+        .enum(['default', 'most_products', 'fewest_products', 'highest_price', 'lowest_price', 'newest_product', 'name'])
+        .default('default')
+        .describe('Order the stores before the limit applies.'),
       max_items: maxItems(20, 1000),
     },
     map: (a) =>
@@ -857,6 +884,19 @@ export const TOOLS = [
         startUrls: a.stores,
         includeContacts: a.include_contacts,
         countries: a.countries,
+        minProducts: a.min_products,
+        maxProducts: a.max_products,
+        activeWithinDays: a.active_within_days,
+        requireEmail: a.require_email || undefined,
+        sortBy:
+          {
+            most_products: 'productsHigh',
+            fewest_products: 'productsLow',
+            highest_price: 'medianPriceHigh',
+            lowest_price: 'medianPriceLow',
+            newest_product: 'newestProduct',
+            name: 'storeName',
+          }[a.sort_by] || undefined,
         maxItems: a.max_items,
       }),
     limit: (a) => a.max_items,
