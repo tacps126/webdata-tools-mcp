@@ -75,6 +75,13 @@ Every result comes back as text and as structured content (`tool`, `count`, `sho
 
 More about the tools: <https://tacps126.github.io/mcp.html>
 
+## Free data, no token
+
+Want to see real output before connecting anything? These need no Apify account:
+
+- Weekly datasets on Hugging Face (latest 7 days, CSV and JSONL): [new company registrations](https://huggingface.co/datasets/tacps126/new-company-registrations), [product recalls](https://huggingface.co/datasets/tacps126/product-recalls), [bank and court property auctions](https://huggingface.co/datasets/tacps126/bank-property-auctions).
+- Sample CSV and JSON files from recent runs of the exhibitor, auctions, hiring signals, sanctions and company registry tools: [tacps126.github.io/datasets.html](https://tacps126.github.io/datasets.html).
+
 ## Prompts and agent skill
 
 Two ready-made prompts turn the research tools into an analyst, whichever model you use (Claude, GPT, Gemini, a local model): the evidence, the reading guide and the answer shape are fixed, so results stay comparable.
