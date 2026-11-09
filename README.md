@@ -24,16 +24,16 @@ anywhere except Apify.
 
 | Tool | What it returns | Cost (approx.) | Actor |
 |------|-----------------|----------------|-------|
-| `search_google_news` | News articles with the publisher's real URL, date, related coverage | $3 / 1,000 articles | [google-news](https://apify.com/tacps126/google-news) |
+| `search_google_news` | News articles with the publisher's real URL, date, related coverage | $1 / 1,000 articles | [google-news](https://apify.com/tacps126/google-news) |
 | `find_hiring_companies` | Which companies are hiring for given roles (buying-intent signal) | 1¢ per company with a signal | [hiring-signals](https://apify.com/tacps126/hiring-signals) |
-| `get_company_jobs` | All open jobs from career pages or company names (13 job-board systems: Greenhouse, Lever, Ashby, Workday, Rippling, ...) | $1.60 / 1,000 jobs | [jobs-harvester](https://apify.com/tacps126/jobs-harvester) |
+| `get_company_jobs` | All open jobs from career pages or company names (13 job-board systems: Greenhouse, Lever, Ashby, Workday, Rippling, ...) | $1.50 / 1,000 jobs | [jobs-harvester](https://apify.com/tacps126/jobs-harvester) |
 | `find_remote_jobs` | Remote jobs from company job boards plus the Remote OK, Jobicy, Working Nomads and Himalayas feeds | $2 / 1,000 jobs | [remote-jobs-scraper](https://apify.com/tacps126/remote-jobs-scraper) |
 | `search_startup_jobs` | Startup jobs on Wellfound by role and city: salary and equity, startup size and pitch | $2 / 1,000 jobs | [wellfound-jobs-scraper](https://apify.com/tacps126/wellfound-jobs-scraper) |
 | `search_tech_jobs` | US tech jobs on Dice: salary, employer type, Easy Apply, remote flag | $0.55 / 1,000 jobs | [dice-jobs-scraper](https://apify.com/tacps126/dice-jobs-scraper) |
 | `search_indeed_jobs` | Indeed listings in 9 countries | $1.50 / 1,000 jobs (back to $3 on 6 Dec 2026) | [indeed-jobs](https://apify.com/tacps126/indeed-jobs) |
 | `search_naukri_jobs` | Naukri.com jobs (India): full description, salary in rupees, experience, rating | $1.50 / 1,000 jobs | [naukri-jobs-scraper](https://apify.com/tacps126/naukri-jobs-scraper) |
-| `get_trustpilot_reviews` | Reviews, TrustScore and company profile | $0.55 / 1,000 reviews | [trustpilot-reviews](https://apify.com/tacps126/trustpilot-reviews) |
-| `get_app_reviews` | App Store and Google Play reviews | $0.40 / 1,000 reviews | [app-reviews](https://apify.com/tacps126/app-reviews) |
+| `get_trustpilot_reviews` | Reviews, TrustScore and company profile | $0.28 / 1,000 reviews | [trustpilot-reviews](https://apify.com/tacps126/trustpilot-reviews) |
+| `get_app_reviews` | App Store and Google Play reviews | $0.15 / 1,000 reviews | [app-reviews](https://apify.com/tacps126/app-reviews) |
 | `search_reddit` | Reddit posts and comments by keyword or subreddit, tagged with buying intent | $1 / 1,000 items | [reddit-monitor](https://apify.com/tacps126/reddit-monitor) |
 | `find_reddit_leads` | Reddit posts asking for a tool like yours, seeking a competitor alternative, comparing or complaining | $2 / 1,000 leads + $0.10 / 1,000 posts read | [reddit-lead-finder](https://apify.com/tacps126/reddit-lead-finder) |
 | `search_gov_updates` | Official government updates: Federal Register rules and notices, GOV.UK, European Commission, SEC, RBI and SEBI circulars, any RSS feed; sector and keyword filters | $3 / 1,000 updates | [gov-radar](https://apify.com/tacps126/gov-radar) |
@@ -53,12 +53,12 @@ anywhere except Apify.
 | `find_website_contacts` | Emails, phones, socials from websites | $1.75 / 1,000 sites with contacts | [contact-details](https://apify.com/tacps126/contact-details) |
 | `find_local_businesses` | Local businesses by category and city (open map data) with the contacts found on their websites | $1.25 / 1,000 businesses + $1.75 / 1,000 with site contacts | [contact-details](https://apify.com/tacps126/contact-details) |
 | `search_german_property_listings` | Rent/buy listings in Germany and Austria (ImmoScout24) | $0.95 / 1,000 listings | [immobilienscout24-scraper](https://apify.com/tacps126/immobilienscout24-scraper) |
-| `get_shopify_products` | Prices, discounts, stock, variants from Shopify stores; filter and sort across stores (best deals first) | $1.25 / 1,000 products | [shopify-products](https://apify.com/tacps126/shopify-products) |
+| `get_shopify_products` | Prices, discounts, stock, variants from Shopify stores; filter and sort across stores (best deals first) | $0.40 / 1,000 products | [shopify-products](https://apify.com/tacps126/shopify-products) |
 | `analyze_shopify_stores` | Store location, currency, catalog size and snapshot, e-mails, phones, socials; filter by size, price, activity, e-mail and sort | $4 / 1,000 stores | [shopify-store-analyzer](https://apify.com/tacps126/shopify-store-analyzer) |
-| `get_trade_show_exhibitors` | Trade-show exhibitors: booth, email, phone, website, address (91 shows or any supported exhibitor-list link; changes-only monitoring) | $3 / 1,000 exhibitors | [exhibition-scraper](https://apify.com/tacps126/exhibition-scraper) |
+| `get_trade_show_exhibitors` | Trade-show exhibitors: booth, email, phone, website, address (91 shows or any supported exhibitor-list link; changes-only monitoring) | $1 / 1,000 exhibitors | [exhibition-scraper](https://apify.com/tacps126/exhibition-scraper) |
 | `find_events` | Upcoming events from Luma, Eventbrite, Meetup: venue, organiser, hosts, tickets, attendees | $1 / 1,000 events | [events-scraper](https://apify.com/tacps126/events-scraper) |
 | `get_prediction_markets` | Kalshi, Polymarket, Manifold and PredictIt markets: probability, bid/ask, 24h and 7d change, volume, result, daily history | $3 / 1,000 markets | [prediction-markets](https://apify.com/tacps126/prediction-markets) |
-| `get_sports_data` | Scores, box scores, betting odds (open, close, settled), standings and rosters for 24 leagues incl. NFL, NBA, MLB, NHL, top football leagues, F1, ATP/WTA | $3 / 1,000 rows, $1 / 1,000 player lines | [sports-data](https://apify.com/tacps126/sports-data) |
+| `get_sports_data` | Scores, box scores, betting odds (open, close, settled), standings and rosters for 24 leagues incl. NFL, NBA, MLB, NHL, top football leagues, F1, ATP/WTA | $0.80 / 1,000 rows, $1 / 1,000 player lines | [sports-data](https://apify.com/tacps126/sports-data) |
 | `get_lottery_results` | Powerball, Mega Millions and 11 state games: winning numbers, jackpots, winners; hot and cold numbers | $3 / 1,000 rows | [lottery-results](https://apify.com/tacps126/lottery-results) |
 | `search_podcasts` | Apple Podcasts search and charts with owner email, website, activity and latest episodes | $4 / 1,000 podcasts | [podcasts](https://apify.com/tacps126/podcasts) |
 | `search_startup_funding` | New startup raises from SEC Form D: amounts, industry, founders and executives | $5 / 1,000 filings | [startup-funding](https://apify.com/tacps126/startup-funding) |

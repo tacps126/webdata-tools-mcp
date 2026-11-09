@@ -75,7 +75,7 @@
     {
       "name": "search_google_news",
       "title": "Search Google News",
-      "description": "Search Google News (any language and country) and return articles with the publisher's real article URL, publisher, date and related coverage. Supports Google operators (\"exact phrase\", -exclude, OR, intitle:) and site filters. Runs the Apify Actor tacps126/google-news on your Apify account (about $0.002 per article; spend per call is capped at $0.5).",
+      "description": "Search Google News (any language and country) and return articles with the publisher's real article URL, publisher, date and related coverage. Supports Google operators (\"exact phrase\", -exclude, OR, intitle:) and site filters. Runs the Apify Actor tacps126/google-news on your Apify account (about $0.001 per article; spend per call is capped at $0.5).",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -311,7 +311,7 @@
     {
       "name": "get_company_jobs",
       "title": "Get all open jobs from company career pages",
-      "description": "All open jobs from companies in one normalized format (title, company, location with country code, remote/hybrid, seniority, salary, skills, apply URL, posted date). Give career-page URLs (the company's own careers page or its job board) or just company names; 13 job-board systems are supported (Greenhouse, Lever, Ashby, Workday, SmartRecruiters, Workable, Rippling, BambooHR, Pinpoint, Breezy, Recruitee, Personio, Teamtailor) and found automatically. Runs the Apify Actor tacps126/jobs-harvester on your Apify account (about $0.001 per job; spend per call is capped at $0.5).",
+      "description": "All open jobs from companies in one normalized format (title, company, location with country code, remote/hybrid, seniority, salary, skills, apply URL, posted date). Give career-page URLs (the company's own careers page or its job board) or just company names; 13 job-board systems are supported (Greenhouse, Lever, Ashby, Workday, SmartRecruiters, Workable, Rippling, BambooHR, Pinpoint, Breezy, Recruitee, Personio, Teamtailor) and found automatically. Runs the Apify Actor tacps126/jobs-harvester on your Apify account (about $0.0015 per job; spend per call is capped at $0.5).",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -740,7 +740,7 @@
     {
       "name": "search_indeed_jobs",
       "title": "Search Indeed jobs",
-      "description": "Search Indeed job listings by keyword and location in 9 countries (us, uk, ca, au, ie, de, fr, nl, sg): title, company, location, salary, job type, benefits, skills, apply link and (with details) the full job description. Runs the Apify Actor tacps126/indeed-jobs on your Apify account (about $0.003 per job; spend per call is capped at $0.5).",
+      "description": "Search Indeed job listings by keyword and location in 9 countries (us, uk, ca, au, ie, de, fr, nl, sg): title, company, location, salary, job type, benefits, skills, apply link and (with details) the full job description. Runs the Apify Actor tacps126/indeed-jobs on your Apify account (about $0.0015 per job (back to $0.003 on 6 Dec 2026); spend per call is capped at $0.5).",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -984,7 +984,7 @@
     {
       "name": "get_trustpilot_reviews",
       "title": "Get Trustpilot reviews and company rating",
-      "description": "Trustpilot reviews for one or more companies (rating, title, text, reviewer, country, date, company reply) plus the company's TrustScore and review counts. Filter by stars, language, verified and date period. Runs the Apify Actor tacps126/trustpilot-reviews on your Apify account (about $0.0005 per review; company profile free; spend per call is capped at $0.5).",
+      "description": "Trustpilot reviews for one or more companies (rating, title, text, reviewer, country, date, company reply) plus the company's TrustScore and review counts. Filter by stars, language, verified and date period. Runs the Apify Actor tacps126/trustpilot-reviews on your Apify account (about $0.00028 per review; company profile free; spend per call is capped at $0.5).",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -1113,7 +1113,7 @@
     {
       "name": "get_app_reviews",
       "title": "Get App Store and Google Play reviews",
-      "description": "Reviews from the Apple App Store and Google Play in one dataset: rating, text, author, date, app version, developer reply, sentiment. Mix both stores and several countries. Runs the Apify Actor tacps126/app-reviews on your Apify account (about $0.0002 per review; spend per call is capped at $0.5).",
+      "description": "Reviews from the Apple App Store and Google Play in one dataset: rating, text, author, date, app version, developer reply, sentiment. Mix both stores and several countries. Runs the Apify Actor tacps126/app-reviews on your Apify account (about $0.00015 per review; spend per call is capped at $0.5).",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -3274,7 +3274,7 @@
     {
       "name": "find_website_contacts",
       "title": "Find emails, phones and social profiles on websites",
-      "description": "Finds business emails, phone numbers, addresses and social profiles (LinkedIn, X, Facebook, Instagram, YouTube) on any list of websites; it visits the contact and about pages itself. Use only for lawful business outreach (GDPR / CAN-SPAM). Runs the Apify Actor tacps126/contact-details on your Apify account (about $0.002 per website with contacts found; nothing found, no charge; spend per call is capped at $0.5).",
+      "description": "Finds business emails, phone numbers, addresses and social profiles (LinkedIn, X, Facebook, Instagram, YouTube) on any list of websites; it visits the contact and about pages itself. Use only for lawful business outreach (GDPR / CAN-SPAM). Runs the Apify Actor tacps126/contact-details on your Apify account (about $0.00175 per website with contacts found; nothing found, no charge; spend per call is capped at $0.5).",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -3505,7 +3505,7 @@
     {
       "name": "search_german_property_listings",
       "title": "Search German and Austrian property listings (ImmoScout24)",
-      "description": "Apartments and houses for rent or sale in Germany or Austria: price, rent, area, rooms, address with coordinates, energy class, features, agent, photos and dates. Not Switzerland. Runs the Apify Actor tacps126/immobilienscout24-scraper on your Apify account (about $0.001 per listing; spend per call is capped at $0.5).",
+      "description": "Apartments and houses for rent or sale in Germany or Austria: price, rent, area, rooms, address with coordinates, energy class, features, agent, photos and dates. Not Switzerland. Runs the Apify Actor tacps126/immobilienscout24-scraper on your Apify account (about $0.00095 per listing; spend per call is capped at $0.5).",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -3646,7 +3646,7 @@
     {
       "name": "get_shopify_products",
       "title": "Get products from Shopify stores",
-      "description": "Products from any Shopify store: prices, sale prices, discounts, stock, variants, SKUs, images and descriptions. Whole stores, collections or single products. Useful for price and stock monitoring. Runs the Apify Actor tacps126/shopify-products on your Apify account (about $0.001 per product; spend per call is capped at $0.5).",
+      "description": "Products from any Shopify store: prices, sale prices, discounts, stock, variants, SKUs, images and descriptions. Whole stores, collections or single products. Filter by sale, discount and price and sort across stores (best deals first). Useful for price and stock monitoring. Runs the Apify Actor tacps126/shopify-products on your Apify account (about $0.0004 per product; spend per call is capped at $0.5).",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -3675,6 +3675,36 @@
             "default": false,
             "description": "Only products that are in stock.",
             "type": "boolean"
+          },
+          "min_discount_percent": {
+            "description": "Only products discounted at least this much (%).",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "min_price": {
+            "description": "Lowest price to keep, in the store currency.",
+            "type": "number",
+            "minimum": 0
+          },
+          "max_price": {
+            "description": "Highest price to keep, in the store currency.",
+            "type": "number",
+            "minimum": 0
+          },
+          "sort_by": {
+            "default": "default",
+            "description": "Order across all stores before the limit applies, e.g. \"biggest_discount\" for the best deals.",
+            "type": "string",
+            "enum": [
+              "default",
+              "cheapest",
+              "priciest",
+              "biggest_discount",
+              "newest",
+              "recently_updated",
+              "title"
+            ]
           },
           "max_items": {
             "default": 100,
@@ -3756,7 +3786,7 @@
     {
       "name": "analyze_shopify_stores",
       "title": "Analyze Shopify stores (location, catalog, contacts)",
-      "description": "For each Shopify store: name, city and country, currency, product and collection counts, a catalog snapshot (price range and median, share on sale and in stock, top brands and product types, newest product) and its e-mails, phones and social profiles. Non-Shopify sites are skipped for free. Runs the Apify Actor tacps126/shopify-store-analyzer on your Apify account (about $0.004 per store; spend per call is capped at $0.5).",
+      "description": "For each Shopify store: name, city and country, currency, product and collection counts, a catalog snapshot (price range and median, share on sale and in stock, top brands and product types, newest product) and its e-mails, phones and social profiles. Filter by size, price, activity and e-mail; sort by size or newest product. Non-Shopify sites are skipped for free. Runs the Apify Actor tacps126/shopify-store-analyzer on your Apify account (about $0.004 per store; spend per call is capped at $0.5).",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -3780,6 +3810,43 @@
             "items": {
               "type": "string"
             }
+          },
+          "min_products": {
+            "description": "Only stores with at least this many products.",
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "max_products": {
+            "description": "Only stores with at most this many products (small stores).",
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "active_within_days": {
+            "description": "Only stores that published a product in the last N days.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991
+          },
+          "require_email": {
+            "default": false,
+            "description": "Only stores where an e-mail address was found.",
+            "type": "boolean"
+          },
+          "sort_by": {
+            "default": "default",
+            "description": "Order the stores before the limit applies.",
+            "type": "string",
+            "enum": [
+              "default",
+              "most_products",
+              "fewest_products",
+              "highest_price",
+              "lowest_price",
+              "newest_product",
+              "name"
+            ]
           },
           "max_items": {
             "default": 20,
@@ -3861,7 +3928,7 @@
     {
       "name": "get_trade_show_exhibitors",
       "title": "Get trade show exhibitor lists (booths and contacts)",
-      "description": "Exhibitor lists of trade shows as B2B leads: company, booth and hall, email, phone, website, address, socials and categories. 91 built-in shows (e.g. medica, sema-show, nab-show, fabtech, ish, automechanika, wtm-london, orgatec, eurotier, wine-paris, biofach) or any exhibitor-list link or show homepage on Messe Frankfurt, Messe Düsseldorf, Koelnmesse, NürnbergMesse, Newfront/ExpoPlatform, RX, Map Your Show, a2z / A2Z Connect, Swapcard or Corussoft; the link's own show and year are used. Contact coverage depends on what the organiser publishes. Runs the Apify Actor tacps126/exhibition-scraper on your Apify account (about $0.002 per exhibitor; spend per call is capped at $0.5).",
+      "description": "Exhibitor lists of trade shows as B2B leads: company, booth and hall, email, phone, website, address, socials and categories. 91 built-in shows (e.g. medica, sema-show, nab-show, fabtech, ish, automechanika, wtm-london, orgatec, eurotier, wine-paris, biofach) or any exhibitor-list link or show homepage on Messe Frankfurt, Messe Düsseldorf, Koelnmesse, NürnbergMesse, Newfront/ExpoPlatform, RX, Map Your Show, a2z / A2Z Connect, Swapcard or Corussoft; the link's own show and year are used. Contact coverage depends on what the organiser publishes. Runs the Apify Actor tacps126/exhibition-scraper on your Apify account (about $0.001 per exhibitor; spend per call is capped at $0.5).",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -4256,7 +4323,7 @@
     {
       "name": "get_sports_data",
       "title": "Get sports scores, box scores, odds and standings",
-      "description": "Scores and schedules, player box scores, betting odds (opening vs current or closing moneyline, spread and total, line movement, no-vig probability, and how each line settled), standings and rosters for 24 leagues: NFL, NBA, WNBA, MLB, NHL, college football and basketball, Premier League, LaLiga, Bundesliga, Serie A, Ligue 1, Champions League and more, MLS, Liga MX, Formula 1, ATP and WTA tennis (with rankings), PGA golf and UFC. Filter by date, status and team or player. Runs the Apify Actor tacps126/sports-data on your Apify account (about $0.003 per game, odds row, standings row or player; $0.001 per box-score player line; spend per call is capped at $0.5).",
+      "description": "Scores and schedules, player box scores, betting odds (opening vs current or closing moneyline, spread and total, line movement, no-vig probability, and how each line settled), standings and rosters for 24 leagues: NFL, NBA, WNBA, MLB, NHL, college football and basketball, Premier League, LaLiga, Bundesliga, Serie A, Ligue 1, Champions League and more, MLS, Liga MX, Formula 1, ATP and WTA tennis (with rankings), PGA golf and UFC. Filter by date, status and team or player. Runs the Apify Actor tacps126/sports-data on your Apify account (about $0.0008 per game, odds row, standings row or player; $0.001 per box-score player line; spend per call is capped at $0.5).",
       "inputSchema": {
         "type": "object",
         "properties": {

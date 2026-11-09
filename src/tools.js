@@ -32,7 +32,7 @@ export const TOOLS = [
     name: 'search_google_news',
     actor: 'tacps126/google-news',
     title: 'Search Google News',
-    price: 'about $0.003 per article',
+    price: 'about $0.001 per article',
     description:
       'Search Google News (any language and country) and return articles with the publisher\'s real article URL, publisher, date and related coverage. Supports Google operators ("exact phrase", -exclude, OR, intitle:) and site filters.',
     shape: {
@@ -97,7 +97,7 @@ export const TOOLS = [
     name: 'get_company_jobs',
     actor: 'tacps126/jobs-harvester',
     title: 'Get all open jobs from company career pages',
-    price: 'about $0.0016 per job',
+    price: 'about $0.0015 per job',
     description:
       'All open jobs from companies in one normalized format (title, company, location with country code, remote/hybrid, seniority, salary, skills, apply URL, posted date). Give career-page URLs (the company\'s own careers page or its job board) or just company names; 13 job-board systems are supported (Greenhouse, Lever, Ashby, Workday, SmartRecruiters, Workable, Rippling, BambooHR, Pinpoint, Breezy, Recruitee, Personio, Teamtailor) and found automatically.',
     shape: {
@@ -251,7 +251,7 @@ export const TOOLS = [
     name: 'get_trustpilot_reviews',
     actor: 'tacps126/trustpilot-reviews',
     title: 'Get Trustpilot reviews and company rating',
-    price: 'about $0.00055 per review; company profile free',
+    price: 'about $0.00028 per review; company profile free',
     description:
       'Trustpilot reviews for one or more companies (rating, title, text, reviewer, country, date, company reply) plus the company\'s TrustScore and review counts. Filter by stars, language, verified and date period.',
     shape: {
@@ -277,7 +277,7 @@ export const TOOLS = [
     name: 'get_app_reviews',
     actor: 'tacps126/app-reviews',
     title: 'Get App Store and Google Play reviews',
-    price: 'about $0.0004 per review',
+    price: 'about $0.00015 per review',
     description:
       'Reviews from the Apple App Store and Google Play in one dataset: rating, text, author, date, app version, developer reply, sentiment. Mix both stores and several countries.',
     shape: {
@@ -819,7 +819,7 @@ export const TOOLS = [
     name: 'get_shopify_products',
     actor: 'tacps126/shopify-products',
     title: 'Get products from Shopify stores',
-    price: 'about $0.00125 per product',
+    price: 'about $0.0004 per product',
     description:
       'Products from any Shopify store: prices, sale prices, discounts, stock, variants, SKUs, images and descriptions. Whole stores, collections or single products. Filter by sale, discount and price and sort across stores (best deals first). Useful for price and stock monitoring.',
     shape: {
@@ -905,7 +905,7 @@ export const TOOLS = [
     name: 'get_trade_show_exhibitors',
     actor: 'tacps126/exhibition-scraper',
     title: 'Get trade show exhibitor lists (booths and contacts)',
-    price: 'about $0.003 per exhibitor',
+    price: 'about $0.001 per exhibitor',
     description:
       "Exhibitor lists of trade shows as B2B leads: company, booth and hall, email, phone, website, address, socials and categories. 91 built-in shows (e.g. medica, sema-show, nab-show, fabtech, ish, automechanika, wtm-london, orgatec, eurotier, wine-paris, biofach) or any exhibitor-list link or show homepage on Messe Frankfurt, Messe Düsseldorf, Koelnmesse, NürnbergMesse, Newfront/ExpoPlatform, RX, Map Your Show, a2z / A2Z Connect, Swapcard or Corussoft; the link's own show and year are used. Contact coverage depends on what the organiser publishes.",
     shape: {
@@ -996,7 +996,7 @@ export const TOOLS = [
     name: 'get_sports_data',
     actor: 'tacps126/sports-data',
     title: 'Get sports scores, box scores, odds and standings',
-    price: 'about $0.003 per game, odds row, standings row or player; $0.001 per box-score player line',
+    price: 'about $0.0008 per game, odds row, standings row or player; $0.001 per box-score player line',
     description:
       'Scores and schedules, player box scores, betting odds (opening vs current or closing moneyline, spread and total, line movement, no-vig probability, and how each line settled), standings and rosters for 24 leagues: NFL, NBA, WNBA, MLB, NHL, college football and basketball, Premier League, LaLiga, Bundesliga, Serie A, Ligue 1, Champions League and more, MLS, Liga MX, Formula 1, ATP and WTA tennis (with rankings), PGA golf and UFC. Filter by date, status and team or player.',
     shape: {
