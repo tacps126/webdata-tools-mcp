@@ -21,6 +21,7 @@ const SAMPLE = {
   find_local_businesses: { city: 'Pune', country_code: 'IN', categories: ['dentist'], max_items: 5 },
   search_german_property_listings: { locations: ['Berlin'], min_rooms: 2 },
   get_shopify_products: { stores: ['allbirds.com'], only_on_sale: true },
+  get_walmart_products: { queries: ['air fryer'], max_items: 10 },
   get_trade_show_exhibitors: { shows: ['medica'], urls: ['https://ish.messefrankfurt.com/frankfurt/en/exhibitor-search.html'], max_items: 20 },
   find_events: { searches: ['AI'], location: 'London', urls: ['https://luma.com/ai'], max_items: 10 },
   search_naukri_jobs: { query: 'python developer', location: 'Bangalore', max_items: 5 },

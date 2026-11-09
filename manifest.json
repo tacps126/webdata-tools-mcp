@@ -163,11 +163,11 @@
     },
     {
       "name": "get_shopify_products",
-      "description": "Products from any Shopify store: prices, sale prices, discounts, stock, variants, SKUs, images and descriptions. Whole stores, collections or single products. Useful for price and stock monitoring."
+      "description": "Products from any Shopify store: prices, sale prices, discounts, stock, variants, SKUs, images and descriptions. Whole stores, collections or single products. Filter by sale, discount and price and sort across stores (best deals first). Useful for price and stock monitoring."
     },
     {
       "name": "analyze_shopify_stores",
-      "description": "For each Shopify store: name, city and country, currency, product and collection counts, a catalog snapshot (price range and median, share on sale and in stock, top brands and product types, newest product) and its e-mails, phones and social profiles. Non-Shopify sites are skipped for free."
+      "description": "For each Shopify store: name, city and country, currency, product and collection counts, a catalog snapshot (price range and median, share on sale and in stock, top brands and product types, newest product) and its e-mails, phones and social profiles. Filter by size, price, activity and e-mail; sort by size or newest product. Non-Shopify sites are skipped for free."
     },
     {
       "name": "get_trade_show_exhibitors",

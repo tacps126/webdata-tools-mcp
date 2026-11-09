@@ -859,6 +859,45 @@ export const TOOLS = [
     limit: (a) => a.max_items,
   },
   {
+    name: 'get_walmart_products',
+    actor: 'tacps126/walmart-products',
+    title: 'Get products from Walmart',
+    price: 'about $0.003 per product, plus about $0.0022 per product with full details',
+    description:
+      'Walmart.com products from searches, category links or product links: price, was-price, rating, review count, seller, stock and sponsored flag. With details on: brand, model, UPC, specifications, description and seller rating. Filter by price, rating and stock; sort like the site. Useful for price checks, assortment research and price/stock monitoring.',
+    shape: {
+      queries: z.array(z.string()).optional().describe('Search words as typed on Walmart.com, e.g. ["air fryer"].'),
+      links: z.array(z.string()).optional().describe('Walmart search, category or product links, or product item ids.'),
+      sort_by: z
+        .enum(['best_match', 'price_low', 'price_high', 'best_seller', 'rating_high', 'new'])
+        .default('best_match')
+        .describe('Order of search results.'),
+      min_price: z.number().min(0).optional().describe('Lowest price to keep, in USD.'),
+      max_price: z.number().min(0).optional().describe('Highest price to keep, in USD.'),
+      min_rating: z.number().min(0).max(5).optional().describe('Lowest star rating to keep, e.g. 4.'),
+      in_stock_only: z.boolean().default(false).describe('Drop products shown as out of stock.'),
+      exclude_sponsored: z.boolean().default(false).describe('Drop sponsored (ad) placements.'),
+      include_details: z.boolean().default(false).describe('Open each product page for brand, UPC, specs and description (extra cost per product).'),
+      max_items: maxItems(50, 1000),
+    },
+    map: (a) =>
+      clean({
+        searchQueries: a.queries,
+        startUrls: a.links,
+        sortBy: a.sort_by,
+        minPrice: a.min_price,
+        maxPrice: a.max_price,
+        minRating: a.min_rating,
+        inStockOnly: a.in_stock_only || undefined,
+        excludeSponsored: a.exclude_sponsored || undefined,
+        includeDetails: a.include_details || undefined,
+        maxItemsPerSearch: a.max_items,
+        maxItems: a.max_items,
+      }),
+    limit: (a) => a.max_items,
+    check: (a) => ((a.queries && a.queries.length) || (a.links && a.links.length) ? null : 'Give at least one search (queries) or one link (links).'),
+  },
+  {
     name: 'analyze_shopify_stores',
     actor: 'tacps126/shopify-store-analyzer',
     title: 'Analyze Shopify stores (location, catalog, contacts)',

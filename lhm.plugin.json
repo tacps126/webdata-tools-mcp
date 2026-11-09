@@ -3784,6 +3784,145 @@
       }
     },
     {
+      "name": "get_walmart_products",
+      "title": "Get products from Walmart",
+      "description": "Walmart.com products from searches, category links or product links: price, was-price, rating, review count, seller, stock and sponsored flag. With details on: brand, model, UPC, specifications, description and seller rating. Filter by price, rating and stock; sort like the site. Useful for price checks, assortment research and price/stock monitoring. Runs the Apify Actor tacps126/walmart-products on your Apify account (about $0.003 per product, plus about $0.0022 per product with full details; spend per call is capped at $0.5).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "queries": {
+            "description": "Search words as typed on Walmart.com, e.g. [\"air fryer\"].",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "links": {
+            "description": "Walmart search, category or product links, or product item ids.",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "sort_by": {
+            "default": "best_match",
+            "description": "Order of search results.",
+            "type": "string",
+            "enum": [
+              "best_match",
+              "price_low",
+              "price_high",
+              "best_seller",
+              "rating_high",
+              "new"
+            ]
+          },
+          "min_price": {
+            "description": "Lowest price to keep, in USD.",
+            "type": "number",
+            "minimum": 0
+          },
+          "max_price": {
+            "description": "Highest price to keep, in USD.",
+            "type": "number",
+            "minimum": 0
+          },
+          "min_rating": {
+            "description": "Lowest star rating to keep, e.g. 4.",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 5
+          },
+          "in_stock_only": {
+            "default": false,
+            "description": "Drop products shown as out of stock.",
+            "type": "boolean"
+          },
+          "exclude_sponsored": {
+            "default": false,
+            "description": "Drop sponsored (ad) placements.",
+            "type": "boolean"
+          },
+          "include_details": {
+            "default": false,
+            "description": "Open each product page for brand, UPC, specs and description (extra cost per product).",
+            "type": "boolean"
+          },
+          "max_items": {
+            "default": 50,
+            "description": "Maximum results to return (default 50, max 1000). Cost scales with this.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000
+          },
+          "extra_input": {
+            "description": "Advanced: extra Actor input fields, merged over the defaults.",
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          }
+        },
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "tool": {
+            "type": "string",
+            "description": "Name of the tool that produced the result."
+          },
+          "count": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records the Actor returned."
+          },
+          "shown": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records included in `items` (can be lower than count when the result is long)."
+          },
+          "truncated": {
+            "type": "boolean",
+            "description": "True when records were left out to keep the result short; ask for fewer items."
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "propertyNames": {
+                "type": "string"
+              },
+              "additionalProperties": {}
+            },
+            "description": "The records. Long text fields are shortened to 600 characters."
+          }
+        },
+        "required": [
+          "tool",
+          "count",
+          "shown",
+          "truncated",
+          "items"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
+      },
+      "annotations": {
+        "title": "Get products from Walmart",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
       "name": "analyze_shopify_stores",
       "title": "Analyze Shopify stores (location, catalog, contacts)",
       "description": "For each Shopify store: name, city and country, currency, product and collection counts, a catalog snapshot (price range and median, share on sale and in stock, top brands and product types, newest product) and its e-mails, phones and social profiles. Filter by size, price, activity and e-mail; sort by size or newest product. Non-Shopify sites are skipped for free. Runs the Apify Actor tacps126/shopify-store-analyzer on your Apify account (about $0.004 per store; spend per call is capped at $0.5).",
