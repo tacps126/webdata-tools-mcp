@@ -16,7 +16,6 @@ const SAMPLE = {
   search_indeed_jobs: { query: 'react', location: 'Austin, TX', date_posted_days: '7' },
   get_trustpilot_reviews: { companies: ['apify.com'], star_ratings: ['1', '2'] },
   get_app_reviews: { apps: ['com.spotify.music'] },
-  search_reddit: { keywords: ['apify'] },
   find_website_contacts: { websites: ['apify.com'] },
   find_local_businesses: { city: 'Pune', country_code: 'IN', categories: ['dentist'], max_items: 5 },
   search_german_property_listings: { locations: ['Berlin'], min_rooms: 2 },
@@ -28,7 +27,6 @@ const SAMPLE = {
   find_remote_jobs: { title_includes: ['engineer'], countries: ['US'] },
   search_startup_jobs: { role: 'software engineer', city: 'San Francisco' },
   search_tech_jobs: { query: 'data engineer', location: 'New York' },
-  find_reddit_leads: { categories: ['CRM'], competitors: ['HubSpot'] },
   search_research: { queries: ['solid state battery'], posted_within_days: 30 },
   search_gov_updates: { keywords: ['AI'], jurisdictions: ['uk'] },
   search_tenders: { sectors: ['tech'], countries: ['GB'] },
@@ -84,12 +82,8 @@ test('empty optional values are not sent', () => {
 test('tools that need a source reject calls without one', () => {
   const hiring = TOOLS.find((x) => x.name === 'find_hiring_companies');
   assert.match(hiring.check({ role_keywords: ['data'] }), /companies|searches/);
-  const reddit = TOOLS.find((x) => x.name === 'search_reddit');
-  assert.match(reddit.check({}), /keywords or subreddits/);
   const jobs = TOOLS.find((x) => x.name === 'get_company_jobs');
   assert.match(jobs.check({}), /career_page_urls or company_names/);
-  const leads = TOOLS.find((x) => x.name === 'find_reddit_leads');
-  assert.match(leads.check({}), /categories or competitors/);
   const yt = TOOLS.find((x) => x.name === 'get_youtube_transcripts');
   assert.match(yt.check({}), /videos .* or searches/);
 });

@@ -8,10 +8,10 @@
 [![Smithery](https://img.shields.io/badge/Smithery-tacps126%2Fwebdata--tools--mcp-ff5601)](https://smithery.ai/servers/tacps126/webdata-tools-mcp)
 [![webdata-tools-mcp MCP server](https://glama.ai/mcp/servers/tacps126/webdata-tools-mcp/badges/score.svg)](https://glama.ai/mcp/servers/tacps126/webdata-tools-mcp)
 
-An [MCP](https://modelcontextprotocol.io) server that gives AI agents forty-four web-data tools: job
+An [MCP](https://modelcontextprotocol.io) server that gives AI agents forty-three web-data tools: job
 postings (company career sites, remote jobs, startups on Wellfound, US tech jobs on Dice, Indeed,
-Naukri), hiring signals, Google News, official government updates (US, UK, EU, India), public tenders and contract awards (US, EU, UK, France, Spain, Canada, Australia and more), official weather and disaster warnings (US, Europe, India, Brazil, worldwide), public funding calls (US Grants.gov, EU Horizon Europe and more, UKRI, Australia), notices from all 748 Indian district websites, new laws and bills (EU, UK, US, Australia, Canada), sanctions screening, product recalls, company registers (Europe and US states), research papers and patents, field trends and idea validation, Trustpilot and app-store reviews, Reddit mentions and
-buying-intent leads, YouTube transcripts, website contacts, German and Austrian property listings, Shopify products and
+Naukri), hiring signals, Google News, official government updates (US, UK, EU, India), public tenders and contract awards (US, EU, UK, France, Spain, Canada, Australia and more), official weather and disaster warnings (US, Europe, India, Brazil, worldwide), public funding calls (US Grants.gov, EU Horizon Europe and more, UKRI, Australia), notices from all 748 Indian district websites, new laws and bills (EU, UK, US, Australia, Canada), sanctions screening, product recalls, company registers (Europe and US states), research papers and patents, field trends and idea validation, Trustpilot and app-store reviews,
+YouTube transcripts, website contacts, German and Austrian property listings, Shopify products and
 store analysis, trade-show exhibitor lists and upcoming events, prediction-market odds,
 sports scores, box scores and betting lines, lottery results, podcasts with owner contacts, new startup funding rounds, court, bank and government property auctions scored against similar lots, local businesses by category and city with their contacts, clinical trials, CVE vulnerabilities, FDA device clearances, US healthcare providers, and US import records with suppliers and lookalike importers. Two ready-made prompts turn the research
 tools into an innovation analyst that works the same with any model.
@@ -34,8 +34,6 @@ anywhere except Apify.
 | `search_naukri_jobs` | Naukri.com jobs (India): full description, salary in rupees, experience, rating | $1.50 / 1,000 jobs | [naukri-jobs-scraper](https://apify.com/tacps126/naukri-jobs-scraper) |
 | `get_trustpilot_reviews` | Reviews, TrustScore and company profile | $0.28 / 1,000 reviews | [trustpilot-reviews](https://apify.com/tacps126/trustpilot-reviews) |
 | `get_app_reviews` | App Store and Google Play reviews | $0.15 / 1,000 reviews | [app-reviews](https://apify.com/tacps126/app-reviews) |
-| `search_reddit` | Reddit posts and comments by keyword or subreddit, tagged with buying intent | $1 / 1,000 items | [reddit-monitor](https://apify.com/tacps126/reddit-monitor) |
-| `find_reddit_leads` | Reddit posts asking for a tool like yours, seeking a competitor alternative, comparing or complaining | $2 / 1,000 leads + $0.10 / 1,000 posts read | [reddit-lead-finder](https://apify.com/tacps126/reddit-lead-finder) |
 | `search_gov_updates` | Official government updates: Federal Register rules and notices, GOV.UK, European Commission, SEC, RBI and SEBI circulars, any RSS feed; sector and keyword filters | $3 / 1,000 updates | [gov-radar](https://apify.com/tacps126/gov-radar) |
 | `get_alerts` | Official weather and disaster warnings: US NWS, MeteoAlarm (38 countries), India NDMA, Brazil INMET, GDACS, USGS; hazard, severity, area filters | $2 / 1,000 alerts | [alerts-radar](https://apify.com/tacps126/alerts-radar) |
 | `search_grants` | Open and forecast funding calls: US Grants.gov, EU Funding & Tenders (Horizon Europe...), UKRI; grant size, budget, deadline, eligibility | $3 / 1,000 calls | [grants-radar](https://apify.com/tacps126/grants-radar) |
@@ -132,7 +130,6 @@ Releases are tagged and published by CI from `main` (`.github/workflows/release.
 
 - "Which of these companies are hiring data engineers right now? https://boards.greenhouse.io/stripe, https://jobs.lever.co/spotify"
 - "Find remote senior engineer jobs open to people in Canada posted this week."
-- "Who on Reddit is looking for an alternative to HubSpot this month?"
 - "Analyze these Shopify stores and give me their country, product count and contact e-mail: allbirds.com, gymshark.com"
 - "Show the 1 and 2 star Trustpilot reviews of example.com from the last 30 days and group the complaints."
 - "Find news from the last 7 days about open-source LLM licensing, with the real publisher links."

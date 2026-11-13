@@ -297,65 +297,6 @@ export const TOOLS = [
     limit: (a) => a.max_items,
   },
   {
-    name: 'search_reddit',
-    actor: 'tacps126/reddit-monitor',
-    title: 'Search Reddit posts and comments',
-    price: 'about $0.001 per post or comment',
-    description:
-      'Reddit posts (and optionally comments) by keyword, subreddit or user: title, text, author, subreddit, score, links and dates. Good for brand and topic monitoring.',
-    shape: {
-      keywords: z.array(z.string()).optional().describe('Search all of Reddit; "exact phrase" works.'),
-      subreddits: z.array(z.string()).optional().describe('Subreddit names, e.g. ["webscraping"].'),
-      sort: z.enum(['new', 'hot', 'top', 'relevance']).default('new').describe('Result order.'),
-      time: z.enum(['hour', 'day', 'week', 'month', 'year', 'all']).default('week').describe('Time window for keyword searches.'),
-      include_comments: z.boolean().default(false).describe('Also return comments of the matched posts (more results, higher cost).'),
-      max_items: maxItems(50),
-    },
-    check: (a) =>
-      (a.keywords?.length || a.subreddits?.length)
-        ? null
-        : 'Provide at least one of: keywords or subreddits.',
-    map: (a) =>
-      clean({
-        keywords: a.keywords,
-        subreddits: a.subreddits,
-        sort: a.sort,
-        time: a.time,
-        includeComments: a.include_comments,
-        maxItems: a.max_items,
-      }),
-    limit: (a) => a.max_items,
-  },
-  {
-    name: 'find_reddit_leads',
-    actor: 'tacps126/reddit-lead-finder',
-    title: 'Find buying-intent posts on Reddit',
-    price: 'about $0.002 per lead plus $0.0001 per post read',
-    description:
-      'Reddit posts and comments where people ask for a tool like yours, look for an alternative to a competitor, compare options or complain. Each lead is tagged with its intent (recommendation_request, alternative_seeking, comparison, pain_point) and the phrase that showed it.',
-    shape: {
-      categories: z.array(z.string()).optional().describe('What you sell, as buyers say it, e.g. ["CRM", "invoice software"].'),
-      competitors: z.array(z.string()).optional().describe('Products whose users you want, e.g. ["HubSpot"].'),
-      subreddits: z.array(z.string()).optional().describe('Only search these subreddits, e.g. ["smallbusiness", "SaaS"].'),
-      time: z.enum(['day', 'week', 'month', 'year']).default('month').describe('How far back to look.'),
-      max_items: maxItems(30, 300),
-    },
-    check: (a) =>
-      (a.categories?.length || a.competitors?.length)
-        ? null
-        : 'Provide at least one of: categories or competitors.',
-    map: (a) =>
-      clean({
-        keywords: a.categories,
-        competitors: a.competitors,
-        subreddits: a.subreddits,
-        time: a.time,
-        maxItems: a.max_items,
-        maxPostsPerSource: 50,
-      }),
-    limit: (a) => a.max_items,
-  },
-  {
     name: 'get_youtube_transcripts',
     actor: 'tacps126/youtube-transcripts',
     title: 'Get YouTube video transcripts',
