@@ -5792,7 +5792,598 @@
       "execution": {
         "taskSupport": "forbidden"
       }
+    },
+    {
+      "name": "get_amazon_products",
+      "title": "Get products from Amazon (14 marketplaces)",
+      "description": "Amazon products from search words or links on 14 marketplaces (US, UK, DE, FR, IT, ES, CA, IN, JP, AU, MX, BR, NL, AE): title, ASIN, price, list price, rating, ratings count, bought last month and sponsored flag. With details on: brand, features, specs, images, best sellers rank and seller. Filter by rating and price. Useful for price checks, product research and competitor tracking. Runs the Apify Actor tacps126/amazon-products on your Apify account (about $0.001 per search result, or $0.0025 per product with full details; spend per call is capped at $0.5).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "queries": {
+            "description": "Search words as typed on Amazon, e.g. [\"wireless earbuds\"].",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "links": {
+            "description": "Amazon product or search links, or ASINs.",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "marketplace": {
+            "default": "us",
+            "description": "Amazon country site for searches.",
+            "type": "string",
+            "enum": [
+              "us",
+              "uk",
+              "de",
+              "fr",
+              "it",
+              "es",
+              "ca",
+              "in",
+              "jp",
+              "au",
+              "mx",
+              "br",
+              "nl",
+              "ae"
+            ]
+          },
+          "pages_per_search": {
+            "default": 3,
+            "description": "Result pages to read per search.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20
+          },
+          "include_details": {
+            "default": false,
+            "description": "Open each product page for brand, features, specs and seller (extra cost per product).",
+            "type": "boolean"
+          },
+          "skip_sponsored": {
+            "default": false,
+            "description": "Drop sponsored (ad) placements.",
+            "type": "boolean"
+          },
+          "min_rating": {
+            "description": "Lowest star rating to keep, e.g. 4.",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 5
+          },
+          "max_price": {
+            "description": "Highest price to keep, in the marketplace currency.",
+            "type": "number",
+            "minimum": 0
+          },
+          "max_items": {
+            "default": 50,
+            "description": "Maximum results to return (default 50, max 1000). Cost scales with this.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000
+          },
+          "extra_input": {
+            "description": "Advanced: extra Actor input fields, merged over the defaults.",
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          }
+        },
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "tool": {
+            "type": "string",
+            "description": "Name of the tool that produced the result."
+          },
+          "count": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records the Actor returned."
+          },
+          "shown": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records included in `items` (can be lower than count when the result is long)."
+          },
+          "truncated": {
+            "type": "boolean",
+            "description": "True when records were left out to keep the result short; ask for fewer items."
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "propertyNames": {
+                "type": "string"
+              },
+              "additionalProperties": {}
+            },
+            "description": "The records. Long text fields are shortened to 600 characters."
+          }
+        },
+        "required": [
+          "tool",
+          "count",
+          "shown",
+          "truncated",
+          "items"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
+      },
+      "annotations": {
+        "title": "Get products from Amazon (14 marketplaces)",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "get_facebook_pages",
+      "title": "Get Facebook Page details (contacts, category, rating)",
+      "description": "Public details of Facebook Pages by name or link: name, categories, e-mail, phone, address, websites, other social accounts, followers, likes, rating and review count, price range, services and verified badge. No login. Useful for lead lists, local business research and enriching company records. Posts are not included. Runs the Apify Actor tacps126/facebook-pages on your Apify account (about $0.003 per page; spend per call is capped at $0.5).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "pages": {
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 2
+            },
+            "description": "Page names or links, e.g. [\"katzsdeli\", \"https://www.facebook.com/nasa\"]."
+          },
+          "max_items": {
+            "default": 50,
+            "description": "Maximum results to return (default 50, max 1000). Cost scales with this.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000
+          },
+          "extra_input": {
+            "description": "Advanced: extra Actor input fields, merged over the defaults.",
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          }
+        },
+        "required": [
+          "pages"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "tool": {
+            "type": "string",
+            "description": "Name of the tool that produced the result."
+          },
+          "count": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records the Actor returned."
+          },
+          "shown": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records included in `items` (can be lower than count when the result is long)."
+          },
+          "truncated": {
+            "type": "boolean",
+            "description": "True when records were left out to keep the result short; ask for fewer items."
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "propertyNames": {
+                "type": "string"
+              },
+              "additionalProperties": {}
+            },
+            "description": "The records. Long text fields are shortened to 600 characters."
+          }
+        },
+        "required": [
+          "tool",
+          "count",
+          "shown",
+          "truncated",
+          "items"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
+      },
+      "annotations": {
+        "title": "Get Facebook Page details (contacts, category, rating)",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "search_google_hotels",
+      "title": "Search hotels and prices on Google Hotels",
+      "description": "Hotels for a city or place from Google Hotels for your dates: name, hotel class, rating and review count, nightly and total price with and without taxes, the deal versus the usual price, check-in and check-out times and coordinates. Filter by stars and nightly price. Useful for travel price research and rate comparison. Runs the Apify Actor tacps126/google-hotels on your Apify account (about $0.002 per hotel; spend per call is capped at $0.5).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "locations": {
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 2
+            },
+            "description": "Cities or places, e.g. [\"Lisbon\", \"Shibuya, Tokyo\"]."
+          },
+          "check_in": {
+            "description": "Check-in date, YYYY-MM-DD. Leave out for Google's default dates.",
+            "type": "string"
+          },
+          "check_out": {
+            "description": "Check-out date, YYYY-MM-DD.",
+            "type": "string"
+          },
+          "min_stars": {
+            "description": "Lowest hotel class to keep, e.g. 4.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5
+          },
+          "max_nightly_price": {
+            "description": "Highest nightly price to keep, in USD.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991
+          },
+          "more_results": {
+            "default": true,
+            "description": "Page through more hotels per place.",
+            "type": "boolean"
+          },
+          "language": {
+            "default": "en",
+            "description": "Language code for names and texts, e.g. \"en\".",
+            "type": "string"
+          },
+          "country": {
+            "default": "us",
+            "description": "Country code that sets the currency and region, e.g. \"us\".",
+            "type": "string"
+          },
+          "max_items": {
+            "default": 50,
+            "description": "Maximum results to return (default 50, max 1000). Cost scales with this.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000
+          },
+          "extra_input": {
+            "description": "Advanced: extra Actor input fields, merged over the defaults.",
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          }
+        },
+        "required": [
+          "locations"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "tool": {
+            "type": "string",
+            "description": "Name of the tool that produced the result."
+          },
+          "count": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records the Actor returned."
+          },
+          "shown": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records included in `items` (can be lower than count when the result is long)."
+          },
+          "truncated": {
+            "type": "boolean",
+            "description": "True when records were left out to keep the result short; ask for fewer items."
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "propertyNames": {
+                "type": "string"
+              },
+              "additionalProperties": {}
+            },
+            "description": "The records. Long text fields are shortened to 600 characters."
+          }
+        },
+        "required": [
+          "tool",
+          "count",
+          "shown",
+          "truncated",
+          "items"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
+      },
+      "annotations": {
+        "title": "Search hotels and prices on Google Hotels",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "get_threads_posts",
+      "title": "Get Threads profiles, posts and replies",
+      "description": "Public Threads (by Meta) data from profiles, post links or search words: profile details with followers, bio and links, latest posts with text, images and video, likes, replies, reposts, quotes and shares, and optionally the replies under each post. No login. Useful for social listening, creator research and brand monitoring. Runs the Apify Actor tacps126/threads-scraper on your Apify account (about $0.0015 per profile or post, $0.001 per reply; spend per call is capped at $0.5).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "profiles": {
+            "description": "Usernames, profile links or post links, e.g. [\"nasa\"].",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "queries": {
+            "description": "Search words, e.g. [\"electric cars\"].",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "posts_per_profile": {
+            "default": 20,
+            "description": "Latest posts to read per profile.",
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 500
+          },
+          "replies_per_post": {
+            "default": 0,
+            "description": "Replies to read under each post (0 = none).",
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 500
+          },
+          "newest_first": {
+            "default": true,
+            "description": "For searches: newest posts instead of top posts.",
+            "type": "boolean"
+          },
+          "max_items": {
+            "default": 100,
+            "description": "Maximum results to return (default 100, max 2000). Cost scales with this.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 2000
+          },
+          "extra_input": {
+            "description": "Advanced: extra Actor input fields, merged over the defaults.",
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          }
+        },
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "tool": {
+            "type": "string",
+            "description": "Name of the tool that produced the result."
+          },
+          "count": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records the Actor returned."
+          },
+          "shown": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records included in `items` (can be lower than count when the result is long)."
+          },
+          "truncated": {
+            "type": "boolean",
+            "description": "True when records were left out to keep the result short; ask for fewer items."
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "propertyNames": {
+                "type": "string"
+              },
+              "additionalProperties": {}
+            },
+            "description": "The records. Long text fields are shortened to 600 characters."
+          }
+        },
+        "required": [
+          "tool",
+          "count",
+          "shown",
+          "truncated",
+          "items"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
+      },
+      "annotations": {
+        "title": "Get Threads profiles, posts and replies",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "get_pinterest_pins",
+      "title": "Get Pinterest pins, profiles and boards",
+      "description": "Public Pinterest data from search words, profiles, boards or pin links: pins with image or video, title, description, outbound link, saves, comments, product name and price, pinner and board; profile details with followers and pin counts; boards. No login. Useful for trend and product research, creator discovery and visual content sourcing. Runs the Apify Actor tacps126/pinterest-scraper on your Apify account (about $0.0015 per pin, profile or board, $0.001 per search preview; spend per call is capped at $0.5).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "queries": {
+            "description": "Search words, e.g. [\"modern kitchen\"].",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "links": {
+            "description": "Profile, board or pin links, e.g. [\"https://www.pinterest.com/nasa/\"].",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "pins_per_source": {
+            "default": 50,
+            "description": "Pins to read per search, profile or board.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000
+          },
+          "include_boards": {
+            "default": false,
+            "description": "Also list each profile's boards.",
+            "type": "boolean"
+          },
+          "profiles_only": {
+            "default": false,
+            "description": "Only profile and board details, no pins.",
+            "type": "boolean"
+          },
+          "max_items": {
+            "default": 100,
+            "description": "Maximum results to return (default 100, max 2000). Cost scales with this.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 2000
+          },
+          "extra_input": {
+            "description": "Advanced: extra Actor input fields, merged over the defaults.",
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          }
+        },
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "tool": {
+            "type": "string",
+            "description": "Name of the tool that produced the result."
+          },
+          "count": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records the Actor returned."
+          },
+          "shown": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records included in `items` (can be lower than count when the result is long)."
+          },
+          "truncated": {
+            "type": "boolean",
+            "description": "True when records were left out to keep the result short; ask for fewer items."
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "propertyNames": {
+                "type": "string"
+              },
+              "additionalProperties": {}
+            },
+            "description": "The records. Long text fields are shortened to 600 characters."
+          }
+        },
+        "required": [
+          "tool",
+          "count",
+          "shown",
+          "truncated",
+          "items"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
+      },
+      "annotations": {
+        "title": "Get Pinterest pins, profiles and boards",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
     }
   ],
-  "version": "0.17.0"
+  "version": "0.18.0"
 }

@@ -3,8 +3,8 @@
   "name": "webdata-tools-mcp",
   "display_name": "Web Data Tools",
   "icon": "icon.png",
-  "version": "0.17.0",
-  "description": "Forty-three web-data tools for agents: jobs, hiring signals, news, public tenders, new laws and bills, Indian district notices, grants and funding calls, government updates, weather and disaster alerts, research papers and patents, field trends and idea validation, prediction markets, sports, lottery, podcasts, startup funding, property auctions, local business leads, clinical trials, CVEs, FDA device clearances, US healthcare providers, US import records, reviews, contacts, real estate, Shopify, exhibitors, events.",
+  "version": "0.18.0",
+  "description": "Forty-eight web-data tools for agents: jobs, hiring signals, news, public tenders, new laws and bills, Indian district notices, grants and funding calls, government updates, weather and disaster alerts, research papers and patents, field trends and idea validation, prediction markets, sports, lottery, podcasts, startup funding, property auctions, local business leads, clinical trials, CVEs, FDA device clearances, US healthcare providers, US import records, reviews, contacts, real estate, Shopify, exhibitors, events.",
   "long_description": "Runs ready-made Apify Actors (published by tacps126) on your own Apify account and returns clean JSON. Covers job postings from career pages, remote-job feeds, Wellfound, Dice, Indeed and Naukri, hiring signals, Google News, official government updates (US Federal Register, GOV.UK, European Commission, SEC, RBI, SEBI), public tenders and contract awards (US SAM.gov, EU TED, UK, France, Spain, Germany, Netherlands, Canada, Colombia, Australia, South Africa), research papers, preprints and patents, technology-field landscapes and idea validation, Trustpilot and app-store reviews, YouTube transcripts, new laws and bills, sanctions screening, product recalls, company registers, website contact details, German property listings, Shopify products and store analysis, trade-show exhibitor lists and upcoming events, prediction-market odds (Kalshi, Polymarket, Manifold, PredictIt), sports scores, box scores and betting lines, lottery results, podcasts, startup funding rounds, court and bank property auctions, local businesses by category and city, clinical trials (ClinicalTrials.gov), CVE vulnerabilities (NVD, CISA KEV, EPSS), FDA 510(k) and PMA device clearances, US healthcare providers (NPI Registry) and US import records (importers, suppliers, bills of lading). Two analyst prompts (field-opportunity-analysis, idea-validation) turn the research tools into a model-agnostic innovation analyst. You pay Apify per result (about $1-3 per 1,000); every call has a spend cap.",
   "author": {
     "name": "tacps126",
@@ -216,6 +216,26 @@
     {
       "name": "search_import_records",
       "description": "US customs sea import records for a US importer or an overseas supplier: total and last-12-month shipments with the trend, its suppliers (or a supplier's US customers) with shipments, weight and HS codes, products, source countries, ports and carriers, recent bills of lading, and lookalike importers that buy from the same factories. Use for sourcing, supplier discovery, importer prospecting and supply-chain research."
+    },
+    {
+      "name": "get_amazon_products",
+      "description": "Amazon products from search words or links on 14 marketplaces (US, UK, DE, FR, IT, ES, CA, IN, JP, AU, MX, BR, NL, AE): title, ASIN, price, list price, rating, ratings count, bought last month and sponsored flag. With details on: brand, features, specs, images, best sellers rank and seller. Filter by rating and price. Useful for price checks, product research and competitor tracking."
+    },
+    {
+      "name": "get_facebook_pages",
+      "description": "Public details of Facebook Pages by name or link: name, categories, e-mail, phone, address, websites, other social accounts, followers, likes, rating and review count, price range, services and verified badge. No login. Useful for lead lists, local business research and enriching company records. Posts are not included."
+    },
+    {
+      "name": "search_google_hotels",
+      "description": "Hotels for a city or place from Google Hotels for your dates: name, hotel class, rating and review count, nightly and total price with and without taxes, the deal versus the usual price, check-in and check-out times and coordinates. Filter by stars and nightly price. Useful for travel price research and rate comparison."
+    },
+    {
+      "name": "get_threads_posts",
+      "description": "Public Threads (by Meta) data from profiles, post links or search words: profile details with followers, bio and links, latest posts with text, images and video, likes, replies, reposts, quotes and shares, and optionally the replies under each post. No login. Useful for social listening, creator research and brand monitoring."
+    },
+    {
+      "name": "get_pinterest_pins",
+      "description": "Public Pinterest data from search words, profiles, boards or pin links: pins with image or video, title, description, outbound link, saves, comments, product name and price, pinner and board; profile details with followers and pin counts; boards. No login. Useful for trend and product research, creator discovery and visual content sourcing."
     }
   ],
   "prompts": [

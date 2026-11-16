@@ -10,6 +10,11 @@ const published = JSON.parse(readFileSync(new URL('./fixtures/actor-inputs.json'
 
 // Valid sample arguments per tool, built from each tool's own zod shape + required values.
 const SAMPLE = {
+  get_amazon_products: { queries: ['wireless earbuds'], marketplace: 'uk', min_rating: 4, max_items: 5 },
+  get_facebook_pages: { pages: ['katzsdeli'] },
+  search_google_hotels: { locations: ['Lisbon'], check_in: '2027-03-10', check_out: '2027-03-12', min_stars: 4 },
+  get_threads_posts: { profiles: ['nasa'], replies_per_post: 2 },
+  get_pinterest_pins: { queries: ['modern kitchen'], pins_per_source: 10 },
   search_google_news: { query: 'ai' },
   find_hiring_companies: { companies: ['https://jobs.lever.co/spotify'], role_keywords: ['data'] },
   get_company_jobs: { career_page_urls: ['https://jobs.lever.co/spotify'] },

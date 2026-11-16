@@ -1315,6 +1315,142 @@ export const TOOLS = [
       }),
     limit: (a) => a.max_items,
   },
+  {
+    name: 'get_amazon_products',
+    actor: 'tacps126/amazon-products',
+    title: 'Get products from Amazon (14 marketplaces)',
+    price: 'about $0.001 per search result, or $0.0025 per product with full details',
+    description:
+      'Amazon products from search words or links on 14 marketplaces (US, UK, DE, FR, IT, ES, CA, IN, JP, AU, MX, BR, NL, AE): title, ASIN, price, list price, rating, ratings count, bought last month and sponsored flag. With details on: brand, features, specs, images, best sellers rank and seller. Filter by rating and price. Useful for price checks, product research and competitor tracking.',
+    shape: {
+      queries: z.array(z.string()).optional().describe('Search words as typed on Amazon, e.g. ["wireless earbuds"].'),
+      links: z.array(z.string()).optional().describe('Amazon product or search links, or ASINs.'),
+      marketplace: z
+        .enum(['us', 'uk', 'de', 'fr', 'it', 'es', 'ca', 'in', 'jp', 'au', 'mx', 'br', 'nl', 'ae'])
+        .default('us')
+        .describe('Amazon country site for searches.'),
+      pages_per_search: z.number().int().min(1).max(20).default(3).describe('Result pages to read per search.'),
+      include_details: z.boolean().default(false).describe('Open each product page for brand, features, specs and seller (extra cost per product).'),
+      skip_sponsored: z.boolean().default(false).describe('Drop sponsored (ad) placements.'),
+      min_rating: z.number().min(0).max(5).optional().describe('Lowest star rating to keep, e.g. 4.'),
+      max_price: z.number().min(0).optional().describe('Highest price to keep, in the marketplace currency.'),
+      max_items: maxItems(50, 1000),
+    },
+    map: (a) =>
+      clean({
+        searchTerms: a.queries,
+        products: a.links,
+        marketplace: a.marketplace,
+        maxPagesPerSearch: a.pages_per_search,
+        includeDetails: a.include_details || undefined,
+        skipSponsored: a.skip_sponsored || undefined,
+        minRating: a.min_rating,
+        maxPrice: a.max_price,
+        maxItems: a.max_items,
+      }),
+    limit: (a) => a.max_items,
+    check: (a) => ((a.queries && a.queries.length) || (a.links && a.links.length) ? null : 'Give at least one search (queries) or one link (links).'),
+  },
+  {
+    name: 'get_facebook_pages',
+    actor: 'tacps126/facebook-pages',
+    title: 'Get Facebook Page details (contacts, category, rating)',
+    price: 'about $0.003 per page',
+    description:
+      "Public details of Facebook Pages by name or link: name, categories, e-mail, phone, address, websites, other social accounts, followers, likes, rating and review count, price range, services and verified badge. No login. Useful for lead lists, local business research and enriching company records. Posts are not included.",
+    shape: {
+      pages: z.array(z.string().min(2)).min(1).describe('Page names or links, e.g. ["katzsdeli", "https://www.facebook.com/nasa"].'),
+      max_items: maxItems(50, 1000),
+    },
+    map: (a) => clean({ pages: a.pages, maxItems: a.max_items }),
+    limit: (a) => a.max_items,
+  },
+  {
+    name: 'search_google_hotels',
+    actor: 'tacps126/google-hotels',
+    title: 'Search hotels and prices on Google Hotels',
+    price: 'about $0.002 per hotel',
+    description:
+      'Hotels for a city or place from Google Hotels for your dates: name, hotel class, rating and review count, nightly and total price with and without taxes, the deal versus the usual price, check-in and check-out times and coordinates. Filter by stars and nightly price. Useful for travel price research and rate comparison.',
+    shape: {
+      locations: z.array(z.string().min(2)).min(1).describe('Cities or places, e.g. ["Lisbon", "Shibuya, Tokyo"].'),
+      check_in: z.string().optional().describe('Check-in date, YYYY-MM-DD. Leave out for Google\'s default dates.'),
+      check_out: z.string().optional().describe('Check-out date, YYYY-MM-DD.'),
+      min_stars: z.number().int().min(1).max(5).optional().describe('Lowest hotel class to keep, e.g. 4.'),
+      max_nightly_price: z.number().int().min(1).optional().describe('Highest nightly price to keep, in USD.'),
+      more_results: z.boolean().default(true).describe('Page through more hotels per place.'),
+      language: z.string().default('en').describe('Language code for names and texts, e.g. "en".'),
+      country: z.string().default('us').describe('Country code that sets the currency and region, e.g. "us".'),
+      max_items: maxItems(50, 1000),
+    },
+    map: (a) =>
+      clean({
+        locations: a.locations,
+        checkIn: a.check_in,
+        checkOut: a.check_out,
+        minStars: a.min_stars,
+        maxNightlyPrice: a.max_nightly_price,
+        moreResults: a.more_results,
+        language: a.language,
+        countryCode: a.country,
+        maxItems: a.max_items,
+      }),
+    limit: (a) => a.max_items,
+  },
+  {
+    name: 'get_threads_posts',
+    actor: 'tacps126/threads-scraper',
+    title: 'Get Threads profiles, posts and replies',
+    price: 'about $0.0015 per profile or post, $0.001 per reply',
+    description:
+      'Public Threads (by Meta) data from profiles, post links or search words: profile details with followers, bio and links, latest posts with text, images and video, likes, replies, reposts, quotes and shares, and optionally the replies under each post. No login. Useful for social listening, creator research and brand monitoring.',
+    shape: {
+      profiles: z.array(z.string()).optional().describe('Usernames, profile links or post links, e.g. ["nasa"].'),
+      queries: z.array(z.string()).optional().describe('Search words, e.g. ["electric cars"].'),
+      posts_per_profile: z.number().int().min(0).max(500).default(20).describe('Latest posts to read per profile.'),
+      replies_per_post: z.number().int().min(0).max(500).default(0).describe('Replies to read under each post (0 = none).'),
+      newest_first: z.boolean().default(true).describe('For searches: newest posts instead of top posts.'),
+      max_items: maxItems(100, 2000),
+    },
+    map: (a) =>
+      clean({
+        startUrls: a.profiles,
+        searchTerms: a.queries,
+        postsPerProfile: a.posts_per_profile,
+        repliesPerPost: a.replies_per_post,
+        searchRecent: a.newest_first,
+        maxItems: a.max_items,
+      }),
+    limit: (a) => a.max_items,
+    check: (a) => ((a.profiles && a.profiles.length) || (a.queries && a.queries.length) ? null : 'Give at least one profile or post (profiles) or one search (queries).'),
+  },
+  {
+    name: 'get_pinterest_pins',
+    actor: 'tacps126/pinterest-scraper',
+    title: 'Get Pinterest pins, profiles and boards',
+    price: 'about $0.0015 per pin, profile or board, $0.001 per search preview',
+    description:
+      'Public Pinterest data from search words, profiles, boards or pin links: pins with image or video, title, description, outbound link, saves, comments, product name and price, pinner and board; profile details with followers and pin counts; boards. No login. Useful for trend and product research, creator discovery and visual content sourcing.',
+    shape: {
+      queries: z.array(z.string()).optional().describe('Search words, e.g. ["modern kitchen"].'),
+      links: z.array(z.string()).optional().describe('Profile, board or pin links, e.g. ["https://www.pinterest.com/nasa/"].'),
+      pins_per_source: z.number().int().min(1).max(1000).default(50).describe('Pins to read per search, profile or board.'),
+      include_boards: z.boolean().default(false).describe('Also list each profile\'s boards.'),
+      profiles_only: z.boolean().default(false).describe('Only profile and board details, no pins.'),
+      max_items: maxItems(100, 2000),
+    },
+    map: (a) =>
+      clean({
+        searchTerms: a.queries,
+        startUrls: a.links,
+        maxPinsPerSource: a.pins_per_source,
+        includeBoards: a.include_boards || undefined,
+        profilesOnly: a.profiles_only || undefined,
+        maxItems: a.max_items,
+      }),
+    limit: (a) => a.max_items,
+    check: (a) => ((a.queries && a.queries.length) || (a.links && a.links.length) ? null : 'Give at least one search (queries) or one link (links).'),
+  },
 ];
 
 export const ACTORS = [...new Set(TOOLS.map((t) => t.actor))];
