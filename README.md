@@ -95,7 +95,12 @@ Two ready-made prompts turn the research tools into an analyst, whichever model 
 | `field-opportunity-analysis` | Runs `analyze_field` on your fields, then writes ranked opportunities: what to build, for whom, why now, capital needed, who to talk to |
 | `idea-validation` | Runs `validate_idea`, then assesses novelty, closest prior work, timing, who is already there, capital, risks and next steps |
 
-For agents that load skills (Claude Code, Codex and others), copy [`skills/innovation-analyst`](skills/innovation-analyst/SKILL.md) into your skills folder.
+For agents that load skills (Claude Code, Codex, Cursor and others), copy a skill folder into your skills folder:
+
+| Skill | What it does |
+|-------|--------------|
+| [`sales-signals`](skills/sales-signals/SKILL.md) | Finds companies likely to buy now from public signals (hiring for given roles, new funding, new registrations, contracts won, import growth, trade shows, news), scores them and adds contacts and a reason to reach out |
+| [`innovation-analyst`](skills/innovation-analyst/SKILL.md) | Analyses technology fields and validates ideas from research and patent data, then writes evidence-backed opportunities |
 
 ## Setup
 
