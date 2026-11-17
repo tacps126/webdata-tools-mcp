@@ -52,7 +52,7 @@ Drop accounts with no fit, however strong the signal.
 
 ## 4. Add contacts
 
-For the top 10-20 accounts only: pass their websites to `find_website_contacts` (`require_email: true`). It returns emails, phones and social links published on the company's own site, and you pay only for sites with contacts. Founders and executives from Form D filings (`people`) are named contacts too.
+For the top 10-20 accounts only. Form D filings and most registers carry no website: find each company's official domain first (a web search for its name plus city). Then pass the websites to `find_website_contacts` (`require_email: true`). It returns emails, phones and social links published on the company's own site, and you pay only for sites with contacts. Founders and executives from Form D filings (`people`) are named contacts too.
 
 Never invent an email address or a person. If none is found, say so and suggest the company's contact page.
 
