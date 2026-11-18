@@ -6383,7 +6383,597 @@
       "execution": {
         "taskSupport": "forbidden"
       }
+    },
+    {
+      "name": "get_instagram_posts",
+      "title": "Get Instagram profiles, posts and comments",
+      "description": "Public Instagram data from usernames or post links: profile details with followers, following, bio and links, latest posts and reels with caption, hashtags, mentions, likes, comment count, post time, images, video, carousel items, tagged users, location, audio and a pinned flag, and optionally the comments under each post. No login. Useful for creator research, brand monitoring and social listening. Runs the Apify Actor tacps126/instagram-scraper on your Apify account (about $0.0015 per profile or post, $0.0008 per comment; spend per call is capped at $0.5).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "profiles": {
+            "description": "Usernames or profile links, e.g. [\"nasa\"].",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "post_urls": {
+            "description": "Post or reel links, e.g. [\"https://www.instagram.com/p/Dfc1mYxFevS/\"].",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "posts_per_profile": {
+            "default": 12,
+            "description": "Latest posts to read per profile (0 = profile only).",
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1000
+          },
+          "comments_per_post": {
+            "default": 0,
+            "description": "Comments to read under each post (0 = none).",
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1000
+          },
+          "posted_after": {
+            "description": "Only posts on or after this date (2026-11-01) or within a period (\"7 days\", \"2 weeks\", \"1 month\").",
+            "type": "string"
+          },
+          "max_items": {
+            "default": 100,
+            "description": "Maximum results to return (default 100, max 2000). Cost scales with this.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 2000
+          },
+          "extra_input": {
+            "description": "Advanced: extra Actor input fields, merged over the defaults.",
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          }
+        },
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "tool": {
+            "type": "string",
+            "description": "Name of the tool that produced the result."
+          },
+          "count": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records the Actor returned."
+          },
+          "shown": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records included in `items` (can be lower than count when the result is long)."
+          },
+          "truncated": {
+            "type": "boolean",
+            "description": "True when records were left out to keep the result short; ask for fewer items."
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "propertyNames": {
+                "type": "string"
+              },
+              "additionalProperties": {}
+            },
+            "description": "The records. Long text fields are shortened to 600 characters."
+          }
+        },
+        "required": [
+          "tool",
+          "count",
+          "shown",
+          "truncated",
+          "items"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
+      },
+      "annotations": {
+        "title": "Get Instagram profiles, posts and comments",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "search_app_stores",
+      "title": "Search the App Store and Google Play",
+      "description": "Apps from the Apple App Store and Google Play by search words, app links or top charts: name, developer, rating, rating count, price, category, release and update dates, size, version, description and store link. Useful for app market research, ASO and competitor tracking. Runs the Apify Actor tacps126/app-stores on your Apify account (about $0.0006 per app; spend per call is capped at $0.5).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "queries": {
+            "description": "Search words, e.g. [\"budget tracker\"].",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "apps": {
+            "description": "App Store or Google Play links, or Play package names, e.g. [\"com.spotify.music\"].",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "charts": {
+            "description": "App Store top charts in the country, with position.",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "top-free",
+                "top-paid"
+              ]
+            }
+          },
+          "stores": {
+            "description": "Stores for search words (default both).",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "appStore",
+                "googlePlay"
+              ]
+            }
+          },
+          "country": {
+            "default": "us",
+            "description": "Two-letter store country, e.g. \"us\", \"gb\", \"in\".",
+            "type": "string"
+          },
+          "free_only": {
+            "default": false,
+            "description": "Only free apps.",
+            "type": "boolean"
+          },
+          "min_rating": {
+            "description": "Only apps rated at least this.",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 5
+          },
+          "max_items": {
+            "default": 100,
+            "description": "Maximum results to return (default 100, max 2000). Cost scales with this.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 2000
+          },
+          "extra_input": {
+            "description": "Advanced: extra Actor input fields, merged over the defaults.",
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          }
+        },
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "tool": {
+            "type": "string",
+            "description": "Name of the tool that produced the result."
+          },
+          "count": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records the Actor returned."
+          },
+          "shown": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records included in `items` (can be lower than count when the result is long)."
+          },
+          "truncated": {
+            "type": "boolean",
+            "description": "True when records were left out to keep the result short; ask for fewer items."
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "propertyNames": {
+                "type": "string"
+              },
+              "additionalProperties": {}
+            },
+            "description": "The records. Long text fields are shortened to 600 characters."
+          }
+        },
+        "required": [
+          "tool",
+          "count",
+          "shown",
+          "truncated",
+          "items"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
+      },
+      "annotations": {
+        "title": "Search the App Store and Google Play",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "get_website_markdown",
+      "title": "Get a website as clean Markdown",
+      "description": "Reads web pages and returns their main content as clean Markdown (navigation, ads and footers removed), with title, URL, word count and headings: start from site links and follow links on the same site, or start from web search words. Useful for RAG, AI agents, documentation import and content audits. Runs the Apify Actor tacps126/website-markdown on your Apify account (about $0.001 per page; spend per call is capped at $0.5).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "urls": {
+            "description": "Start pages, e.g. [\"https://docs.apify.com/academy\"].",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "queries": {
+            "description": "Web search words; the top results are read.",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "max_pages_per_site": {
+            "default": 20,
+            "description": "Pages to read per site.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000
+          },
+          "max_depth": {
+            "default": 2,
+            "description": "How many links deep to follow from a start page (0 = start pages only).",
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 20
+          },
+          "max_items": {
+            "default": 50,
+            "description": "Maximum results to return (default 50, max 1000). Cost scales with this.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000
+          },
+          "extra_input": {
+            "description": "Advanced: extra Actor input fields, merged over the defaults.",
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          }
+        },
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "tool": {
+            "type": "string",
+            "description": "Name of the tool that produced the result."
+          },
+          "count": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records the Actor returned."
+          },
+          "shown": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records included in `items` (can be lower than count when the result is long)."
+          },
+          "truncated": {
+            "type": "boolean",
+            "description": "True when records were left out to keep the result short; ask for fewer items."
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "propertyNames": {
+                "type": "string"
+              },
+              "additionalProperties": {}
+            },
+            "description": "The records. Long text fields are shortened to 600 characters."
+          }
+        },
+        "required": [
+          "tool",
+          "count",
+          "shown",
+          "truncated",
+          "items"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
+      },
+      "annotations": {
+        "title": "Get a website as clean Markdown",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "search_web_for_rag",
+      "title": "Search the web and read the top results as Markdown",
+      "description": "Web search for AI agents and RAG: runs each query, opens the top results and returns their main content as clean Markdown with title, URL and word count, ready to put in a prompt. Runs the Apify Actor tacps126/rag-web-search on your Apify account (about $0.001 per page; spend per call is capped at $0.5).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "queries": {
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Search words or questions, e.g. [\"how does retrieval augmented generation work\"]."
+          },
+          "results_per_query": {
+            "default": 5,
+            "description": "Top results to read per query.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20
+          },
+          "country": {
+            "default": "us",
+            "description": "Two-letter search country.",
+            "type": "string"
+          },
+          "language": {
+            "default": "en",
+            "description": "Search language code.",
+            "type": "string"
+          },
+          "extra_input": {
+            "description": "Advanced: extra Actor input fields, merged over the defaults.",
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          }
+        },
+        "required": [
+          "queries"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "tool": {
+            "type": "string",
+            "description": "Name of the tool that produced the result."
+          },
+          "count": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records the Actor returned."
+          },
+          "shown": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records included in `items` (can be lower than count when the result is long)."
+          },
+          "truncated": {
+            "type": "boolean",
+            "description": "True when records were left out to keep the result short; ask for fewer items."
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "propertyNames": {
+                "type": "string"
+              },
+              "additionalProperties": {}
+            },
+            "description": "The records. Long text fields are shortened to 600 characters."
+          }
+        },
+        "required": [
+          "tool",
+          "count",
+          "shown",
+          "truncated",
+          "items"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
+      },
+      "annotations": {
+        "title": "Search the web and read the top results as Markdown",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "search_us_property_listings",
+      "title": "Search US homes for rent or sale",
+      "description": "US property listings for a city, ZIP code or search link, to rent or buy: address, price, beds, baths, size, property type, listing status, days on market, agent or broker, photos and link. Filters for price and rooms; newest first if asked. Runs the Apify Actor tacps126/realtor-scraper on your Apify account (about $0.001 per listing; spend per call is capped at $0.5).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "locations": {
+            "description": "Cities or ZIP codes, e.g. [\"Austin, TX\"].",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "urls": {
+            "description": "Search result links copied from the site.",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "offer_type": {
+            "default": "rent",
+            "description": "Rent or buy.",
+            "type": "string",
+            "enum": [
+              "rent",
+              "buy"
+            ]
+          },
+          "property_type": {
+            "default": "apartment",
+            "description": "Apartment or house.",
+            "type": "string",
+            "enum": [
+              "apartment",
+              "house"
+            ]
+          },
+          "min_price": {
+            "description": "Lowest price (monthly rent or sale price, USD).",
+            "type": "number",
+            "minimum": 0
+          },
+          "max_price": {
+            "description": "Highest price.",
+            "type": "number",
+            "minimum": 0
+          },
+          "min_rooms": {
+            "description": "Fewest bedrooms.",
+            "type": "number",
+            "minimum": 0
+          },
+          "newest_first": {
+            "default": false,
+            "description": "Newest listings first.",
+            "type": "boolean"
+          },
+          "max_items": {
+            "default": 100,
+            "description": "Maximum results to return (default 100, max 2000). Cost scales with this.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 2000
+          },
+          "extra_input": {
+            "description": "Advanced: extra Actor input fields, merged over the defaults.",
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          }
+        },
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "tool": {
+            "type": "string",
+            "description": "Name of the tool that produced the result."
+          },
+          "count": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records the Actor returned."
+          },
+          "shown": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records included in `items` (can be lower than count when the result is long)."
+          },
+          "truncated": {
+            "type": "boolean",
+            "description": "True when records were left out to keep the result short; ask for fewer items."
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "propertyNames": {
+                "type": "string"
+              },
+              "additionalProperties": {}
+            },
+            "description": "The records. Long text fields are shortened to 600 characters."
+          }
+        },
+        "required": [
+          "tool",
+          "count",
+          "shown",
+          "truncated",
+          "items"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
+      },
+      "annotations": {
+        "title": "Search US homes for rent or sale",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
     }
   ],
-  "version": "0.18.0"
+  "version": "0.19.0"
 }

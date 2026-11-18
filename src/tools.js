@@ -1451,6 +1451,144 @@ export const TOOLS = [
     limit: (a) => a.max_items,
     check: (a) => ((a.queries && a.queries.length) || (a.links && a.links.length) ? null : 'Give at least one search (queries) or one link (links).'),
   },
+  {
+    name: 'get_instagram_posts',
+    actor: 'tacps126/instagram-scraper',
+    title: 'Get Instagram profiles, posts and comments',
+    price: 'about $0.0015 per profile or post, $0.0008 per comment',
+    description:
+      'Public Instagram data from usernames or post links: profile details with followers, following, bio and links, latest posts and reels with caption, hashtags, mentions, likes, comment count, post time, images, video, carousel items, tagged users, location, audio and a pinned flag, and optionally the comments under each post. No login. Useful for creator research, brand monitoring and social listening.',
+    shape: {
+      profiles: z.array(z.string()).optional().describe('Usernames or profile links, e.g. ["nasa"].'),
+      post_urls: z.array(z.string()).optional().describe('Post or reel links, e.g. ["https://www.instagram.com/p/Dfc1mYxFevS/"].'),
+      posts_per_profile: z.number().int().min(0).max(1000).default(12).describe('Latest posts to read per profile (0 = profile only).'),
+      comments_per_post: z.number().int().min(0).max(1000).default(0).describe('Comments to read under each post (0 = none).'),
+      posted_after: z.string().optional().describe('Only posts on or after this date (2026-11-01) or within a period ("7 days", "2 weeks", "1 month").'),
+      max_items: maxItems(100, 2000),
+    },
+    map: (a) =>
+      clean({
+        profiles: a.profiles,
+        postUrls: a.post_urls,
+        postsPerProfile: a.posts_per_profile,
+        commentsPerPost: a.comments_per_post,
+        postedAfter: a.posted_after,
+        maxItems: a.max_items,
+      }),
+    limit: (a) => a.max_items,
+    check: (a) => ((a.profiles && a.profiles.length) || (a.post_urls && a.post_urls.length) ? null : 'Give at least one profile (profiles) or post link (post_urls).'),
+  },
+  {
+    name: 'search_app_stores',
+    actor: 'tacps126/app-stores',
+    title: 'Search the App Store and Google Play',
+    price: 'about $0.0006 per app',
+    description:
+      'Apps from the Apple App Store and Google Play by search words, app links or top charts: name, developer, rating, rating count, price, category, release and update dates, size, version, description and store link. Useful for app market research, ASO and competitor tracking.',
+    shape: {
+      queries: z.array(z.string()).optional().describe('Search words, e.g. ["budget tracker"].'),
+      apps: z.array(z.string()).optional().describe('App Store or Google Play links, or Play package names, e.g. ["com.spotify.music"].'),
+      charts: z.array(z.enum(['top-free', 'top-paid'])).optional().describe('App Store top charts in the country, with position.'),
+      stores: z.array(z.enum(['appStore', 'googlePlay'])).optional().describe('Stores for search words (default both).'),
+      country: z.string().default('us').describe('Two-letter store country, e.g. "us", "gb", "in".'),
+      free_only: z.boolean().default(false).describe('Only free apps.'),
+      min_rating: z.number().min(0).max(5).optional().describe('Only apps rated at least this.'),
+      max_items: maxItems(100, 2000),
+    },
+    map: (a) =>
+      clean({
+        searchTerms: a.queries,
+        apps: a.apps,
+        charts: a.charts,
+        stores: a.stores,
+        country: a.country,
+        freeOnly: a.free_only,
+        minRating: a.min_rating,
+        maxItems: a.max_items,
+      }),
+    limit: (a) => a.max_items,
+    check: (a) => ((a.queries && a.queries.length) || (a.apps && a.apps.length) || (a.charts && a.charts.length) ? null : 'Give search words (queries), app links (apps) or a chart (charts).'),
+  },
+  {
+    name: 'get_website_markdown',
+    actor: 'tacps126/website-markdown',
+    title: 'Get a website as clean Markdown',
+    price: 'about $0.001 per page',
+    description:
+      'Reads web pages and returns their main content as clean Markdown (navigation, ads and footers removed), with title, URL, word count and headings: start from site links and follow links on the same site, or start from web search words. Useful for RAG, AI agents, documentation import and content audits.',
+    shape: {
+      urls: z.array(z.string()).optional().describe('Start pages, e.g. ["https://docs.apify.com/academy"].'),
+      queries: z.array(z.string()).optional().describe('Web search words; the top results are read.'),
+      max_pages_per_site: z.number().int().min(1).max(1000).default(20).describe('Pages to read per site.'),
+      max_depth: z.number().int().min(0).max(20).default(2).describe('How many links deep to follow from a start page (0 = start pages only).'),
+      max_items: maxItems(50, 1000),
+    },
+    map: (a) =>
+      clean({
+        startUrls: a.urls,
+        queries: a.queries,
+        maxPagesPerSite: a.max_pages_per_site,
+        maxDepth: a.max_depth,
+        maxItems: a.max_items,
+      }),
+    limit: (a) => a.max_items,
+    check: (a) => ((a.urls && a.urls.length) || (a.queries && a.queries.length) ? null : 'Give at least one start page (urls) or search (queries).'),
+  },
+  {
+    name: 'search_web_for_rag',
+    actor: 'tacps126/rag-web-search',
+    title: 'Search the web and read the top results as Markdown',
+    price: 'about $0.001 per page',
+    description:
+      'Web search for AI agents and RAG: runs each query, opens the top results and returns their main content as clean Markdown with title, URL and word count, ready to put in a prompt.',
+    shape: {
+      queries: z.array(z.string()).min(1).describe('Search words or questions, e.g. ["how does retrieval augmented generation work"].'),
+      results_per_query: z.number().int().min(1).max(20).default(5).describe('Top results to read per query.'),
+      country: z.string().default('us').describe('Two-letter search country.'),
+      language: z.string().default('en').describe('Search language code.'),
+    },
+    map: (a) =>
+      clean({
+        queries: a.queries,
+        maxResultsPerQuery: a.results_per_query,
+        searchCountry: a.country,
+        searchLanguage: a.language,
+      }),
+    limit: (a) => a.queries.length * a.results_per_query,
+  },
+  {
+    name: 'search_us_property_listings',
+    actor: 'tacps126/realtor-scraper',
+    title: 'Search US homes for rent or sale',
+    price: 'about $0.001 per listing',
+    description:
+      'US property listings for a city, ZIP code or search link, to rent or buy: address, price, beds, baths, size, property type, listing status, days on market, agent or broker, photos and link. Filters for price and rooms; newest first if asked.',
+    shape: {
+      locations: z.array(z.string()).optional().describe('Cities or ZIP codes, e.g. ["Austin, TX"].'),
+      urls: z.array(z.string()).optional().describe('Search result links copied from the site.'),
+      offer_type: z.enum(['rent', 'buy']).default('rent').describe('Rent or buy.'),
+      property_type: z.enum(['apartment', 'house']).default('apartment').describe('Apartment or house.'),
+      min_price: z.number().min(0).optional().describe('Lowest price (monthly rent or sale price, USD).'),
+      max_price: z.number().min(0).optional().describe('Highest price.'),
+      min_rooms: z.number().min(0).optional().describe('Fewest bedrooms.'),
+      newest_first: z.boolean().default(false).describe('Newest listings first.'),
+      max_items: maxItems(100, 2000),
+    },
+    map: (a) =>
+      clean({
+        locations: a.locations,
+        startUrls: a.urls,
+        offerType: a.offer_type,
+        propertyType: a.property_type,
+        minPrice: a.min_price,
+        maxPrice: a.max_price,
+        minRooms: a.min_rooms,
+        sort: a.newest_first ? 'newest' : undefined,
+        maxItems: a.max_items,
+      }),
+    limit: (a) => a.max_items,
+    check: (a) => ((a.locations && a.locations.length) || (a.urls && a.urls.length) ? null : 'Give at least one city or ZIP (locations) or a search link (urls).'),
+  },
 ];
 
 export const ACTORS = [...new Set(TOOLS.map((t) => t.actor))];

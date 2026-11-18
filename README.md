@@ -8,11 +8,11 @@
 [![Smithery](https://img.shields.io/badge/Smithery-tacps126%2Fwebdata--tools--mcp-ff5601)](https://smithery.ai/servers/tacps126/webdata-tools-mcp)
 [![webdata-tools-mcp MCP server](https://glama.ai/mcp/servers/tacps126/webdata-tools-mcp/badges/score.svg)](https://glama.ai/mcp/servers/tacps126/webdata-tools-mcp)
 
-An [MCP](https://modelcontextprotocol.io) server that gives AI agents forty-eight web-data tools: job
+An [MCP](https://modelcontextprotocol.io) server that gives AI agents fifty-three web-data tools: job
 postings (company career sites, remote jobs, startups on Wellfound, US tech jobs on Dice, Indeed,
 Naukri), hiring signals, Google News, official government updates (US, UK, EU, India), public tenders and contract awards (US, EU, UK, France, Spain, Canada, Australia and more), official weather and disaster warnings (US, Europe, India, Brazil, worldwide), public funding calls (US Grants.gov, EU Horizon Europe and more, UKRI, Australia), notices from all 748 Indian district websites, new laws and bills (EU, UK, US, Australia, Canada), sanctions screening, product recalls, company registers (Europe and US states), research papers and patents, field trends and idea validation, Trustpilot and app-store reviews,
 YouTube transcripts, website contacts, German and Austrian property listings, Shopify products and
-store analysis, Amazon products, Facebook Page details, Threads and Pinterest posts, Google Hotels prices, trade-show exhibitor lists and upcoming events, prediction-market odds,
+store analysis, Amazon products, Facebook Page details, Instagram, Threads and Pinterest posts, App Store and Google Play apps, any website or web search as Markdown, US homes for rent or sale, Google Hotels prices, trade-show exhibitor lists and upcoming events, prediction-market odds,
 sports scores, box scores and betting lines, lottery results, podcasts with owner contacts, new startup funding rounds, court, bank and government property auctions scored against similar lots, local businesses by category and city with their contacts, clinical trials, CVE vulnerabilities, FDA device clearances, US healthcare providers, and US import records with suppliers and lookalike importers. Two ready-made prompts turn the research
 tools into an innovation analyst that works the same with any model.
 
@@ -57,6 +57,11 @@ anywhere except Apify.
 | `get_facebook_pages` | Facebook Page details: categories, e-mail, phone, address, websites, social accounts, followers, rating, services | $3 / 1,000 pages | [facebook-pages](https://apify.com/tacps126/facebook-pages) |
 | `get_threads_posts` | Threads profiles, posts and replies: followers, text, media, likes, replies, reposts | $1.50 / 1,000 profiles or posts, $1 / 1,000 replies | [threads-scraper](https://apify.com/tacps126/threads-scraper) |
 | `get_pinterest_pins` | Pinterest pins, profiles and boards: image, title, outbound link, saves, product price, pinner | $1.50 / 1,000 pins, $1 / 1,000 search previews | [pinterest-scraper](https://apify.com/tacps126/pinterest-scraper) |
+| `get_instagram_posts` | Instagram profiles, posts, reels and comments: followers, caption, likes, comments count, media, pinned flag | $1.50 / 1,000 profiles or posts, $0.80 / 1,000 comments | [instagram-scraper](https://apify.com/tacps126/instagram-scraper) |
+| `search_app_stores` | App Store and Google Play apps by search, link or top chart: rating, price, category, developer, updates | $0.60 / 1,000 apps | [app-stores](https://apify.com/tacps126/app-stores) |
+| `get_website_markdown` | Any website or search results as clean Markdown for RAG and agents | $1 / 1,000 pages | [website-markdown](https://apify.com/tacps126/website-markdown) |
+| `search_web_for_rag` | Web search that reads the top results as Markdown, ready for a prompt | $1 / 1,000 pages | [rag-web-search](https://apify.com/tacps126/rag-web-search) |
+| `search_us_property_listings` | US homes to rent or buy by city or ZIP: price, beds, baths, size, status, agent, photos | $1 / 1,000 listings | [realtor-scraper](https://apify.com/tacps126/realtor-scraper) |
 | `search_google_hotels` | Google Hotels for a place and dates: class, rating, nightly and total price with taxes, deal vs usual price | $2 / 1,000 hotels | [google-hotels](https://apify.com/tacps126/google-hotels) |
 | `analyze_shopify_stores` | Store location, currency, catalog size and snapshot, e-mails, phones, socials; filter by size, price, activity, e-mail and sort | $4 / 1,000 stores | [shopify-store-analyzer](https://apify.com/tacps126/shopify-store-analyzer) |
 | `get_trade_show_exhibitors` | Trade-show exhibitors: booth, email, phone, website, address (91 shows or any supported exhibitor-list link; changes-only monitoring) | $1 / 1,000 exhibitors | [exhibition-scraper](https://apify.com/tacps126/exhibition-scraper) |
