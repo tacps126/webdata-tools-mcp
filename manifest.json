@@ -3,8 +3,8 @@
   "name": "webdata-tools-mcp",
   "display_name": "Web Data Tools",
   "icon": "icon.png",
-  "version": "0.19.0",
-  "description": "Fifty-three web-data tools for agents: jobs, hiring signals, news, public tenders, new laws and bills, Indian district notices, grants and funding calls, government updates, weather and disaster alerts, research papers and patents, field trends and idea validation, prediction markets, sports, lottery, podcasts, startup funding, property auctions, local business leads, clinical trials, CVEs, FDA device clearances, US healthcare providers, US import records, reviews, contacts, real estate, Shopify, exhibitors, events.",
+  "version": "0.20.0",
+  "description": "Fifty-five web-data tools for agents: jobs, hiring signals, news, public tenders, new laws and bills, Indian district notices, grants and funding calls, government updates, weather and disaster alerts, research papers and patents, field trends and idea validation, prediction markets, sports, lottery, podcasts, startup funding, property auctions, local business leads, clinical trials, CVEs, FDA device clearances, US healthcare providers, US import records, reviews, contacts, real estate, Shopify, exhibitors, events.",
   "long_description": "Runs ready-made Apify Actors (published by tacps126) on your own Apify account and returns clean JSON. Covers job postings from career pages, remote-job feeds, Wellfound, Dice, Indeed and Naukri, hiring signals, Google News, official government updates (US Federal Register, GOV.UK, European Commission, SEC, RBI, SEBI), public tenders and contract awards (US SAM.gov, EU TED, UK, France, Spain, Germany, Netherlands, Canada, Colombia, Australia, South Africa), research papers, preprints and patents, technology-field landscapes and idea validation, Trustpilot and app-store reviews, YouTube transcripts, new laws and bills, sanctions screening, product recalls, company registers, website contact details, German property listings, Shopify products and store analysis, trade-show exhibitor lists and upcoming events, prediction-market odds (Kalshi, Polymarket, Manifold, PredictIt), sports scores, box scores and betting lines, lottery results, podcasts, startup funding rounds, court and bank property auctions, local businesses by category and city, clinical trials (ClinicalTrials.gov), CVE vulnerabilities (NVD, CISA KEV, EPSS), FDA 510(k) and PMA device clearances, US healthcare providers (NPI Registry) and US import records (importers, suppliers, bills of lading). Two analyst prompts (field-opportunity-analysis, idea-validation) turn the research tools into a model-agnostic innovation analyst. You pay Apify per result (about $1-3 per 1,000); every call has a spend cap.",
   "author": {
     "name": "tacps126",
@@ -236,6 +236,14 @@
     {
       "name": "get_pinterest_pins",
       "description": "Public Pinterest data from search words, profiles, boards or pin links: pins with image or video, title, description, outbound link, saves, comments, product name and price, pinner and board; profile details with followers and pin counts; boards. No login. Useful for trend and product research, creator discovery and visual content sourcing."
+    },
+    {
+      "name": "find_music_artists",
+      "description": "Music artists from SoundCloud and Spotify by search words, artist links or playlist links: verified, independent or signed (from release label lines), followers, monthly listeners, top cities, latest releases, upcoming concerts, bio, website, Instagram, TikTok and YouTube links, public emails, and a lead score; optionally similar artists and their latest tracks with plays and likes. No login. Useful for A&R scouting, booking, music marketing and creator outreach."
+    },
+    {
+      "name": "find_creators",
+      "description": "Creators from YouTube and Vimeo search words, or YouTube, Instagram, TikTok and Vimeo profile links: followers, video count, average views, likes and comments over the latest posts, engagement rate, last post date, country, bio, website, other social accounts, public emails and a lead score. No login. Useful for influencer marketing, sponsorship outreach and creator research."
     },
     {
       "name": "get_instagram_posts",

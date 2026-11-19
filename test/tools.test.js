@@ -14,6 +14,8 @@ const SAMPLE = {
   get_facebook_pages: { pages: ['katzsdeli'] },
   search_google_hotels: { locations: ['Lisbon'], check_in: '2027-03-10', check_out: '2027-03-12', min_stars: 4 },
   get_threads_posts: { profiles: ['nasa'], replies_per_post: 2 },
+  find_music_artists: { queries: ['lofi hip hop'], artist_type: 'independent' },
+  find_creators: { queries: ['home barista'], min_engagement_rate: 2 },
   get_pinterest_pins: { queries: ['modern kitchen'], pins_per_source: 10 },
   get_instagram_posts: { profiles: ['nasa'], comments_per_post: 5 },
   search_app_stores: { queries: ['budget tracker'], free_only: true },

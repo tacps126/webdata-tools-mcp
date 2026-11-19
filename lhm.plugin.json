@@ -6385,6 +6385,281 @@
       }
     },
     {
+      "name": "find_music_artists",
+      "title": "Find music artists on SoundCloud and Spotify",
+      "description": "Music artists from SoundCloud and Spotify by search words, artist links or playlist links: verified, independent or signed (from release label lines), followers, monthly listeners, top cities, latest releases, upcoming concerts, bio, website, Instagram, TikTok and YouTube links, public emails, and a lead score; optionally similar artists and their latest tracks with plays and likes. No login. Useful for A&R scouting, booking, music marketing and creator outreach. Runs the Apify Actor tacps126/media-profiles on your Apify account (about $0.0025 per artist, $0.001 per track; spend per call is capped at $0.5).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "queries": {
+            "description": "Search words, e.g. [\"lofi hip hop\", \"indie folk berlin\"].",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "links": {
+            "description": "Artist, track or playlist links on SoundCloud or Spotify.",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "platforms": {
+            "description": "Where to search (default both).",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "soundcloud",
+                "spotify"
+              ]
+            }
+          },
+          "artist_type": {
+            "default": "all",
+            "description": "Keep only these artists.",
+            "type": "string",
+            "enum": [
+              "all",
+              "verified",
+              "unverified",
+              "independent",
+              "signed"
+            ]
+          },
+          "min_followers": {
+            "description": "Fewest followers.",
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "max_followers": {
+            "description": "Most followers.",
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "tracks_per_artist": {
+            "default": 0,
+            "description": "Latest tracks to add per artist (0 = profiles only).",
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 50
+          },
+          "similar_artists": {
+            "default": 0,
+            "description": "Similar artists to add per artist found.",
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 20
+          },
+          "max_items": {
+            "default": 50,
+            "description": "Maximum results to return (default 50, max 1000). Cost scales with this.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000
+          },
+          "extra_input": {
+            "description": "Advanced: extra Actor input fields, merged over the defaults.",
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          }
+        },
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "tool": {
+            "type": "string",
+            "description": "Name of the tool that produced the result."
+          },
+          "count": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records the Actor returned."
+          },
+          "shown": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records included in `items` (can be lower than count when the result is long)."
+          },
+          "truncated": {
+            "type": "boolean",
+            "description": "True when records were left out to keep the result short; ask for fewer items."
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "propertyNames": {
+                "type": "string"
+              },
+              "additionalProperties": {}
+            },
+            "description": "The records. Long text fields are shortened to 600 characters."
+          }
+        },
+        "required": [
+          "tool",
+          "count",
+          "shown",
+          "truncated",
+          "items"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
+      },
+      "annotations": {
+        "title": "Find music artists on SoundCloud and Spotify",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "find_creators",
+      "title": "Find creators on YouTube, Instagram, TikTok and Vimeo",
+      "description": "Creators from YouTube and Vimeo search words, or YouTube, Instagram, TikTok and Vimeo profile links: followers, video count, average views, likes and comments over the latest posts, engagement rate, last post date, country, bio, website, other social accounts, public emails and a lead score. No login. Useful for influencer marketing, sponsorship outreach and creator research. Runs the Apify Actor tacps126/creator-finder on your Apify account (about $0.002 per creator, $0.001 per video or post; spend per call is capped at $0.5).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "queries": {
+            "description": "Search words for YouTube and Vimeo, e.g. [\"home barista\"].",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "links": {
+            "description": "YouTube, Instagram, TikTok or Vimeo profile or video links.",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "platforms": {
+            "description": "Where to search (default both).",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "youtube",
+                "vimeo"
+              ]
+            }
+          },
+          "min_followers": {
+            "description": "Fewest followers or subscribers.",
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "max_followers": {
+            "description": "Most followers or subscribers.",
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "min_engagement_rate": {
+            "description": "Lowest engagement rate in percent, e.g. 2.",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "posts_per_creator": {
+            "default": 3,
+            "description": "Latest videos or posts to add per creator (also used for averages).",
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 50
+          },
+          "max_items": {
+            "default": 50,
+            "description": "Maximum results to return (default 50, max 1000). Cost scales with this.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000
+          },
+          "extra_input": {
+            "description": "Advanced: extra Actor input fields, merged over the defaults.",
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          }
+        },
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "tool": {
+            "type": "string",
+            "description": "Name of the tool that produced the result."
+          },
+          "count": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records the Actor returned."
+          },
+          "shown": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records included in `items` (can be lower than count when the result is long)."
+          },
+          "truncated": {
+            "type": "boolean",
+            "description": "True when records were left out to keep the result short; ask for fewer items."
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "propertyNames": {
+                "type": "string"
+              },
+              "additionalProperties": {}
+            },
+            "description": "The records. Long text fields are shortened to 600 characters."
+          }
+        },
+        "required": [
+          "tool",
+          "count",
+          "shown",
+          "truncated",
+          "items"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
+      },
+      "annotations": {
+        "title": "Find creators on YouTube, Instagram, TikTok and Vimeo",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
       "name": "get_instagram_posts",
       "title": "Get Instagram profiles, posts and comments",
       "description": "Public Instagram data from usernames or post links: profile details with followers, following, bio and links, latest posts and reels with caption, hashtags, mentions, likes, comment count, post time, images, video, carousel items, tagged users, location, audio and a pinned flag, and optionally the comments under each post. No login. Useful for creator research, brand monitoring and social listening. Runs the Apify Actor tacps126/instagram-scraper on your Apify account (about $0.0015 per profile or post, $0.0008 per comment; spend per call is capped at $0.5).",
@@ -6975,5 +7250,5 @@
       }
     }
   ],
-  "version": "0.19.0"
+  "version": "0.20.0"
 }

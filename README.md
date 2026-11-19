@@ -8,7 +8,7 @@
 [![Smithery](https://img.shields.io/badge/Smithery-tacps126%2Fwebdata--tools--mcp-ff5601)](https://smithery.ai/servers/tacps126/webdata-tools-mcp)
 [![webdata-tools-mcp MCP server](https://glama.ai/mcp/servers/tacps126/webdata-tools-mcp/badges/score.svg)](https://glama.ai/mcp/servers/tacps126/webdata-tools-mcp)
 
-An [MCP](https://modelcontextprotocol.io) server that gives AI agents fifty-three web-data tools: job
+An [MCP](https://modelcontextprotocol.io) server that gives AI agents fifty-five web-data tools: job
 postings (company career sites, remote jobs, startups on Wellfound, US tech jobs on Dice, Indeed,
 Naukri), hiring signals, Google News, official government updates (US, UK, EU, India), public tenders and contract awards (US, EU, UK, France, Spain, Canada, Australia and more), official weather and disaster warnings (US, Europe, India, Brazil, worldwide), public funding calls (US Grants.gov, EU Horizon Europe and more, UKRI, Australia), notices from all 748 Indian district websites, new laws and bills (EU, UK, US, Australia, Canada), sanctions screening, product recalls, company registers (Europe and US states), research papers and patents, field trends and idea validation, Trustpilot and app-store reviews,
 YouTube transcripts, website contacts, German and Austrian property listings, Shopify products and
@@ -57,6 +57,8 @@ anywhere except Apify.
 | `get_facebook_pages` | Facebook Page details: categories, e-mail, phone, address, websites, social accounts, followers, rating, services | $3 / 1,000 pages | [facebook-pages](https://apify.com/tacps126/facebook-pages) |
 | `get_threads_posts` | Threads profiles, posts and replies: followers, text, media, likes, replies, reposts | $1.50 / 1,000 profiles or posts, $1 / 1,000 replies | [threads-scraper](https://apify.com/tacps126/threads-scraper) |
 | `get_pinterest_pins` | Pinterest pins, profiles and boards: image, title, outbound link, saves, product price, pinner | $1.50 / 1,000 pins, $1 / 1,000 search previews | [pinterest-scraper](https://apify.com/tacps126/pinterest-scraper) |
+| `find_music_artists` | SoundCloud and Spotify artists: verified, independent or signed, followers, monthly listeners, releases, concerts, socials, emails, lead score | $2.50 / 1,000 artists, $1 / 1,000 tracks | [media-profiles](https://apify.com/tacps126/media-profiles) |
+| `find_creators` | YouTube, Instagram, TikTok and Vimeo creators: followers, average views, engagement rate, last post, socials, emails, lead score | $2 / 1,000 creators, $1 / 1,000 videos or posts | [creator-finder](https://apify.com/tacps126/creator-finder) |
 | `get_instagram_posts` | Instagram profiles, posts, reels and comments: followers, caption, likes, comments count, media, pinned flag | $1.50 / 1,000 profiles or posts, $0.80 / 1,000 comments | [instagram-scraper](https://apify.com/tacps126/instagram-scraper) |
 | `search_app_stores` | App Store and Google Play apps by search, link or top chart: rating, price, category, developer, updates | $0.60 / 1,000 apps | [app-stores](https://apify.com/tacps126/app-stores) |
 | `get_website_markdown` | Any website or search results as clean Markdown for RAG and agents | $1 / 1,000 pages | [website-markdown](https://apify.com/tacps126/website-markdown) |
