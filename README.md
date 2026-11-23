@@ -8,7 +8,9 @@
 [![Smithery](https://img.shields.io/badge/Smithery-tacps126%2Fwebdata--tools--mcp-ff5601)](https://smithery.ai/servers/tacps126/webdata-tools-mcp)
 [![webdata-tools-mcp MCP server](https://glama.ai/mcp/servers/tacps126/webdata-tools-mcp/badges/score.svg)](https://glama.ai/mcp/servers/tacps126/webdata-tools-mcp)
 
-An [MCP](https://modelcontextprotocol.io) server that gives AI agents fifty-five web-data tools: job
+An [MCP](https://modelcontextprotocol.io) server that gives AI agents sixty web-data tools: stock
+analysis (verdicts, technicals, rules, watchlist alerts), smart money (13F funds, insiders, Congress trades, options,
+futures positioning), brand mentions, job
 postings (company career sites, remote jobs, startups on Wellfound, US tech jobs on Dice, Indeed,
 Naukri), hiring signals, Google News, official government updates (US, UK, EU, India), public tenders and contract awards (US, EU, UK, France, Spain, Canada, Australia and more), official weather and disaster warnings (US, Europe, India, Brazil, worldwide), public funding calls (US Grants.gov, EU Horizon Europe and more, UKRI, Australia), notices from all 748 Indian district websites, new laws and bills (EU, UK, US, Australia, Canada), sanctions screening, product recalls, company registers (Europe and US states), research papers and patents, field trends and idea validation, Trustpilot and app-store reviews,
 YouTube transcripts, website contacts, German and Austrian property listings, Shopify products and
@@ -68,6 +70,11 @@ anywhere except Apify.
 | `analyze_shopify_stores` | Store location, currency, catalog size and snapshot, e-mails, phones, socials; filter by size, price, activity, e-mail and sort | $4 / 1,000 stores | [shopify-store-analyzer](https://apify.com/tacps126/shopify-store-analyzer) |
 | `get_trade_show_exhibitors` | Trade-show exhibitors: booth, email, phone, website, address (91 shows or any supported exhibitor-list link; changes-only monitoring) | $1 / 1,000 exhibitors | [exhibition-scraper](https://apify.com/tacps126/exhibition-scraper) |
 | `find_events` | Upcoming events from Luma, Eventbrite, Meetup: venue, organiser, hosts, tickets, attendees | $1 / 1,000 events | [events-scraper](https://apify.com/tacps126/events-scraper) |
+| `analyze_stocks` | Bullish-to-bearish verdict per ticker with confidence, reasons, support and resistance, 5-day range, today's session; optional rules backtested | $2 / 1,000 tickers | [stock-analyzer](https://apify.com/tacps126/stock-analyzer) |
+| `get_stock_market_data` | Full technical read per ticker: indicators, rating, levels, backtested signals, session parts, factor scores, fundamentals, news, sentiment | $3 / 1,000 tickers | [market-data](https://apify.com/tacps126/market-data) |
+| `get_market_pulse` | Watchlist alerts: what moved and why, gaps, signals, sentiment, insider trades, filings, short interest, score -100 to 100 | $8 / 1,000 tickers | [market-pulse](https://apify.com/tacps126/market-pulse) |
+| `track_smart_money` | 13F fund holdings and quarter changes, 13D/13G stakes, insider clusters, US House trades, unusual options, CFTC positioning, India FII/DII | from $1 / 1,000 rows | [smart-money](https://apify.com/tacps126/smart-money) |
+| `monitor_brand` | Brand mentions from news, X, Threads, Bluesky, YouTube, Instagram, TikTok, Trustpilot and app reviews with sentiment and a digest | $0.80 / 1,000 mentions | [brand-monitor](https://apify.com/tacps126/brand-monitor) |
 | `get_prediction_markets` | Kalshi, Polymarket, Manifold and PredictIt markets: probability, bid/ask, 24h and 7d change, volume, result, daily history | $3 / 1,000 markets | [prediction-markets](https://apify.com/tacps126/prediction-markets) |
 | `get_sports_data` | Scores, box scores, betting odds (open, close, settled), standings and rosters for 24 leagues incl. NFL, NBA, MLB, NHL, top football leagues, F1, ATP/WTA | $0.80 / 1,000 rows, $1 / 1,000 player lines | [sports-data](https://apify.com/tacps126/sports-data) |
 | `get_lottery_results` | Powerball, Mega Millions and 11 state games: winning numbers, jackpots, winners; hot and cold numbers | $3 / 1,000 rows | [lottery-results](https://apify.com/tacps126/lottery-results) |

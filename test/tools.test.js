@@ -10,6 +10,11 @@ const published = JSON.parse(readFileSync(new URL('./fixtures/actor-inputs.json'
 
 // Valid sample arguments per tool, built from each tool's own zod shape + required values.
 const SAMPLE = {
+  analyze_stocks: { tickers: ['AAPL', 'SAP.DE'], rule_presets: ['golden-cross'] },
+  get_stock_market_data: { tickers: ['NVDA'], include: ['analysis', 'factors'], rules: ['rsi_14 crosses above 30'] },
+  get_market_pulse: { tickers: ['AAPL', 'TSLA'], min_alert_level: 'medium' },
+  track_smart_money: { funds: ['Warren Buffett'], tickers: ['AAPL'], cot_markets: ['gold'] },
+  monitor_brand: { brand: 'Notion', trustpilot_domains: ['notion.so'] },
   get_amazon_products: { queries: ['wireless earbuds'], marketplace: 'uk', min_rating: 4, max_items: 5 },
   get_facebook_pages: { pages: ['katzsdeli'] },
   search_google_hotels: { locations: ['Lisbon'], check_in: '2027-03-10', check_out: '2027-03-12', min_stars: 4 },

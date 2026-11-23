@@ -7248,7 +7248,628 @@
       "execution": {
         "taskSupport": "forbidden"
       }
+    },
+    {
+      "name": "analyze_stocks",
+      "title": "Analyze stocks: bullish or bearish, with levels",
+      "description": "A plain answer per ticker (stocks, ETFs, indices, crypto, FX; any exchange): bullish to bearish verdict with confidence, the reasons and what disagrees, support and resistance, volatility stops, the likely 5-day range, today's session (pre-market, gap and how similar gaps went on this ticker), analysts' view and next earnings. Optional rules are checked now and backtested on the ticker's history. Runs the Apify Actor tacps126/stock-analyzer on your Apify account (about $0.002 per ticker; spend per call is capped at $0.5).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "tickers": {
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "Tickers as on Yahoo Finance or TradingView, e.g. [\"AAPL\", \"SAP.DE\", \"BTC-USD\", \"NASDAQ:NVDA\"]."
+          },
+          "rule_presets": {
+            "description": "Ready-made rules to check and backtest.",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "oversold-bounce",
+                "overbought-fade",
+                "golden-cross",
+                "death-cross",
+                "macd-bullish-cross",
+                "macd-bearish-cross",
+                "breakout-on-volume",
+                "breakdown-on-volume",
+                "pullback-in-uptrend",
+                "short-term-dip",
+                "bollinger-reentry",
+                "supertrend-turns-up",
+                "supertrend-turns-down",
+                "strong-uptrend",
+                "stretched-below-mean",
+                "stretched-above-mean"
+              ]
+            }
+          },
+          "rules": {
+            "description": "Own rules in plain text, e.g. \"rsi_14 crosses above 30\" or \"bearish: close < sma_200 and rsi_14 > 60\".",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "only_matching": {
+            "default": false,
+            "description": "Only return tickers where a rule is true now (screener).",
+            "type": "boolean"
+          },
+          "extra_input": {
+            "description": "Advanced: extra Actor input fields, merged over the defaults.",
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          }
+        },
+        "required": [
+          "tickers"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "tool": {
+            "type": "string",
+            "description": "Name of the tool that produced the result."
+          },
+          "count": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records the Actor returned."
+          },
+          "shown": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records included in `items` (can be lower than count when the result is long)."
+          },
+          "truncated": {
+            "type": "boolean",
+            "description": "True when records were left out to keep the result short; ask for fewer items."
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "propertyNames": {
+                "type": "string"
+              },
+              "additionalProperties": {}
+            },
+            "description": "The records. Long text fields are shortened to 600 characters."
+          }
+        },
+        "required": [
+          "tool",
+          "count",
+          "shown",
+          "truncated",
+          "items"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
+      },
+      "annotations": {
+        "title": "Analyze stocks: bullish or bearish, with levels",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "get_stock_market_data",
+      "title": "Get stock data and technical analysis",
+      "description": "Full data per ticker in one row: price and returns, 25+ indicators, technical rating, trend, support and resistance, pivots, risk, expected ranges, backtested signals, today's session by part of the day, factor scores (momentum, value, quality, low volatility) and optionally fundamentals, news and sentiment. Test your own indicator rules on the history. Runs the Apify Actor tacps126/market-data on your Apify account (about $0.003 per ticker; spend per call is capped at $0.5).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "tickers": {
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "Tickers as on Yahoo Finance or TradingView, e.g. [\"AAPL\", \"7203.T\", \"SPY\"]."
+          },
+          "include": {
+            "description": "Sections to include (default analysis, session, fundamentals, news, sentiment).",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "analysis",
+                "session",
+                "factors",
+                "fundamentals",
+                "news",
+                "sentiment"
+              ]
+            }
+          },
+          "range": {
+            "default": "2y",
+            "description": "History used for the analysis and backtests.",
+            "type": "string",
+            "enum": [
+              "6mo",
+              "1y",
+              "2y",
+              "5y",
+              "10y",
+              "max"
+            ]
+          },
+          "rule_presets": {
+            "description": "Ready-made rules to backtest.",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "oversold-bounce",
+                "overbought-fade",
+                "golden-cross",
+                "death-cross",
+                "macd-bullish-cross",
+                "macd-bearish-cross",
+                "breakout-on-volume",
+                "breakdown-on-volume",
+                "pullback-in-uptrend",
+                "short-term-dip",
+                "bollinger-reentry",
+                "supertrend-turns-up",
+                "supertrend-turns-down",
+                "strong-uptrend",
+                "stretched-below-mean",
+                "stretched-above-mean"
+              ]
+            }
+          },
+          "rules": {
+            "description": "Own rules in plain text, e.g. \"Breakout = close > highest_20[1] and relvol_20 > 1.5\".",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "flat": {
+            "default": false,
+            "description": "One level of columns instead of nested sections.",
+            "type": "boolean"
+          },
+          "extra_input": {
+            "description": "Advanced: extra Actor input fields, merged over the defaults.",
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          }
+        },
+        "required": [
+          "tickers"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "tool": {
+            "type": "string",
+            "description": "Name of the tool that produced the result."
+          },
+          "count": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records the Actor returned."
+          },
+          "shown": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records included in `items` (can be lower than count when the result is long)."
+          },
+          "truncated": {
+            "type": "boolean",
+            "description": "True when records were left out to keep the result short; ask for fewer items."
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "propertyNames": {
+                "type": "string"
+              },
+              "additionalProperties": {}
+            },
+            "description": "The records. Long text fields are shortened to 600 characters."
+          }
+        },
+        "required": [
+          "tool",
+          "count",
+          "shown",
+          "truncated",
+          "items"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
+      },
+      "annotations": {
+        "title": "Get stock data and technical analysis",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "get_market_pulse",
+      "title": "Watchlist pulse: what moved and why",
+      "description": "One row per ticker with a one-line summary and alerts: unusual moves and gaps sized against the usual move, signals that fired today with their past hit rate, news and crowd sentiment, insider buying and selling, new SEC filings and short interest (US), and an overall score from -100 to 100. Runs the Apify Actor tacps126/market-pulse on your Apify account (about $0.008 per ticker; spend per call is capped at $0.5).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "tickers": {
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "Tickers, e.g. [\"AAPL\", \"TSLA\", \"SAP.DE\"]."
+          },
+          "min_alert_level": {
+            "default": "none",
+            "description": "Only tickers with at least this alert level.",
+            "type": "string",
+            "enum": [
+              "none",
+              "low",
+              "medium",
+              "high"
+            ]
+          },
+          "extra_input": {
+            "description": "Advanced: extra Actor input fields, merged over the defaults.",
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          }
+        },
+        "required": [
+          "tickers"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "tool": {
+            "type": "string",
+            "description": "Name of the tool that produced the result."
+          },
+          "count": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records the Actor returned."
+          },
+          "shown": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records included in `items` (can be lower than count when the result is long)."
+          },
+          "truncated": {
+            "type": "boolean",
+            "description": "True when records were left out to keep the result short; ask for fewer items."
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "propertyNames": {
+                "type": "string"
+              },
+              "additionalProperties": {}
+            },
+            "description": "The records. Long text fields are shortened to 600 characters."
+          }
+        },
+        "required": [
+          "tool",
+          "count",
+          "shown",
+          "truncated",
+          "items"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
+      },
+      "annotations": {
+        "title": "Watchlist pulse: what moved and why",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "track_smart_money",
+      "title": "Track smart money: funds, insiders, Congress, options, futures",
+      "description": "What the big players do: hedge fund 13F holdings with quarter changes and estimated flows (20 built-in funds or any filer), 13D/13G stakes above 5%, insider buying clusters from Form 4, US House members' trades (public news), unusual options activity, CFTC futures positioning with the COT index, and India FII/DII flows. Runs the Apify Actor tacps126/smart-money on your Apify account (from about $0.001 per row; spend per call is capped at $0.5).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "funds": {
+            "description": "Funds or managers by name or CIK, e.g. [\"Warren Buffett\", \"Bridgewater\"].",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "tickers": {
+            "description": "US tickers for stakes and insider activity, e.g. [\"AAPL\"].",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "changes_only": {
+            "default": false,
+            "description": "Only positions that changed this quarter.",
+            "type": "boolean"
+          },
+          "congress_trades": {
+            "default": false,
+            "description": "Add US House members' trades (for the tickers given, or all).",
+            "type": "boolean"
+          },
+          "options_activity": {
+            "default": false,
+            "description": "Add unusual options activity for the tickers.",
+            "type": "boolean"
+          },
+          "cot_markets": {
+            "description": "Futures markets for CFTC positioning, e.g. [\"gold\", \"sp500\", \"crude-oil\", \"bitcoin\"].",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "india_flows": {
+            "default": false,
+            "description": "Add India FII/DII daily flows.",
+            "type": "boolean"
+          },
+          "max_items": {
+            "default": 200,
+            "description": "Maximum results to return (default 200, max 5000). Cost scales with this.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5000
+          },
+          "extra_input": {
+            "description": "Advanced: extra Actor input fields, merged over the defaults.",
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          }
+        },
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "tool": {
+            "type": "string",
+            "description": "Name of the tool that produced the result."
+          },
+          "count": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records the Actor returned."
+          },
+          "shown": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records included in `items` (can be lower than count when the result is long)."
+          },
+          "truncated": {
+            "type": "boolean",
+            "description": "True when records were left out to keep the result short; ask for fewer items."
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "propertyNames": {
+                "type": "string"
+              },
+              "additionalProperties": {}
+            },
+            "description": "The records. Long text fields are shortened to 600 characters."
+          }
+        },
+        "required": [
+          "tool",
+          "count",
+          "shown",
+          "truncated",
+          "items"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
+      },
+      "annotations": {
+        "title": "Track smart money: funds, insiders, Congress, options, futures",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "monitor_brand",
+      "title": "Monitor brand mentions across news, social and reviews",
+      "description": "Mentions of a brand from news, X, Threads, Bluesky, YouTube, Instagram, TikTok, Trustpilot and app reviews in one shape, with sentiment and engagement, plus a digest (counts per source, sentiment split, top and negative mentions). Only new mentions on repeat runs. Runs the Apify Actor tacps126/brand-monitor on your Apify account (about $0.0008 per mention; spend per call is capped at $0.5).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "brand": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Brand or product name, e.g. \"Notion\"."
+          },
+          "keywords": {
+            "description": "Extra search phrases, e.g. [\"Notion app\"].",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "sources": {
+            "description": "Sources to read (default all that apply).",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "news",
+                "x",
+                "instagram",
+                "tiktok",
+                "threads",
+                "bluesky",
+                "youtube",
+                "trustpilot",
+                "appReviews"
+              ]
+            }
+          },
+          "trustpilot_domains": {
+            "description": "Domains for Trustpilot reviews, e.g. [\"notion.so\"].",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "lookback_days": {
+            "default": 7,
+            "description": "Only mentions from the last N days.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 90
+          },
+          "max_items": {
+            "default": 200,
+            "description": "Maximum results to return (default 200, max 2000). Cost scales with this.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 2000
+          },
+          "extra_input": {
+            "description": "Advanced: extra Actor input fields, merged over the defaults.",
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          }
+        },
+        "required": [
+          "brand"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "tool": {
+            "type": "string",
+            "description": "Name of the tool that produced the result."
+          },
+          "count": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records the Actor returned."
+          },
+          "shown": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records included in `items` (can be lower than count when the result is long)."
+          },
+          "truncated": {
+            "type": "boolean",
+            "description": "True when records were left out to keep the result short; ask for fewer items."
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "propertyNames": {
+                "type": "string"
+              },
+              "additionalProperties": {}
+            },
+            "description": "The records. Long text fields are shortened to 600 characters."
+          }
+        },
+        "required": [
+          "tool",
+          "count",
+          "shown",
+          "truncated",
+          "items"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
+      },
+      "annotations": {
+        "title": "Monitor brand mentions across news, social and reviews",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
     }
   ],
-  "version": "0.20.0"
+  "version": "0.21.0"
 }

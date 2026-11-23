@@ -1653,6 +1653,125 @@ export const TOOLS = [
     limit: (a) => a.max_items,
     check: (a) => ((a.locations && a.locations.length) || (a.urls && a.urls.length) ? null : 'Give at least one city or ZIP (locations) or a search link (urls).'),
   },
+  {
+    name: 'analyze_stocks',
+    actor: 'tacps126/stock-analyzer',
+    title: 'Analyze stocks: bullish or bearish, with levels',
+    price: 'about $0.002 per ticker',
+    description:
+      'A plain answer per ticker (stocks, ETFs, indices, crypto, FX; any exchange): bullish to bearish verdict with confidence, the reasons and what disagrees, support and resistance, volatility stops, the likely 5-day range, today\'s session (pre-market, gap and how similar gaps went on this ticker), analysts\' view and next earnings. Optional rules are checked now and backtested on the ticker\'s history.',
+    shape: {
+      tickers: strings('Tickers as on Yahoo Finance or TradingView, e.g. ["AAPL", "SAP.DE", "BTC-USD", "NASDAQ:NVDA"].'),
+      rule_presets: z.array(z.enum(['oversold-bounce', 'overbought-fade', 'golden-cross', 'death-cross', 'macd-bullish-cross', 'macd-bearish-cross', 'breakout-on-volume', 'breakdown-on-volume', 'pullback-in-uptrend', 'short-term-dip', 'bollinger-reentry', 'supertrend-turns-up', 'supertrend-turns-down', 'strong-uptrend', 'stretched-below-mean', 'stretched-above-mean'])).optional().describe('Ready-made rules to check and backtest.'),
+      rules: z.array(z.string()).optional().describe('Own rules in plain text, e.g. "rsi_14 crosses above 30" or "bearish: close < sma_200 and rsi_14 > 60".'),
+      only_matching: z.boolean().default(false).describe('Only return tickers where a rule is true now (screener).'),
+    },
+    map: (a) =>
+      clean({
+        tickers: a.tickers,
+        rulePresets: a.rule_presets,
+        rules: a.rules,
+        onlyMatching: a.only_matching || undefined,
+      }),
+    limit: (a) => a.tickers.length,
+  },
+  {
+    name: 'get_stock_market_data',
+    actor: 'tacps126/market-data',
+    title: 'Get stock data and technical analysis',
+    price: 'about $0.003 per ticker',
+    description:
+      'Full data per ticker in one row: price and returns, 25+ indicators, technical rating, trend, support and resistance, pivots, risk, expected ranges, backtested signals, today\'s session by part of the day, factor scores (momentum, value, quality, low volatility) and optionally fundamentals, news and sentiment. Test your own indicator rules on the history.',
+    shape: {
+      tickers: strings('Tickers as on Yahoo Finance or TradingView, e.g. ["AAPL", "7203.T", "SPY"].'),
+      include: z.array(z.enum(['analysis', 'session', 'factors', 'fundamentals', 'news', 'sentiment'])).optional().describe('Sections to include (default analysis, session, fundamentals, news, sentiment).'),
+      range: z.enum(['6mo', '1y', '2y', '5y', '10y', 'max']).default('2y').describe('History used for the analysis and backtests.'),
+      rule_presets: z.array(z.enum(['oversold-bounce', 'overbought-fade', 'golden-cross', 'death-cross', 'macd-bullish-cross', 'macd-bearish-cross', 'breakout-on-volume', 'breakdown-on-volume', 'pullback-in-uptrend', 'short-term-dip', 'bollinger-reentry', 'supertrend-turns-up', 'supertrend-turns-down', 'strong-uptrend', 'stretched-below-mean', 'stretched-above-mean'])).optional().describe('Ready-made rules to backtest.'),
+      rules: z.array(z.string()).optional().describe('Own rules in plain text, e.g. "Breakout = close > highest_20[1] and relvol_20 > 1.5".'),
+      flat: z.boolean().default(false).describe('One level of columns instead of nested sections.'),
+    },
+    map: (a) =>
+      clean({
+        tickers: a.tickers,
+        include: a.include,
+        range: a.range,
+        rulePresets: a.rule_presets,
+        rules: a.rules,
+        output: a.flat ? 'flat' : undefined,
+      }),
+    limit: (a) => a.tickers.length,
+  },
+  {
+    name: 'get_market_pulse',
+    actor: 'tacps126/market-pulse',
+    title: 'Watchlist pulse: what moved and why',
+    price: 'about $0.008 per ticker',
+    description:
+      'One row per ticker with a one-line summary and alerts: unusual moves and gaps sized against the usual move, signals that fired today with their past hit rate, news and crowd sentiment, insider buying and selling, new SEC filings and short interest (US), and an overall score from -100 to 100.',
+    shape: {
+      tickers: strings('Tickers, e.g. ["AAPL", "TSLA", "SAP.DE"].'),
+      min_alert_level: z.enum(['none', 'low', 'medium', 'high']).default('none').describe('Only tickers with at least this alert level.'),
+    },
+    map: (a) => clean({ tickers: a.tickers, minAlertLevel: a.min_alert_level }),
+    limit: (a) => a.tickers.length,
+  },
+  {
+    name: 'track_smart_money',
+    actor: 'tacps126/smart-money',
+    title: 'Track smart money: funds, insiders, Congress, options, futures',
+    price: 'from about $0.001 per row',
+    description:
+      'What the big players do: hedge fund 13F holdings with quarter changes and estimated flows (20 built-in funds or any filer), 13D/13G stakes above 5%, insider buying clusters from Form 4, US House members\' trades (public news), unusual options activity, CFTC futures positioning with the COT index, and India FII/DII flows.',
+    shape: {
+      funds: z.array(z.string()).optional().describe('Funds or managers by name or CIK, e.g. ["Warren Buffett", "Bridgewater"].'),
+      tickers: z.array(z.string()).optional().describe('US tickers for stakes and insider activity, e.g. ["AAPL"].'),
+      changes_only: z.boolean().default(false).describe('Only positions that changed this quarter.'),
+      congress_trades: z.boolean().default(false).describe('Add US House members\' trades (for the tickers given, or all).'),
+      options_activity: z.boolean().default(false).describe('Add unusual options activity for the tickers.'),
+      cot_markets: z.array(z.string()).optional().describe('Futures markets for CFTC positioning, e.g. ["gold", "sp500", "crude-oil", "bitcoin"].'),
+      india_flows: z.boolean().default(false).describe('Add India FII/DII daily flows.'),
+      max_items: maxItems(200, 5000),
+    },
+    map: (a) =>
+      clean({
+        funds: a.funds ?? [],
+        holdings: a.changes_only ? 'changes' : undefined,
+        tickers: a.tickers ?? [],
+        congressTrades: a.congress_trades || undefined,
+        optionsActivity: a.options_activity || undefined,
+        cotMarkets: a.cot_markets ?? [],
+        indiaFlows: a.india_flows || undefined,
+        maxItems: a.max_items,
+      }),
+    limit: (a) => a.max_items,
+  },
+  {
+    name: 'monitor_brand',
+    actor: 'tacps126/brand-monitor',
+    title: 'Monitor brand mentions across news, social and reviews',
+    price: 'about $0.0008 per mention',
+    description:
+      'Mentions of a brand from news, X, Threads, Bluesky, YouTube, Instagram, TikTok, Trustpilot and app reviews in one shape, with sentiment and engagement, plus a digest (counts per source, sentiment split, top and negative mentions). Only new mentions on repeat runs.',
+    shape: {
+      brand: z.string().min(1).describe('Brand or product name, e.g. "Notion".'),
+      keywords: z.array(z.string()).optional().describe('Extra search phrases, e.g. ["Notion app"].'),
+      sources: z.array(z.enum(['news', 'x', 'instagram', 'tiktok', 'threads', 'bluesky', 'youtube', 'trustpilot', 'appReviews'])).optional().describe('Sources to read (default all that apply).'),
+      trustpilot_domains: z.array(z.string()).optional().describe('Domains for Trustpilot reviews, e.g. ["notion.so"].'),
+      lookback_days: z.number().int().min(1).max(90).default(7).describe('Only mentions from the last N days.'),
+      max_items: maxItems(200, 2000),
+    },
+    map: (a) =>
+      clean({
+        brandName: a.brand,
+        keywords: a.keywords,
+        sources: a.sources,
+        trustpilotDomains: a.trustpilot_domains,
+        lookbackDays: a.lookback_days,
+        onlyNew: false,
+        maxItems: a.max_items,
+      }),
+    limit: (a) => a.max_items,
+  },
 ];
 
 export const ACTORS = [...new Set(TOOLS.map((t) => t.actor))];
