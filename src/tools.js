@@ -3,6 +3,8 @@
 
 import { z } from 'zod';
 
+const RULES_DOC = 'Own rules, one per item, checked now and backtested on the ticker\'s history. Shape: [Name =] [bearish:] condition. Bullish by default (tested for a rise afterwards); start with bearish: to test for a fall. Columns: open, high, low, close, volume, or any indicator written name_settings (no need to request it first): rsi_14, sma_50, sma_200, ema_20, macd_12_26_9, macd_signal_12_26_9, macd_hist_12_26_9, bb_upper_20_2, bb_lower_20_2, atr_14, atrp_14, adx_14, stoch_k_14_3_3, cci_20, mfi_14, willr_14, roc_10, mom_10, supertrend_dir_10_3, highest_20, lowest_20, stdev_20, zscore_20, relvol_20, vwma_20, hma_20, wma_20, obv. Operators: < > <= >= == !=, and, or, not, crosses above, crosses below, is rising, is falling, + - * /, abs(x), min(a, b), max(a, b), brackets, x[n] = value n bars ago. Examples: "rsi_14 crosses above 30"; "bearish: close < sma_200 and rsi_14 > 60"; "Breakout = close > highest_20[1] and relvol_20 > 1.5". Prefer rule_presets when one fits.';
+
 const maxItems = (def, max = 500) =>
   z
     .number()
@@ -1663,7 +1665,7 @@ export const TOOLS = [
     shape: {
       tickers: strings('Tickers as on Yahoo Finance or TradingView, e.g. ["AAPL", "SAP.DE", "BTC-USD", "NASDAQ:NVDA"].'),
       rule_presets: z.array(z.enum(['oversold-bounce', 'overbought-fade', 'golden-cross', 'death-cross', 'macd-bullish-cross', 'macd-bearish-cross', 'breakout-on-volume', 'breakdown-on-volume', 'pullback-in-uptrend', 'short-term-dip', 'bollinger-reentry', 'supertrend-turns-up', 'supertrend-turns-down', 'strong-uptrend', 'stretched-below-mean', 'stretched-above-mean'])).optional().describe('Ready-made rules to check and backtest.'),
-      rules: z.array(z.string()).optional().describe('Own rules in plain text, e.g. "rsi_14 crosses above 30" or "bearish: close < sma_200 and rsi_14 > 60".'),
+      rules: z.array(z.string()).optional().describe(RULES_DOC),
       only_matching: z.boolean().default(false).describe('Only return tickers where a rule is true now (screener).'),
     },
     map: (a) =>
@@ -1687,7 +1689,7 @@ export const TOOLS = [
       include: z.array(z.enum(['analysis', 'session', 'factors', 'fundamentals', 'news', 'sentiment'])).optional().describe('Sections to include (default analysis, session, fundamentals, news, sentiment).'),
       range: z.enum(['6mo', '1y', '2y', '5y', '10y', 'max']).default('2y').describe('History used for the analysis and backtests.'),
       rule_presets: z.array(z.enum(['oversold-bounce', 'overbought-fade', 'golden-cross', 'death-cross', 'macd-bullish-cross', 'macd-bearish-cross', 'breakout-on-volume', 'breakdown-on-volume', 'pullback-in-uptrend', 'short-term-dip', 'bollinger-reentry', 'supertrend-turns-up', 'supertrend-turns-down', 'strong-uptrend', 'stretched-below-mean', 'stretched-above-mean'])).optional().describe('Ready-made rules to backtest.'),
-      rules: z.array(z.string()).optional().describe('Own rules in plain text, e.g. "Breakout = close > highest_20[1] and relvol_20 > 1.5".'),
+      rules: z.array(z.string()).optional().describe(RULES_DOC),
       flat: z.boolean().default(false).describe('One level of columns instead of nested sections.'),
     },
     map: (a) =>
