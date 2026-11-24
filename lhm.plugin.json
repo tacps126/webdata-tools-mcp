@@ -1351,7 +1351,7 @@
             }
           },
           "searches": {
-            "description": "YouTube searches whose top videos to read, e.g. [\"rust async tutorial\"].",
+            "description": "YouTube searches whose top videos to read, e.g. [\"python async tutorial\"].",
             "type": "array",
             "items": {
               "type": "string",

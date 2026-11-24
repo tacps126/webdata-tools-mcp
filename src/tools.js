@@ -339,7 +339,7 @@ export const TOOLS = [
       'Full transcripts of YouTube videos, and of every video in a playlist, a channel (newest first) or a YouTube search, as clean text plus timed caption lines, with title, channel, publish date, length, views, description and keywords. Picks the caption language you prefer (a written transcript over an auto-generated one) and can translate (best effort). Use for summaries, RAG, research and content repurposing.',
     shape: {
       videos: z.array(z.string().min(1)).optional().describe('Video links or ids, playlist links, channel @handles or channel links.'),
-      searches: z.array(z.string().min(1)).optional().describe('YouTube searches whose top videos to read, e.g. ["rust async tutorial"].'),
+      searches: z.array(z.string().min(1)).optional().describe('YouTube searches whose top videos to read, e.g. ["python async tutorial"].'),
       max_videos_per_source: z.number().int().min(1).max(500).default(20).describe('Videos taken from each playlist, channel or search.'),
       languages: z.array(z.string().min(2)).optional().describe('Caption languages in order of preference, e.g. ["en", "de"] (default en).'),
       translate_to: z.string().optional().describe('Language code to translate the captions into (best effort).'),
