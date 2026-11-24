@@ -250,6 +250,38 @@ export const TOOLS = [
     limit: (a) => a.max_items,
   },
   {
+    name: 'search_europe_jobs',
+    actor: 'tacps126/europe-jobs-scraper',
+    title: 'Search European job boards',
+    price: 'about $0.001 per job; AI job match $0.01 per job',
+    description:
+      "Jobs from Europe's main job boards in one search (EURES across the EU/EEA and Switzerland, Arbeitsagentur, StepStone, Reed, jobs.ch, InfoJobs, Pracuj, HelloWork and more), one format: title, company, location, salary, work mode, contract, posted date and link. Optional AI job match scores each job against a candidate profile.",
+    shape: {
+      query: z.string().min(1).describe('Job title or skill, e.g. "nurse", "software engineer".'),
+      countries: z
+        .array(z.string().length(2))
+        .optional()
+        .describe('2-letter country codes to search, e.g. ["de","pl","es"]. Empty = every board.'),
+      location: z.string().optional().describe('Optional city or region, e.g. "Berlin". Best with one country.'),
+      profile: z
+        .string()
+        .optional()
+        .describe('Optional candidate profile or hiring brief; turns on AI job match (fitScore 0-100, reason, missing skills) for the first jobs.'),
+      max_items: maxItems(30, 500),
+    },
+    map: (a) =>
+      clean({
+        query: a.query,
+        countries: a.countries?.map((c) => c.toLowerCase()),
+        location: a.location,
+        aiInsights: a.profile ? true : undefined,
+        aiProfile: a.profile,
+        maxInsights: a.profile ? Math.min(a.max_items ?? 30, 25) : undefined,
+        maxItems: a.max_items,
+      }),
+    limit: (a) => a.max_items,
+  },
+  {
     name: 'get_trustpilot_reviews',
     actor: 'tacps126/trustpilot-reviews',
     title: 'Get Trustpilot reviews and company rating',

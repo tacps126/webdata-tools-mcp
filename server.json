@@ -1,17 +1,17 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.github.tacps126/webdata-tools-mcp",
-  "description": "60 web-data tools for AI agents: stocks, jobs, news, tenders, laws, shopping, social, web pages.",
+  "description": "61 web-data tools for AI agents: stocks, jobs, news, tenders, laws, shopping, social, web pages.",
   "repository": {
     "url": "https://github.com/tacps126/webdata-tools-mcp",
     "source": "github"
   },
-  "version": "0.21.0",
+  "version": "0.22.0",
   "packages": [
     {
       "registryType": "npm",
       "identifier": "webdata-tools-mcp",
-      "version": "0.21.0",
+      "version": "0.22.0",
       "transport": {
         "type": "stdio"
       },

@@ -982,6 +982,112 @@
       }
     },
     {
+      "name": "search_europe_jobs",
+      "title": "Search European job boards",
+      "description": "Jobs from Europe's main job boards in one search (EURES across the EU/EEA and Switzerland, Arbeitsagentur, StepStone, Reed, jobs.ch, InfoJobs, Pracuj, HelloWork and more), one format: title, company, location, salary, work mode, contract, posted date and link. Optional AI job match scores each job against a candidate profile. Runs the Apify Actor tacps126/europe-jobs-scraper on your Apify account (about $0.001 per job; AI job match $0.01 per job; spend per call is capped at $0.5).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Job title or skill, e.g. \"nurse\", \"software engineer\"."
+          },
+          "countries": {
+            "description": "2-letter country codes to search, e.g. [\"de\",\"pl\",\"es\"]. Empty = every board.",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 2
+            }
+          },
+          "location": {
+            "description": "Optional city or region, e.g. \"Berlin\". Best with one country.",
+            "type": "string"
+          },
+          "profile": {
+            "description": "Optional candidate profile or hiring brief; turns on AI job match (fitScore 0-100, reason, missing skills) for the first jobs.",
+            "type": "string"
+          },
+          "max_items": {
+            "default": 30,
+            "description": "Maximum results to return (default 30, max 500). Cost scales with this.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 500
+          },
+          "extra_input": {
+            "description": "Advanced: extra Actor input fields, merged over the defaults.",
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "tool": {
+            "type": "string",
+            "description": "Name of the tool that produced the result."
+          },
+          "count": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records the Actor returned."
+          },
+          "shown": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "Number of records included in `items` (can be lower than count when the result is long)."
+          },
+          "truncated": {
+            "type": "boolean",
+            "description": "True when records were left out to keep the result short; ask for fewer items."
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "propertyNames": {
+                "type": "string"
+              },
+              "additionalProperties": {}
+            },
+            "description": "The records. Long text fields are shortened to 600 characters."
+          }
+        },
+        "required": [
+          "tool",
+          "count",
+          "shown",
+          "truncated",
+          "items"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false
+      },
+      "annotations": {
+        "title": "Search European job boards",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
       "name": "get_trustpilot_reviews",
       "title": "Get Trustpilot reviews and company rating",
       "description": "Trustpilot reviews for one or more companies (rating, title, text, reviewer, country, date, company reply) plus the company's TrustScore and review counts. Filter by stars, language, verified and date period. Runs the Apify Actor tacps126/trustpilot-reviews on your Apify account (about $0.00028 per review; company profile free; spend per call is capped at $0.5).",
@@ -7291,7 +7397,7 @@
             }
           },
           "rules": {
-            "description": "Own rules in plain text, e.g. \"rsi_14 crosses above 30\" or \"bearish: close < sma_200 and rsi_14 > 60\".",
+            "description": "Own rules, one per item, checked now and backtested on the ticker's history. Shape: [Name =] [bearish:] condition. Bullish by default (tested for a rise afterwards); start with bearish: to test for a fall. Columns: open, high, low, close, volume, or any indicator written name_settings (no need to request it first): rsi_14, sma_50, sma_200, ema_20, macd_12_26_9, macd_signal_12_26_9, macd_hist_12_26_9, bb_upper_20_2, bb_lower_20_2, atr_14, atrp_14, adx_14, stoch_k_14_3_3, cci_20, mfi_14, willr_14, roc_10, mom_10, supertrend_dir_10_3, highest_20, lowest_20, stdev_20, zscore_20, relvol_20, vwma_20, hma_20, wma_20, obv. Operators: < > <= >= == !=, and, or, not, crosses above, crosses below, is rising, is falling, + - * /, abs(x), min(a, b), max(a, b), brackets, x[n] = value n bars ago. Examples: \"rsi_14 crosses above 30\"; \"bearish: close < sma_200 and rsi_14 > 60\"; \"Breakout = close > highest_20[1] and relvol_20 > 1.5\". Prefer rule_presets when one fits.",
             "type": "array",
             "items": {
               "type": "string"
@@ -7442,7 +7548,7 @@
             }
           },
           "rules": {
-            "description": "Own rules in plain text, e.g. \"Breakout = close > highest_20[1] and relvol_20 > 1.5\".",
+            "description": "Own rules, one per item, checked now and backtested on the ticker's history. Shape: [Name =] [bearish:] condition. Bullish by default (tested for a rise afterwards); start with bearish: to test for a fall. Columns: open, high, low, close, volume, or any indicator written name_settings (no need to request it first): rsi_14, sma_50, sma_200, ema_20, macd_12_26_9, macd_signal_12_26_9, macd_hist_12_26_9, bb_upper_20_2, bb_lower_20_2, atr_14, atrp_14, adx_14, stoch_k_14_3_3, cci_20, mfi_14, willr_14, roc_10, mom_10, supertrend_dir_10_3, highest_20, lowest_20, stdev_20, zscore_20, relvol_20, vwma_20, hma_20, wma_20, obv. Operators: < > <= >= == !=, and, or, not, crosses above, crosses below, is rising, is falling, + - * /, abs(x), min(a, b), max(a, b), brackets, x[n] = value n bars ago. Examples: \"rsi_14 crosses above 30\"; \"bearish: close < sma_200 and rsi_14 > 60\"; \"Breakout = close > highest_20[1] and relvol_20 > 1.5\". Prefer rule_presets when one fits.",
             "type": "array",
             "items": {
               "type": "string"
@@ -7871,5 +7977,5 @@
       }
     }
   ],
-  "version": "0.21.0"
+  "version": "0.22.0"
 }

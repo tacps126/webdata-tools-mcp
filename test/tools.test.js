@@ -41,6 +41,7 @@ const SAMPLE = {
   get_trade_show_exhibitors: { shows: ['medica'], urls: ['https://ish.messefrankfurt.com/frankfurt/en/exhibitor-search.html'], max_items: 20 },
   find_events: { searches: ['AI'], location: 'London', urls: ['https://luma.com/ai'], max_items: 10 },
   search_naukri_jobs: { query: 'python developer', location: 'Bangalore', max_items: 5 },
+  search_europe_jobs: { query: 'nurse', countries: ['de', 'se'], max_items: 5 },
   find_remote_jobs: { title_includes: ['engineer'], countries: ['US'] },
   search_startup_jobs: { role: 'software engineer', city: 'San Francisco' },
   search_tech_jobs: { query: 'data engineer', location: 'New York' },

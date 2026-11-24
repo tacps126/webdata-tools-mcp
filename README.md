@@ -8,7 +8,7 @@
 [![Smithery](https://img.shields.io/badge/Smithery-tacps126%2Fwebdata--tools--mcp-ff5601)](https://smithery.ai/servers/tacps126/webdata-tools-mcp)
 [![webdata-tools-mcp MCP server](https://glama.ai/mcp/servers/tacps126/webdata-tools-mcp/badges/score.svg)](https://glama.ai/mcp/servers/tacps126/webdata-tools-mcp)
 
-An [MCP](https://modelcontextprotocol.io) server that gives AI agents sixty web-data tools: stock
+An [MCP](https://modelcontextprotocol.io) server that gives AI agents sixty-one web-data tools: stock
 analysis (verdicts, technicals, rules, watchlist alerts), smart money (13F funds, insiders, Congress trades, options,
 futures positioning), brand mentions, job
 postings (company career sites, remote jobs, startups on Wellfound, US tech jobs on Dice, Indeed,
@@ -34,6 +34,7 @@ anywhere except Apify.
 | `search_tech_jobs` | US tech jobs on Dice: salary, employer type, Easy Apply, remote flag | $0.55 / 1,000 jobs | [dice-jobs-scraper](https://apify.com/tacps126/dice-jobs-scraper) |
 | `search_indeed_jobs` | Indeed listings in 9 countries | $1.50 / 1,000 jobs (back to $3 on 6 Dec 2026) | [indeed-jobs](https://apify.com/tacps126/indeed-jobs) |
 | `search_naukri_jobs` | Naukri.com jobs (India): full description, salary in rupees, experience, rating | $1.50 / 1,000 jobs | [naukri-jobs-scraper](https://apify.com/tacps126/naukri-jobs-scraper) |
+| `search_europe_jobs` | Jobs from Europe's main job boards in one format, optional AI job match | $1 / 1,000 jobs | [europe-jobs-scraper](https://apify.com/tacps126/europe-jobs-scraper) |
 | `get_trustpilot_reviews` | Reviews, TrustScore and company profile | $0.28 / 1,000 reviews | [trustpilot-reviews](https://apify.com/tacps126/trustpilot-reviews) |
 | `get_app_reviews` | App Store and Google Play reviews | $0.15 / 1,000 reviews | [app-reviews](https://apify.com/tacps126/app-reviews) |
 | `search_gov_updates` | Official government updates: Federal Register rules and notices, GOV.UK, European Commission, SEC, RBI and SEBI circulars, any RSS feed; sector and keyword filters | $3 / 1,000 updates | [gov-radar](https://apify.com/tacps126/gov-radar) |
